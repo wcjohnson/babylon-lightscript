@@ -80,7 +80,7 @@
           },
           "body": [
             {
-              "type": "ExpressionStatement",
+              "type": "VariableDeclaration",
               "start": 10,
               "end": 22,
               "loc": {
@@ -93,25 +93,12 @@
                   "column": 14
                 }
               },
-              "expression": {
-                "type": "AssignmentExpression",
-                "start": 10,
-                "end": 22,
-                "loc": {
-                  "start": {
-                    "line": 2,
-                    "column": 2
-                  },
-                  "end": {
-                    "line": 2,
-                    "column": 14
-                  }
-                },
-                "operator": "<-",
-                "left": {
-                  "type": "Identifier",
+              "kind": "const",
+              "declarations": [
+                {
+                  "type": "VariableDeclarator",
                   "start": 10,
-                  "end": 11,
+                  "end": 22,
                   "loc": {
                     "start": {
                       "line": 2,
@@ -119,44 +106,44 @@
                     },
                     "end": {
                       "line": 2,
-                      "column": 3
-                    },
-                    "identifierName": "x"
-                  },
-                  "name": "x"
-                },
-                "right": {
-                  "type": "AwaitExpression",
-                  "start": 12,
-                  "end": 22,
-                  "loc": {
-                    "start": {
-                      "line": 2,
-                      "column": 4
-                    },
-                    "end": {
-                      "line": 2,
                       "column": 14
                     }
                   },
-                  "argument": {
-                    "type": "CallExpression",
-                    "start": 15,
+                  "id": {
+                    "type": "Identifier",
+                    "start": 10,
+                    "end": 11,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 2
+                      },
+                      "end": {
+                        "line": 2,
+                        "column": 3
+                      },
+                      "identifierName": "x"
+                    },
+                    "name": "x"
+                  },
+                  "init": {
+                    "type": "AwaitExpression",
+                    "start": 12,
                     "end": 22,
                     "loc": {
                       "start": {
                         "line": 2,
-                        "column": 7
+                        "column": 4
                       },
                       "end": {
                         "line": 2,
                         "column": 14
                       }
                     },
-                    "callee": {
-                      "type": "Identifier",
+                    "argument": {
+                      "type": "CallExpression",
                       "start": 15,
-                      "end": 20,
+                      "end": 22,
                       "loc": {
                         "start": {
                           "line": 2,
@@ -164,16 +151,31 @@
                         },
                         "end": {
                           "line": 2,
-                          "column": 12
-                        },
-                        "identifierName": "fetch"
+                          "column": 14
+                        }
                       },
-                      "name": "fetch"
-                    },
-                    "arguments": []
+                      "callee": {
+                        "type": "Identifier",
+                        "start": 15,
+                        "end": 20,
+                        "loc": {
+                          "start": {
+                            "line": 2,
+                            "column": 7
+                          },
+                          "end": {
+                            "line": 2,
+                            "column": 12
+                          },
+                          "identifierName": "fetch"
+                        },
+                        "name": "fetch"
+                      },
+                      "arguments": []
+                    }
                   }
                 }
-              }
+              ]
             }
           ],
           "directives": [],
