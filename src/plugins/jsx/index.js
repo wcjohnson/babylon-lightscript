@@ -101,6 +101,7 @@ pp.jsxReadNewLine = function(normalizeCRLF) {
         ++this.state.pos;
         ++this.state.pos;
         ++this.state.indentLevel;
+        out += "  ";
       }
     }
   }
