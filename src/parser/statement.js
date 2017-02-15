@@ -856,11 +856,6 @@ pp.parseClassBody = function (node) {
 
     this.parseClassMethod(classBody, method, isGenerator, isAsync);
 
-    // handle -get> and -set> arrow types
-    if (this.hasPlugin("lightscript") && !isGetSet) {
-      if (method.kind === "get" || method.kind === "set") isGetSet = true;
-    }
-
     if (isGetSet) {
       this.checkGetterSetterParamCount(method);
     }
