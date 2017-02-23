@@ -371,8 +371,14 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       this.next();
       node.object = base;
       if (op === "?.") {
-        node.property = this.parseIdentifier(true);
-        node.computed = false;
+        // arr?.0 -> arr?[0]
+        if (this.match(tt.num)) {
+          node.property = this.parseLiteral(this.state.value, "NumericLiteral");
+          node.computed = true;
+        } else {
+          node.property = this.parseIdentifier(true);
+          node.computed = false;
+        }
       } else if (op === "?[") {
         node.property = this.parseExpression();
         node.computed = true;
