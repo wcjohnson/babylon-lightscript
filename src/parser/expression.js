@@ -398,7 +398,7 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       this.expect(tt.parenL);
       node.arguments = this.parseCallExpressionArguments(tt.parenR, possibleAsync);
       base = this.finishNode(node, "TildeCallExpression");
-    } else if (this.hasPlugin("lightscript") && this.isNumberStartingWithDot()) {
+    } else if (this.hasPlugin("lightscript") && this.isNumberStartingWithDot() && !this.isNonIndentedBreakFrom(startPos)) {
       // parses x.0, x.1, etc, as x[0], x[1], etc.
       const node = this.startNodeAt(startPos, startLoc);
       node.object = base;
