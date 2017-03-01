@@ -1,6 +1,6 @@
 {
   "name": "babylon-lightscript",
-  "version": "6.16.1",
+  "version": "0.0.1",
   "description": "A LightScript parser, based on babylon (a JavaScript parser)",
   "author": "Alex Rattray <rattray.alex@gmail.com>",
   "homepage": "https://lightscript.org/",
