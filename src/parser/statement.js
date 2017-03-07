@@ -437,11 +437,18 @@ pp.parseTryStatement = function (node) {
     const clause = this.startNode();
     this.next();
 
-    this.expect(tt.parenL);
+    if (this.hasPlugin("lightscript")) {
+      this.eat(tt.parenL);
+    } else {
+      this.expect(tt.parenL);
+    }
     clause.param = this.parseBindingAtom();
     this.checkLVal(clause.param, true, Object.create(null), "catch clause");
-    this.expect(tt.parenR);
-
+    if (this.hasPlugin("lightscript")) {
+      this.eat(tt.parenR);
+    } else {
+      this.expect(tt.parenR);
+    }
     clause.body = this.parseBlock();
     node.handler = this.finishNode(clause, "CatchClause");
   }
