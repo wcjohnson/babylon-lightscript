@@ -142,6 +142,7 @@ pp.parseStatement = function (declaration, topLevel) {
   if (this.hasPlugin("lightscript") && this.isColonConstAssign(expr)) {
     const decl = this.rewriteAssignmentAsDeclarator(expr);
     node.kind = "const";
+    this.addExtra(node, "implicit", true);
     node.declarations = [decl];
     this.semicolon();
     return this.finishNode(node, "VariableDeclaration");
