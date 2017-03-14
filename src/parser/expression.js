@@ -393,10 +393,8 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       // allow Identifier or MemberExpression, but not calls
       node.right = this.parseSubscripts(this.parseIdentifier(), this.state.start, this.state.startLoc, true);
 
-      // c/p from CallExpression bit just below, don't really know what it does...
-      const possibleAsync = this.state.potentialArrowAt === base.start && base.type === "Identifier" && base.name === "async" && !this.canInsertSemicolon();
       this.expect(tt.parenL);
-      node.arguments = this.parseCallExpressionArguments(tt.parenR, possibleAsync);
+      node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
       base = this.finishNode(node, "TildeCallExpression");
     } else if (this.hasPlugin("lightscript") && this.isNumberStartingWithDot() && !this.isNonIndentedBreakFrom(startPos)) {
       // parses x.0, x.1, etc, as x[0], x[1], etc.
@@ -414,11 +412,13 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       base = this.finishNode(node, "MemberExpression");
     } else if (!noCalls && this.match(tt.parenL) && !(this.hasPlugin("lightscript") && this.isLineBreak())) {
       const possibleAsync = this.state.potentialArrowAt === base.start && base.type === "Identifier" && base.name === "async" && !this.canInsertSemicolon();
+      const possibleArrow = possibleAsync || this.hasPlugin("lightscript");
+      const refShorthandDefaultPos = possibleArrow ? { start: 0 } : undefined;
       this.next();
 
       const node = this.startNodeAt(startPos, startLoc);
       node.callee = base;
-      node.arguments = this.parseCallExpressionArguments(tt.parenR, possibleAsync);
+      node.arguments = this.parseCallExpressionArguments(tt.parenR, possibleArrow, refShorthandDefaultPos);
       if (node.callee.type === "Import" && node.arguments.length !== 1) {
         this.raise(node.start, "import() requires exactly one argument");
       }
@@ -445,6 +445,9 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
           return this.parseNamedArrowFromCallExpression(this.startNodeAt(startPos, startLoc), node);
         }
       }
+      if (refShorthandDefaultPos && refShorthandDefaultPos.start) {
+        this.unexpected(refShorthandDefaultPos.start);
+      }
       this.toReferencedList(node.arguments);
     } else if (this.hasPlugin("lightscript") && this.hasPlugin("flow") && this.isRelational("<")) {
       // `fn<T>() ->`, c/p of the above, but for `<`
@@ -457,7 +460,7 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
         this.state = state;
         return base;
       }
-      node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
+      node.arguments = this.parseCallExpressionArguments(tt.parenR, true, { start: 0 });
       if (!this.shouldParseArrow()) this.unexpected();
       return this.parseNamedArrowFromCallExpression(this.startNodeAt(startPos, startLoc), node);
     } else if (this.match(tt.backQuote)) {
@@ -471,7 +474,10 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
   }
 };
 
-pp.parseCallExpressionArguments = function (close, possibleAsyncArrow) {
+// last parameter (refShorthandDefaultPos) added for lightscript,
+// but should be contributed upstream because it fixes a minor bug in babylon:
+// `async({ foo = 1 })` parses as a function call but should raise an error.
+pp.parseCallExpressionArguments = function (close, possibleAsyncArrow, refShorthandDefaultPos) {
   const elts = [];
   let innerParenStart;
   let first = true;
@@ -493,7 +499,7 @@ pp.parseCallExpressionArguments = function (close, possibleAsyncArrow) {
       innerParenStart = this.state.start;
     }
 
-    elts.push(this.parseExprListItem(false, possibleAsyncArrow ? { start: 0 } : undefined, possibleAsyncArrow ? { start: 0 } : undefined));
+    elts.push(this.parseExprListItem(false, refShorthandDefaultPos, refShorthandDefaultPos));
   }
 
   // we found an async arrow function so let's not allow any inner parens
