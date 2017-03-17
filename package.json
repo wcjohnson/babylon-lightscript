@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "description": "A LightScript parser, based on babylon (a JavaScript parser)",
   "author": "Alex Rattray <rattray.alex@gmail.com>",
-  "homepage": "https://lightscript.org/",
+  "homepage": "http://lightscript.org/",
   "license": "MIT",
   "keywords": [
     "babel",
