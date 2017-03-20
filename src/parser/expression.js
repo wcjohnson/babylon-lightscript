@@ -463,7 +463,7 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       node.arguments = this.parseCallExpressionArguments(tt.parenR, true, { start: 0 });
       if (!this.shouldParseArrow()) this.unexpected();
       return this.parseNamedArrowFromCallExpression(this.startNodeAt(startPos, startLoc), node);
-    } else if (this.match(tt.backQuote)) {
+    } else if (this.match(tt.backQuote) && !(this.hasPlugin("lightscript") && this.isLineBreak())) {
       const node = this.startNodeAt(startPos, startLoc);
       node.tag = base;
       node.quasi = this.parseTemplate();
