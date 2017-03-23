@@ -344,11 +344,20 @@ pp.parseIfStatement = function (node) {
   this.next();
   node.test = this.parseParenExpression();
   node.consequent = this.parseStatement(false);
+
   if (this.hasPlugin("lightscript") && this.match(tt._elif)) {
     node.alternate = this.parseIfStatement(this.startNode());
   } else {
-    node.alternate = this.eat(tt._else) ? this.parseStatement(false) : null;
+    if (this.eat(tt._else)) {
+      if (this.hasPlugin("lightscript") && this.isLineBreak()) {
+        this.unexpected(this.state.lastTokEnd, tt.colon);
+      }
+      node.alternate = this.parseStatement(false);
+    } else {
+      node.alternate = null;
+    }
   }
+
   return this.finishNode(node, "IfStatement");
 };
 
