@@ -1,5 +1,5 @@
 {
-  "name": "babylon-lightscript",
+  "name": "@oigroup/babylon-lightscript",
   "version": "0.4.1",
   "description": "A LightScript parser, based on babylon (a JavaScript parser)",
   "author": "Alex Rattray <rattray.alex@gmail.com>",
