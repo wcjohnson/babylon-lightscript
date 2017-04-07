@@ -343,19 +343,36 @@ pp.parseFunctionStatement = function (node) {
   return this.parseFunction(node, true);
 };
 
-pp.parseIfStatement = function (node) {
+pp.parseIfStatement = function (node, siblingIsWhiteBlock) {
   this.next();
   node.test = this.parseParenExpression();
+
+  const isWhiteBlock = this.match(tt.colon);
+  if ( siblingIsWhiteBlock && !isWhiteBlock ) {
+    this.unexpected(null, tt.colon);
+  } else if ( (siblingIsWhiteBlock === false) && isWhiteBlock ) {
+    this.unexpected();
+  }
+
   node.consequent = this.parseStatement(false);
 
   if (this.hasPlugin("lightscript") && this.match(tt._elif)) {
-    node.alternate = this.parseIfStatement(this.startNode());
+    node.alternate = this.parseIfStatement(this.startNode(), isWhiteBlock);
   } else {
     if (this.eat(tt._else)) {
-      if (this.hasPlugin("lightscript") && this.isLineBreak()) {
-        this.unexpected(this.state.lastTokEnd, tt.colon);
+      if (this.hasPlugin("lightscript") && this.match(tt._if)) {
+        node.alternate = this.parseIfStatement(this.startNode(), isWhiteBlock);
+      } else {
+        // Force "else" whiteblock matching
+        if (this.hasPlugin("lightscript")) {
+          if (isWhiteBlock && !this.match(tt.colon)) {
+            this.unexpected(this.state.lastTokEnd, tt.colon);
+          } else if (!isWhiteBlock && this.match(tt.colon)) {
+            this.unexpected();
+          }
+        }
+        node.alternate = this.parseStatement(false);
       }
-      node.alternate = this.parseStatement(false);
     } else {
       node.alternate = null;
     }

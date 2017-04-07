@@ -1,29 +1,29 @@
 {
   "type": "File",
   "start": 0,
-  "end": 44,
+  "end": 33,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 5,
-      "column": 1
+      "line": 4,
+      "column": 5
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 44,
+    "end": 33,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 5,
-        "column": 1
+        "line": 4,
+        "column": 5
       }
     },
     "sourceType": "script",
@@ -31,15 +31,15 @@
       {
         "type": "VariableDeclaration",
         "start": 0,
-        "end": 44,
+        "end": 33,
         "loc": {
           "start": {
             "line": 1,
             "column": 0
           },
           "end": {
-            "line": 5,
-            "column": 1
+            "line": 4,
+            "column": 5
           }
         },
         "kind": "const",
@@ -50,15 +50,15 @@
           {
             "type": "VariableDeclarator",
             "start": 0,
-            "end": 44,
+            "end": 33,
             "loc": {
               "start": {
                 "line": 1,
                 "column": 0
               },
               "end": {
-                "line": 5,
-                "column": 1
+                "line": 4,
+                "column": 5
               }
             },
             "id": {
@@ -81,15 +81,15 @@
             "init": {
               "type": "IfExpression",
               "start": 4,
-              "end": 44,
+              "end": 33,
               "loc": {
                 "start": {
                   "line": 1,
                   "column": 4
                 },
                 "end": {
-                  "line": 5,
-                  "column": 1
+                  "line": 4,
+                  "column": 5
                 }
               },
               "test": {
@@ -147,23 +147,23 @@
               },
               "consequent": {
                 "type": "BlockStatement",
-                "start": 12,
-                "end": 19,
+                "start": 13,
+                "end": 22,
                 "loc": {
                   "start": {
                     "line": 1,
-                    "column": 12
+                    "column": 13
                   },
                   "end": {
-                    "line": 2,
-                    "column": 5
+                    "line": 3,
+                    "column": 1
                   }
                 },
                 "body": [
                   {
                     "type": "ExpressionStatement",
-                    "start": 16,
-                    "end": 19,
+                    "start": 17,
+                    "end": 20,
                     "loc": {
                       "start": {
                         "line": 2,
@@ -176,8 +176,8 @@
                     },
                     "expression": {
                       "type": "StringLiteral",
-                      "start": 16,
-                      "end": 19,
+                      "start": 17,
+                      "end": 20,
                       "loc": {
                         "start": {
                           "line": 2,
@@ -198,153 +198,43 @@
                 ],
                 "directives": [],
                 "extra": {
-                  "curly": false
+                  "curly": true
                 }
               },
               "alternate": {
-                "type": "IfExpression",
-                "start": 25,
-                "end": 44,
+                "type": "ExpressionStatement",
+                "start": 30,
+                "end": 33,
                 "loc": {
                   "start": {
-                    "line": 3,
-                    "column": 5
+                    "line": 4,
+                    "column": 2
                   },
                   "end": {
-                    "line": 5,
-                    "column": 1
+                    "line": 4,
+                    "column": 5
                   }
                 },
-                "test": {
-                  "type": "BinaryExpression",
-                  "start": 28,
-                  "end": 34,
+                "expression": {
+                  "type": "StringLiteral",
+                  "start": 30,
+                  "end": 33,
                   "loc": {
                     "start": {
-                      "line": 3,
-                      "column": 8
+                      "line": 4,
+                      "column": 2
                     },
                     "end": {
-                      "line": 3,
-                      "column": 14
+                      "line": 4,
+                      "column": 5
                     }
                   },
-                  "left": {
-                    "type": "Identifier",
-                    "start": 28,
-                    "end": 29,
-                    "loc": {
-                      "start": {
-                        "line": 3,
-                        "column": 8
-                      },
-                      "end": {
-                        "line": 3,
-                        "column": 9
-                      },
-                      "identifierName": "x"
-                    },
-                    "name": "x"
-                  },
-                  "operator": "<",
-                  "right": {
-                    "type": "UnaryExpression",
-                    "start": 32,
-                    "end": 34,
-                    "loc": {
-                      "start": {
-                        "line": 3,
-                        "column": 12
-                      },
-                      "end": {
-                        "line": 3,
-                        "column": 14
-                      }
-                    },
-                    "operator": "-",
-                    "prefix": true,
-                    "argument": {
-                      "type": "NumericLiteral",
-                      "start": 33,
-                      "end": 34,
-                      "loc": {
-                        "start": {
-                          "line": 3,
-                          "column": 13
-                        },
-                        "end": {
-                          "line": 3,
-                          "column": 14
-                        }
-                      },
-                      "extra": {
-                        "rawValue": 1,
-                        "raw": "1"
-                      },
-                      "value": 1
-                    },
-                    "extra": {
-                      "parenthesizedArgument": false
-                    }
-                  }
-                },
-                "consequent": {
-                  "type": "BlockStatement",
-                  "start": 35,
-                  "end": 44,
-                  "loc": {
-                    "start": {
-                      "line": 3,
-                      "column": 15
-                    },
-                    "end": {
-                      "line": 5,
-                      "column": 1
-                    }
-                  },
-                  "body": [
-                    {
-                      "type": "ExpressionStatement",
-                      "start": 39,
-                      "end": 42,
-                      "loc": {
-                        "start": {
-                          "line": 4,
-                          "column": 2
-                        },
-                        "end": {
-                          "line": 4,
-                          "column": 5
-                        }
-                      },
-                      "expression": {
-                        "type": "StringLiteral",
-                        "start": 39,
-                        "end": 42,
-                        "loc": {
-                          "start": {
-                            "line": 4,
-                            "column": 2
-                          },
-                          "end": {
-                            "line": 4,
-                            "column": 5
-                          }
-                        },
-                        "extra": {
-                          "rawValue": "b",
-                          "raw": "'b'"
-                        },
-                        "value": "b"
-                      }
-                    }
-                  ],
-                  "directives": [],
                   "extra": {
-                    "curly": true
-                  }
-                },
-                "alternate": null
+                    "rawValue": "b",
+                    "raw": "'b'"
+                  },
+                  "value": "b"
+                }
               }
             }
           }
