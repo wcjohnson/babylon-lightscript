@@ -27,13 +27,13 @@ directory.
 
 `@oigroup/babylon-lightscript` enforces consistent syntax between if statements and if expressions, so that programmers don't encounter land mines when switching between the two. In practical terms, this means:
 
-1. This is now illegal syntax:
+**This is now illegal syntax:**
 ```js
 if a: {x} else b
 ```
 If you use colon syntax on one clause of an `if` you must use it on all clauses.
 
-2. This is now legal syntax:
+**This is now legal syntax:**
 ```js
 y = if(three()) 3 else 4
 ```
