@@ -376,6 +376,7 @@ pp.parseIfStatement = function (node, siblingIsWhiteBlock, isExpr) {
     if (this.match(tt._else) && canParseAlternate) {
       this.next();
       if (this.hasPlugin("lightscript") && this.match(tt._if)) {
+        if (isWhiteBlock && this.isLineBreak()) this.unexpected(null, "`else if` must appear on the same line when using whitespace-sensitive syntax.");
         node.alternate = this.parseIfStatement(this.startNode(), isWhiteBlock, isExpr);
       } else {
         // Force "else" whiteblock matching
