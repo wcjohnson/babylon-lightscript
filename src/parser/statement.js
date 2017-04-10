@@ -343,25 +343,40 @@ pp.parseFunctionStatement = function (node) {
   return this.parseFunction(node, true);
 };
 
-pp.parseIfStatement = function (node, siblingIsWhiteBlock) {
+pp.parseIfStatement = function (node, siblingIsWhiteBlock, isExpr) {
+  let isWhiteBlock = false;
+  const ifIndentLevel = this.state.indentLevel;
+
   this.next();
   node.test = this.parseParenExpression();
 
-  const isWhiteBlock = this.match(tt.colon);
-  if ( siblingIsWhiteBlock && !isWhiteBlock ) {
-    this.unexpected(null, tt.colon);
-  } else if ( (siblingIsWhiteBlock === false) && isWhiteBlock ) {
-    this.unexpected();
+  // Check for matching whiteblock syntax
+  if (this.hasPlugin("lightscript")) {
+    isWhiteBlock = this.match(tt.colon);
+    if ( siblingIsWhiteBlock && !isWhiteBlock ) {
+      this.unexpected(null, tt.colon);
+    } else if ( (siblingIsWhiteBlock === false) && isWhiteBlock ) {
+      this.unexpected();
+    }
   }
 
   node.consequent = this.parseStatement(false);
 
+  // An alternate clause found at this parse location can only match with the current
+  // `if` construct if it is at the same indent level or whiteblock syntax is not being
+  // used.
+  const canParseAlternate = (!isWhiteBlock || this.state.indentLevel === ifIndentLevel);
+
   if (this.hasPlugin("lightscript") && this.match(tt._elif)) {
-    node.alternate = this.parseIfStatement(this.startNode(), isWhiteBlock);
+    // if whiteblock, indent levels of clauses must match.
+    if (canParseAlternate) {
+      node.alternate = this.parseIfStatement(this.startNode(), isWhiteBlock, isExpr);
+    }
   } else {
-    if (this.eat(tt._else)) {
+    if (this.match(tt._else) && canParseAlternate) {
+      this.next();
       if (this.hasPlugin("lightscript") && this.match(tt._if)) {
-        node.alternate = this.parseIfStatement(this.startNode(), isWhiteBlock);
+        node.alternate = this.parseIfStatement(this.startNode(), isWhiteBlock, isExpr);
       } else {
         // Force "else" whiteblock matching
         if (this.hasPlugin("lightscript")) {
@@ -378,7 +393,7 @@ pp.parseIfStatement = function (node, siblingIsWhiteBlock) {
     }
   }
 
-  return this.finishNode(node, "IfStatement");
+  return this.finishNode(node, isExpr ? "IfExpression" : "IfStatement");
 };
 
 pp.parseReturnStatement = function (node) {

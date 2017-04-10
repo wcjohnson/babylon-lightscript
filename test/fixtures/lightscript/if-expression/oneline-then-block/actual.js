@@ -1,3 +1,3 @@
 x = if false: 1
-  elif true:
-    2
+elif true:
+  2

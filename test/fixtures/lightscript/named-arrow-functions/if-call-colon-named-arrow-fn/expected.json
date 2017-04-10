@@ -43,6 +43,9 @@
           }
         },
         "kind": "const",
+        "extra": {
+          "implicit": true
+        },
         "declarations": [
           {
             "type": "VariableDeclarator",
@@ -123,7 +126,7 @@
                 "arguments": []
               },
               "consequent": {
-                "type": "NamedArrowExpression",
+                "type": "NamedArrowDeclaration",
                 "start": 13,
                 "end": 21,
                 "loc": {

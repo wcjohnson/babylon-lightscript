@@ -43,6 +43,9 @@
           }
         },
         "kind": "const",
+        "extra": {
+          "implicit": true
+        },
         "declarations": [
           {
             "type": "VariableDeclarator",
@@ -123,7 +126,7 @@
                 "arguments": []
               },
               "consequent": {
-                "type": "ArrowFunctionExpression",
+                "type": "ExpressionStatement",
                 "start": 13,
                 "end": 20,
                 "loc": {
@@ -136,31 +139,46 @@
                     "column": 20
                   }
                 },
-                "id": null,
-                "generator": false,
-                "expression": true,
-                "async": false,
-                "params": [],
-                "skinny": false,
-                "body": {
-                  "type": "NumericLiteral",
-                  "start": 19,
+                "expression": {
+                  "type": "ArrowFunctionExpression",
+                  "start": 13,
                   "end": 20,
                   "loc": {
                     "start": {
                       "line": 1,
-                      "column": 19
+                      "column": 13
                     },
                     "end": {
                       "line": 1,
                       "column": 20
                     }
                   },
-                  "extra": {
-                    "rawValue": 4,
-                    "raw": "4"
-                  },
-                  "value": 4
+                  "id": null,
+                  "generator": false,
+                  "expression": true,
+                  "async": false,
+                  "params": [],
+                  "skinny": false,
+                  "body": {
+                    "type": "NumericLiteral",
+                    "start": 19,
+                    "end": 20,
+                    "loc": {
+                      "start": {
+                        "line": 1,
+                        "column": 19
+                      },
+                      "end": {
+                        "line": 1,
+                        "column": 20
+                      }
+                    },
+                    "extra": {
+                      "rawValue": 4,
+                      "raw": "4"
+                    },
+                    "value": 4
+                  }
                 }
               },
               "alternate": null

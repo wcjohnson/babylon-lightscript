@@ -43,6 +43,9 @@
           }
         },
         "kind": "const",
+        "extra": {
+          "implicit": true
+        },
         "declarations": [
           {
             "type": "VariableDeclarator",
@@ -106,7 +109,7 @@
                 "value": false
               },
               "consequent": {
-                "type": "NumericLiteral",
+                "type": "ExpressionStatement",
                 "start": 14,
                 "end": 15,
                 "loc": {
@@ -119,11 +122,26 @@
                     "column": 15
                   }
                 },
-                "extra": {
-                  "rawValue": 1,
-                  "raw": "1"
-                },
-                "value": 1
+                "expression": {
+                  "type": "NumericLiteral",
+                  "start": 14,
+                  "end": 15,
+                  "loc": {
+                    "start": {
+                      "line": 1,
+                      "column": 14
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 15
+                    }
+                  },
+                  "extra": {
+                    "rawValue": 1,
+                    "raw": "1"
+                  },
+                  "value": 1
+                }
               },
               "alternate": {
                 "type": "IfExpression",
@@ -156,7 +174,7 @@
                   "value": true
                 },
                 "consequent": {
-                  "type": "NumericLiteral",
+                  "type": "ExpressionStatement",
                   "start": 27,
                   "end": 28,
                   "loc": {
@@ -169,14 +187,29 @@
                       "column": 28
                     }
                   },
-                  "extra": {
-                    "rawValue": 2,
-                    "raw": "2"
-                  },
-                  "value": 2
+                  "expression": {
+                    "type": "NumericLiteral",
+                    "start": 27,
+                    "end": 28,
+                    "loc": {
+                      "start": {
+                        "line": 1,
+                        "column": 27
+                      },
+                      "end": {
+                        "line": 1,
+                        "column": 28
+                      }
+                    },
+                    "extra": {
+                      "rawValue": 2,
+                      "raw": "2"
+                    },
+                    "value": 2
+                  }
                 },
                 "alternate": {
-                  "type": "NumericLiteral",
+                  "type": "ExpressionStatement",
                   "start": 35,
                   "end": 36,
                   "loc": {
@@ -189,11 +222,26 @@
                       "column": 36
                     }
                   },
-                  "extra": {
-                    "rawValue": 3,
-                    "raw": "3"
-                  },
-                  "value": 3
+                  "expression": {
+                    "type": "NumericLiteral",
+                    "start": 35,
+                    "end": 36,
+                    "loc": {
+                      "start": {
+                        "line": 1,
+                        "column": 35
+                      },
+                      "end": {
+                        "line": 1,
+                        "column": 36
+                      }
+                    },
+                    "extra": {
+                      "rawValue": 3,
+                      "raw": "3"
+                    },
+                    "value": 3
+                  }
                 }
               }
             }

@@ -387,41 +387,8 @@ pp.parseNamedArrowFromCallExpression = function (node, call) {
 
 // c/p parseIfStatement
 
-pp.parseIfExpression = function (node, siblingIsWhiteBlock) {
-  this.next();
-  node.test = this.parseParenExpression();
-
-  const isWhiteBlock = this.match(tt.colon);
-  if ( siblingIsWhiteBlock && !isWhiteBlock ) {
-    this.unexpected(null, tt.colon);
-  } else if ( (siblingIsWhiteBlock === false) && isWhiteBlock ) {
-    this.unexpected();
-  }
-
-  node.consequent = isWhiteBlock
-    ? this.parseWhiteBlock(false, true)
-    : this.parseStatement(false);
-
-  if (this.match(tt._elif)) {
-    node.alternate = this.parseIfExpression(this.startNode(), isWhiteBlock);
-  } else if (this.eat(tt._else)) {
-    if (this.match(tt._if)) {
-      node.alternate = this.parseIfExpression(this.startNode(), isWhiteBlock);
-    } else {
-      // Force "else" whiteblock matching
-      if (isWhiteBlock && !this.match(tt.colon)) {
-        this.unexpected(this.state.lastTokEnd, tt.colon);
-      } else if (!isWhiteBlock && this.match(tt.colon)) {
-        this.unexpected();
-      }
-      node.alternate = isWhiteBlock
-        ? this.parseWhiteBlock(false, true)
-        : this.parseStatement(false);
-    }
-  } else {
-    node.alternate = null;
-  }
-  return this.finishNode(node, "IfExpression");
+pp.parseIfExpression = function (node) {
+  return this.parseIfStatement(node, undefined, true);
 };
 
 // c/p parseAwait

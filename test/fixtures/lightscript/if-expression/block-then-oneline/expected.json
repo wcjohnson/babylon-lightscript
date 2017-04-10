@@ -43,6 +43,9 @@
           }
         },
         "kind": "const",
+        "extra": {
+          "implicit": true
+        },
         "declarations": [
           {
             "type": "VariableDeclarator",
@@ -192,7 +195,7 @@
                   "value": true
                 },
                 "consequent": {
-                  "type": "NumericLiteral",
+                  "type": "ExpressionStatement",
                   "start": 29,
                   "end": 30,
                   "loc": {
@@ -205,11 +208,26 @@
                       "column": 12
                     }
                   },
-                  "extra": {
-                    "rawValue": 2,
-                    "raw": "2"
-                  },
-                  "value": 2
+                  "expression": {
+                    "type": "NumericLiteral",
+                    "start": 29,
+                    "end": 30,
+                    "loc": {
+                      "start": {
+                        "line": 3,
+                        "column": 11
+                      },
+                      "end": {
+                        "line": 3,
+                        "column": 12
+                      }
+                    },
+                    "extra": {
+                      "rawValue": 2,
+                      "raw": "2"
+                    },
+                    "value": 2
+                  }
                 },
                 "alternate": null
               }
