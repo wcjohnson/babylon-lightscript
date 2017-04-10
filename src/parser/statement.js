@@ -567,7 +567,7 @@ pp.parseExpressionStatement = function (node, expr) {
   if (this.hasPlugin("lightscript")) {
     // for array comprehensions.
     // TODO: cleanup / think of a better way of doing this.
-    this.match(tt.bracketR) || this.match(tt._else) || this.match(tt._elif) || this.semicolon();
+    this.match(tt.bracketR) || this.match(tt.braceR) || this.match(tt.parenR) || this.match(tt._else) || this.match(tt._elif) || this.semicolon();
   } else {
     this.semicolon();
   }
