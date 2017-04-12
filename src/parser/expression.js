@@ -426,8 +426,9 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
 
       if (possibleAsync && this.shouldParseAsyncArrow()) {
         return this.parseAsyncArrowFromCallExpression(this.startNodeAt(startPos, startLoc), node);
-      } else if (this.hasPlugin("lightscript") && this.shouldParseAsyncArrow()) {
-
+      // ASI: if an arrow following what looks like a call expr is on a different line,
+      // treat it as a separate arrow expr.
+      } else if (this.hasPlugin("lightscript") && this.shouldParseAsyncArrow() && !this.isLineBreak()) {
         // could be a function call followed by a colon-block, eg `if fn(): blah`
         // or an annotated NamedArrowExpression, eg `fn(): blah ->`
         // Disambiguating is hard, especially with good error messages...
