@@ -65,7 +65,14 @@ pp.isLineBreak = function () {
 pp.canInsertSemicolon = function () {
   return this.match(tt.eof) ||
     this.match(tt.braceR) ||
-    this.isLineBreak();
+    this.isLineBreak() ||
+    // Allow constructions like (-> throw new Error)()
+    (this.hasPlugin("lightscript") && this.match(tt.parenR)) ||
+    // If previous token was a semicolon it would technically be okay to insert
+    // another one. Allows correct parsing for one-statement arrows followed
+    // by semicolons, like:
+    // -> throw new Error; f()
+    (this.hasPlugin("lightscript") && this.state.tokens[this.state.tokens.length - 1].type === tt.semi);
 };
 
 // TODO

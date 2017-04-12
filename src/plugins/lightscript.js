@@ -166,6 +166,69 @@ pp.parseNumericLiteralMember = function () {
   return node;
 };
 
+// c/p parseBlockBody
+
+pp.couldBeginStatement = function() {
+  // ExpressionStatement
+  if (this.state.type.startsExpr) return true;
+
+  // c/p from parseStatement
+  switch (this.state.type) {
+    // break and continue only allowed within loops; omitted here
+    case tt._debugger:
+    case tt._do:
+    case tt._for:
+    case tt._function:
+    case tt._class:
+    case tt._if:
+    case tt._return:
+    case tt._switch:
+    case tt._throw:
+    case tt._try:
+    case tt._let:
+    case tt._const:
+    case tt._var:
+    case tt._now:
+    case tt._while:
+    case tt._with:
+    case tt.braceL:
+    case tt.semi:
+    case tt._export:
+    case tt._import:
+    case tt.name:
+      return true;
+  }
+
+  return false;
+};
+
+pp.parseWhiteBlockBody = function(node, indentLevel, isInlineBody, allowEmptyBody) {
+  if (isInlineBody) {
+    // Inline body may be a simple expr. JS treats these as plain
+    // expressions rather than function bodies, so we must do the same.
+    // Return the plain expr node in this case.
+    if (this.state.type.startsExpr) {
+      return this.parseMaybeAssign();
+    }
+
+    // Otherwise treat as a one-statement block on the same line
+    node.body = [];
+    if (this.couldBeginStatement()) {
+      node.body.push(this.parseStatement(true, false));
+    }
+    node.directives = [];
+  } else {
+    this.parseBlockBody(node, false, false, indentLevel);
+  }
+
+  if (!allowEmptyBody && !node.body.length) {
+    this.unexpected(node.start, "Expected an Indent or Statement");
+  }
+
+  this.addExtra(node, "curly", false);
+  return this.finishNode(node, "BlockStatement");
+};
+
 // c/p parseBlock
 
 pp.parseWhiteBlock = function (allowDirectives?, isIfExpression?) {
@@ -189,22 +252,16 @@ pp.parseWhiteBlock = function (allowDirectives?, isIfExpression?) {
         this.parseBlockBody(node, allowDirectives, false, tt.braceR);
         this.addExtra(node, "curly", true);
         return this.finishNode(node, "BlockStatement");
-      } else if (this.state.type.startsExpr) {
-        return this.parseMaybeAssign();
+      } else {
+        // Inline arrow body
+        return this.parseWhiteBlockBody(node, indentLevel, true, true);
       }
     }
   } else {
     this.unexpected(null, "Whitespace Block must start with a colon or arrow");
   }
 
-  // never parse directives if curly braces aren't used (TODO: document)
-  this.parseBlockBody(node, false, false, indentLevel);
-  this.addExtra(node, "curly", false);
-  if (!allowEmptyBody && !node.body.length) {
-    this.unexpected(node.start, "Expected an Indent or Statement");
-  }
-
-  return this.finishNode(node, "BlockStatement");
+  return this.parseWhiteBlockBody(node, indentLevel, false, allowEmptyBody);
 };
 
 pp.expectCommaOrLineBreak = function () {
