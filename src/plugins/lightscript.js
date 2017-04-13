@@ -93,7 +93,7 @@ pp.parseEnhancedForIn = function (node) {
 
   const iterable = this.parseMaybeAssign(true);
 
-  this.expectParenFreeBlockStart();
+  this.expectParenFreeBlockStart(node);
   node.body = this.parseStatement(false);
 
   if ((matchingIterationType === "idx") || (matchingIterationType === "elem")) {
@@ -105,12 +105,13 @@ pp.parseEnhancedForIn = function (node) {
   }
 };
 
-pp.expectParenFreeBlockStart = function () {
+pp.expectParenFreeBlockStart = function (node) {
   // if true: blah
   // if true { blah }
   // if (true) blah
-  // TODO: ensure matching parens, not just allowing one on either side
-  if (!(this.match(tt.colon) || this.match(tt.braceL) || this.eat(tt.parenR))) {
+  if (node && node.extra && node.extra.hasParens) {
+    this.expect(tt.parenR);
+  } else if (!(this.match(tt.colon) || this.match(tt.braceL))) {
     this.unexpected(null, "Paren-free test expressions must be followed by braces or a colon.");
   }
 };
@@ -519,34 +520,29 @@ export default function (instance) {
 
   // if, switch, while, with --> don't need no stinkin' parens no more
 
-  instance.extend("parseParenExpression", function () {
+  instance.extend("parseParenExpression", function (inner) {
     return function () {
-      const startPos = this.state.start;
-      const startLoc = this.state.startLoc;
-      if (this.eat(tt.parenL)) {
-        const parenContents = this.parseExpression();
+      // parens are special here; they might be `if (x) -1` or `if (x < 1) and y: -1`
+      if (this.match(tt.parenL)) {
+        const state = this.state.clone();
 
-        const spaceAfterParens = this.isNextCharWhitespace();
-        this.expect(tt.parenR);
-
-        // `if (blah) +` or `if (blah).anything` fallthrough
-        if (spaceAfterParens && this.state.type.binop == null) {
-          return parenContents;
+        // first, try paren-free style
+        try {
+          const val = this.parseExpression();
+          if (this.match(tt.braceL) || this.match(tt.colon)) {
+            if (val.extra && val.extra.parenthesized) {
+              delete val.extra.parenthesized;
+              delete val.extra.parenStart;
+            }
+            return val;
+          }
+        } catch (_err) {
+          // fall-through, will re-raise if it's an error below
         }
-        // `if (blah) + 1` vs `if (blah) +1`
-        if (this.match(tt.plusMin) && !this.isNextCharWhitespace()) {
-          return parenContents;
-        }
 
-        // TODO: consider decorating the node itself as being paren-free.
-        this.addExtra(parenContents, "parenthesized", true);
-        this.addExtra(parenContents, "parenStart", startPos);
-
-        if (this.state.type.binop != null) {
-          return this.parseExprOp(parenContents, startPos, startLoc, -1);
-        } else {
-          return this.parseSubscripts(parenContents, startPos, startLoc);
-        }
+        // otherwise, try traditional parseParenExpression
+        this.state = state;
+        return inner.apply(this, arguments);
       }
 
       const val = this.parseExpression();
