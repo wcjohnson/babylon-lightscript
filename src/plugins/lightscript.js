@@ -420,6 +420,9 @@ pp.parseIfAlternate = function (node, isExpression, indentLevel) {
 
   if (this.eat(tt._else)) {
     if (this.match(tt._if)) {
+      if (this.isLineBreak()) {
+        this.unexpected(this.state.lastTokEnd, "Illegal newline.");
+      }
       return this.parseIf(this.startNode(), isExpression);
     }
 
