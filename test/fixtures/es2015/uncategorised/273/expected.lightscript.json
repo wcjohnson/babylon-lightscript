@@ -121,7 +121,7 @@
                     "name": "x"
                   },
                   "consequent": {
-                    "type": "ExpressionStatement",
+                    "type": "Identifier",
                     "start": 16,
                     "end": 17,
                     "loc": {
@@ -132,25 +132,10 @@
                       "end": {
                         "line": 1,
                         "column": 17
-                      }
-                    },
-                    "expression": {
-                      "type": "Identifier",
-                      "start": 16,
-                      "end": 17,
-                      "loc": {
-                        "start": {
-                          "line": 1,
-                          "column": 16
-                        },
-                        "end": {
-                          "line": 1,
-                          "column": 17
-                        },
-                        "identifierName": "x"
                       },
-                      "name": "x"
-                    }
+                      "identifierName": "x"
+                    },
+                    "name": "x"
                   },
                   "alternate": null
                 }

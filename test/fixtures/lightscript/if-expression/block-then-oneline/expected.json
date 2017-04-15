@@ -195,7 +195,7 @@
                   "value": true
                 },
                 "consequent": {
-                  "type": "ExpressionStatement",
+                  "type": "NumericLiteral",
                   "start": 29,
                   "end": 30,
                   "loc": {
@@ -208,26 +208,11 @@
                       "column": 12
                     }
                   },
-                  "expression": {
-                    "type": "NumericLiteral",
-                    "start": 29,
-                    "end": 30,
-                    "loc": {
-                      "start": {
-                        "line": 3,
-                        "column": 11
-                      },
-                      "end": {
-                        "line": 3,
-                        "column": 12
-                      }
-                    },
-                    "extra": {
-                      "rawValue": 2,
-                      "raw": "2"
-                    },
-                    "value": 2
-                  }
+                  "extra": {
+                    "rawValue": 2,
+                    "raw": "2"
+                  },
+                  "value": 2
                 },
                 "alternate": null
               }

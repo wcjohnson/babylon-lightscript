@@ -426,9 +426,8 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
 
       if (possibleAsync && this.shouldParseAsyncArrow()) {
         return this.parseAsyncArrowFromCallExpression(this.startNodeAt(startPos, startLoc), node);
-      // ASI: if an arrow following what looks like a call expr is on a different line,
-      // treat it as a separate arrow expr.
-      } else if (this.hasPlugin("lightscript") && this.shouldParseAsyncArrow() && !this.isLineBreak()) {
+      } else if (this.hasPlugin("lightscript") && this.shouldParseAsyncArrow()) {
+
         // could be a function call followed by a colon-block, eg `if fn(): blah`
         // or an annotated NamedArrowExpression, eg `fn(): blah ->`
         // Disambiguating is hard, especially with good error messages...
@@ -512,6 +511,9 @@ pp.parseCallExpressionArguments = function (close, possibleAsyncArrow, refShorth
 };
 
 pp.shouldParseAsyncArrow = function () {
+  if (this.hasPlugin("lightscript") && this.isLineBreak()) {
+    return false;
+  }
   return this.match(tt.arrow);
 };
 
@@ -697,6 +699,11 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
         const isSafe = this.state.value === "<!-";
         this.next();
         return isSafe ? this.parseSafeAwait(node) : this.parseAwait(node);
+      }
+
+    case tt._else: case tt._elif:
+      if (this.hasPlugin("lightscript")) {
+        this.unexpected(null, "Unmatched `else` (must match indentation of the line with `if`).");
       }
 
     default:

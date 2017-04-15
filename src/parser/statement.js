@@ -228,8 +228,16 @@ pp.parseDebuggerStatement = function (node) {
 pp.parseDoStatement = function (node) {
   this.next();
   this.state.labels.push(loopLabel);
+  let isWhiteBlock, indentLevel;
+  if (this.hasPlugin("lightscript") && this.match(tt.colon)) {
+    isWhiteBlock = true;
+    indentLevel = this.state.indentLevel;
+  }
   node.body = this.parseStatement(false);
   this.state.labels.pop();
+  if (this.hasPlugin("lightscript") && isWhiteBlock && this.state.indentLevel !== indentLevel) {
+    this.unexpected(null, "Mismatched indent.");
+  }
   this.expect(tt._while);
 
   // do-while can't use the lightscript-defined parseParenExpression
@@ -343,58 +351,14 @@ pp.parseFunctionStatement = function (node) {
   return this.parseFunction(node, true);
 };
 
-pp.parseIfStatement = function (node, siblingIsWhiteBlock, isExpr) {
-  let isWhiteBlock = false;
-  const ifIndentLevel = this.state.indentLevel;
+// overridden in LightScript
 
+pp.parseIfStatement = function (node) {
   this.next();
   node.test = this.parseParenExpression();
-
-  // Check for matching whiteblock syntax
-  if (this.hasPlugin("lightscript")) {
-    isWhiteBlock = this.match(tt.colon);
-    if ( siblingIsWhiteBlock && !isWhiteBlock ) {
-      this.unexpected(null, tt.colon);
-    } else if ( (siblingIsWhiteBlock === false) && isWhiteBlock ) {
-      this.unexpected();
-    }
-  }
-
   node.consequent = this.parseStatement(false);
-
-  // An alternate clause found at this parse location can only match with the current
-  // `if` construct if it is at the same indent level or whiteblock syntax is not being
-  // used.
-  const canParseAlternate = (!isWhiteBlock || this.state.indentLevel === ifIndentLevel);
-
-  if (this.hasPlugin("lightscript") && this.match(tt._elif)) {
-    // if whiteblock, indent levels of clauses must match.
-    if (canParseAlternate) {
-      node.alternate = this.parseIfStatement(this.startNode(), isWhiteBlock, isExpr);
-    }
-  } else {
-    if (this.match(tt._else) && canParseAlternate) {
-      this.next();
-      if (this.hasPlugin("lightscript") && this.match(tt._if)) {
-        if (isWhiteBlock && this.isLineBreak()) this.unexpected(null, "`else if` must appear on the same line when using whitespace-sensitive syntax.");
-        node.alternate = this.parseIfStatement(this.startNode(), isWhiteBlock, isExpr);
-      } else {
-        // Force "else" whiteblock matching
-        if (this.hasPlugin("lightscript")) {
-          if (isWhiteBlock && !this.match(tt.colon)) {
-            this.unexpected(this.state.lastTokEnd, tt.colon);
-          } else if (!isWhiteBlock && this.match(tt.colon)) {
-            this.unexpected();
-          }
-        }
-        node.alternate = this.parseStatement(false);
-      }
-    } else {
-      node.alternate = null;
-    }
-  }
-
-  return this.finishNode(node, isExpr ? "IfExpression" : "IfStatement");
+  node.alternate = this.eat(tt._else) ? this.parseStatement(false) : null;
+  return this.finishNode(node, "IfStatement");
 };
 
 pp.parseReturnStatement = function (node) {

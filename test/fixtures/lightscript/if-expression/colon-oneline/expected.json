@@ -1,29 +1,29 @@
 {
   "type": "File",
   "start": 0,
-  "end": 33,
+  "end": 28,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 4,
-      "column": 5
+      "line": 3,
+      "column": 8
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 33,
+    "end": 28,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 4,
-        "column": 5
+        "line": 3,
+        "column": 8
       }
     },
     "sourceType": "script",
@@ -31,15 +31,15 @@
       {
         "type": "VariableDeclaration",
         "start": 0,
-        "end": 33,
+        "end": 28,
         "loc": {
           "start": {
             "line": 1,
             "column": 0
           },
           "end": {
-            "line": 4,
-            "column": 5
+            "line": 3,
+            "column": 8
           }
         },
         "kind": "const",
@@ -50,15 +50,15 @@
           {
             "type": "VariableDeclarator",
             "start": 0,
-            "end": 33,
+            "end": 28,
             "loc": {
               "start": {
                 "line": 1,
                 "column": 0
               },
               "end": {
-                "line": 4,
-                "column": 5
+                "line": 3,
+                "column": 8
               }
             },
             "id": {
@@ -81,15 +81,15 @@
             "init": {
               "type": "IfExpression",
               "start": 4,
-              "end": 33,
+              "end": 28,
               "loc": {
                 "start": {
                   "line": 1,
                   "column": 4
                 },
                 "end": {
-                  "line": 4,
-                  "column": 5
+                  "line": 3,
+                  "column": 8
                 }
               },
               "test": {
@@ -147,23 +147,23 @@
               },
               "consequent": {
                 "type": "BlockStatement",
-                "start": 13,
-                "end": 22,
+                "start": 12,
+                "end": 19,
                 "loc": {
                   "start": {
                     "line": 1,
-                    "column": 13
+                    "column": 12
                   },
                   "end": {
-                    "line": 3,
-                    "column": 1
+                    "line": 2,
+                    "column": 5
                   }
                 },
                 "body": [
                   {
                     "type": "ExpressionStatement",
-                    "start": 17,
-                    "end": 20,
+                    "start": 16,
+                    "end": 19,
                     "loc": {
                       "start": {
                         "line": 2,
@@ -176,8 +176,8 @@
                     },
                     "expression": {
                       "type": "StringLiteral",
-                      "start": 17,
-                      "end": 20,
+                      "start": 16,
+                      "end": 19,
                       "loc": {
                         "start": {
                           "line": 2,
@@ -198,43 +198,28 @@
                 ],
                 "directives": [],
                 "extra": {
-                  "curly": true
+                  "curly": false
                 }
               },
               "alternate": {
-                "type": "ExpressionStatement",
-                "start": 30,
-                "end": 33,
+                "type": "StringLiteral",
+                "start": 25,
+                "end": 28,
                 "loc": {
                   "start": {
-                    "line": 4,
-                    "column": 2
+                    "line": 3,
+                    "column": 5
                   },
                   "end": {
-                    "line": 4,
-                    "column": 5
+                    "line": 3,
+                    "column": 8
                   }
                 },
-                "expression": {
-                  "type": "StringLiteral",
-                  "start": 30,
-                  "end": 33,
-                  "loc": {
-                    "start": {
-                      "line": 4,
-                      "column": 2
-                    },
-                    "end": {
-                      "line": 4,
-                      "column": 5
-                    }
-                  },
-                  "extra": {
-                    "rawValue": "b",
-                    "raw": "'b'"
-                  },
-                  "value": "b"
-                }
+                "extra": {
+                  "rawValue": "b",
+                  "raw": "'b'"
+                },
+                "value": "b"
               }
             }
           }

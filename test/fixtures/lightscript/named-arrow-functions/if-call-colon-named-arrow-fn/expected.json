@@ -126,7 +126,7 @@
                 "arguments": []
               },
               "consequent": {
-                "type": "NamedArrowDeclaration",
+                "type": "NamedArrowExpression",
                 "start": 13,
                 "end": 21,
                 "loc": {

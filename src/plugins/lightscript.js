@@ -232,12 +232,12 @@ pp.parseWhiteBlockBody = function(node, indentLevel, isInlineBody, allowEmptyBod
 
 // c/p parseBlock
 
-pp.parseWhiteBlock = function (allowDirectives?, isIfExpression?) {
+pp.parseWhiteBlock = function (allowDirectives?, isExpression?) {
   const node = this.startNode(), indentLevel = this.state.indentLevel;
   let allowEmptyBody = false;
 
   // must start with colon or arrow
-  if (isIfExpression) {
+  if (isExpression) {
     this.expect(tt.colon);
     if (!this.isLineBreak()) return this.parseMaybeAssign();
   } else if (this.eat(tt.colon)) {
@@ -443,11 +443,101 @@ pp.parseNamedArrowFromCallExpression = function (node, call) {
   return this.finishNode(node, isMember ? "NamedArrowMemberExpression" : "NamedArrowExpression");
 };
 
+pp.pushBlockState = function (blockType, indentLevel) {
+  this.state.blockStack = this.state.blockStack || [];
+  this.state.blockStack.push({ blockType, indentLevel });
+};
+
+pp.matchBlockState = function(blockType, indentLevel) {
+  const stack = this.state.blockStack;
+  return (stack && stack.find( (x) => x.blockType === blockType && x.indentLevel === indentLevel ))
+    ? true
+    : false;
+};
+
+pp.popBlockState = function() {
+  if (this.state.blockStack) this.state.blockStack.pop();
+};
+
 // c/p parseIfStatement
 
-pp.parseIfExpression = function (node) {
-  return this.parseIfStatement(node, undefined, true);
+pp.parseIf = function (node, isExpression) {
+  const indentLevel = this.state.indentLevel;
+  this.next();
+  node.test = this.parseParenExpression();
+
+  const isColon = this.match(tt.colon);
+  if (isColon) this.pushBlockState("if", indentLevel);
+
+  if (isExpression) {
+    if (this.match(tt.braceL)) {
+      node.consequent = this.parseBlock(false);
+    } else if (!isColon) {
+      node.consequent = this.parseMaybeAssign();
+    } else {
+      node.consequent = this.parseWhiteBlock(false, true);
+    }
+  } else {
+    node.consequent = this.parseStatement(false);
+  }
+
+  node.alternate = this.parseIfAlternate(node, isExpression, isColon, indentLevel);
+
+  if (isColon) this.popBlockState();
+
+  return this.finishNode(node, isExpression ? "IfExpression" : "IfStatement");
 };
+
+pp.parseIfAlternate = function (node, isExpression, ifIsWhiteBlock, ifIndentLevel) {
+  if (!this.match(tt._elif) && !this.match(tt._else)) return null;
+
+  // If the indent level here doesn't match with the current whiteblock `if`, or
+  // it matches with a whiteblock `if` higher on the stack, then this alternate
+  // clause does not match the current `if` -- so unwind the recursive descent.
+  const alternateIndentLevel = this.state.indentLevel;
+  if (
+    ( alternateIndentLevel !== ifIndentLevel ) &&
+    ( ifIsWhiteBlock || this.matchBlockState("if", alternateIndentLevel) )
+  ) {
+    return null;
+  }
+
+  if (this.match(tt._elif)) {
+    return this.parseIf(this.startNode(), isExpression);
+  }
+
+  if (this.eat(tt._else)) {
+    if (this.match(tt._if)) {
+      if (this.isLineBreak()) {
+        this.unexpected(this.state.lastTokEnd, "Illegal newline.");
+      }
+      return this.parseIf(this.startNode(), isExpression);
+    }
+
+    if (this.isLineBreak()) {
+      this.unexpected(this.state.lastTokEnd, tt.colon);
+    }
+
+    if (isExpression) {
+      if (this.match(tt.braceL)) {
+        return this.parseBlock(false);
+      } else if (!this.match(tt.colon)) {
+        return this.parseMaybeAssign();
+      } else {
+        return this.parseWhiteBlock(false, true);
+      }
+    }
+
+    return this.parseStatement(false);
+  }
+
+  return null;
+};
+
+pp.parseIfExpression = function (node) {
+  return this.parseIf(node, true);
+};
+
 
 // c/p parseAwait
 
@@ -522,6 +612,10 @@ export default function (instance) {
 
   instance.extend("parseParenExpression", function (inner) {
     return function () {
+      if (this.isLineBreak()) {
+        this.unexpected(this.state.lastTokEnd, "Illegal newline.");
+      }
+
       // parens are special here; they might be `if (x) -1` or `if (x < 1) and y: -1`
       if (this.match(tt.parenL)) {
         const state = this.state.clone();
@@ -618,4 +712,12 @@ export default function (instance) {
       return block;
     };
   });
+
+  instance.extend("parseIfStatement", function () {
+    return function (node) {
+      return this.parseIf(node, false);
+    };
+  });
+
+
 }
