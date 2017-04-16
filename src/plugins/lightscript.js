@@ -386,6 +386,18 @@ pp.parseNamedArrowFromCallExpression = function (node, call) {
   return this.finishNode(node, isMember ? "NamedArrowMemberExpression" : "NamedArrowExpression");
 };
 
+pp.pushBlockState = function (blockType, indentLevel) {
+  this.state.blockStack.push({ blockType, indentLevel });
+};
+
+pp.matchBlockState = function(blockType, indentLevel) {
+  return this.state.blockStack.some( (x) => x.blockType === blockType && x.indentLevel === indentLevel );
+};
+
+pp.popBlockState = function() {
+  this.state.blockStack.pop();
+};
+
 // c/p parseIfStatement
 
 pp.parseIf = function (node, isExpression) {
@@ -393,10 +405,13 @@ pp.parseIf = function (node, isExpression) {
   this.next();
   node.test = this.parseParenExpression();
 
+  const isColon = this.match(tt.colon);
+  if (isColon) this.pushBlockState("if", indentLevel);
+
   if (isExpression) {
     if (this.match(tt.braceL)) {
       node.consequent = this.parseBlock(false);
-    } else if (!this.match(tt.colon)) {
+    } else if (!isColon) {
       node.consequent = this.parseMaybeAssign();
     } else {
       node.consequent = this.parseWhiteBlock(false, true);
@@ -405,16 +420,24 @@ pp.parseIf = function (node, isExpression) {
     node.consequent = this.parseStatement(false);
   }
 
-  node.alternate = this.parseIfAlternate(node, isExpression, indentLevel);
+  node.alternate = this.parseIfAlternate(node, isExpression, isColon, indentLevel);
+
+  if (isColon) this.popBlockState();
 
   return this.finishNode(node, isExpression ? "IfExpression" : "IfStatement");
 };
 
-pp.parseIfAlternate = function (node, isExpression, indentLevel) {
-  const isColon = node.consequent.extra && node.consequent.extra.curly === false;
+pp.parseIfAlternate = function (node, isExpression, ifIsWhiteBlock, ifIndentLevel) {
+  if (!this.match(tt._elif) && !this.match(tt._else)) return null;
 
-  // if whitespace-block, must match indent level
-  if (isColon && this.state.indentLevel !== indentLevel) {
+  // If the indent level here doesn't match with the current whiteblock `if`, or
+  // it matches with a whiteblock `if` higher on the stack, then this alternate
+  // clause does not match the current `if` -- so unwind the recursive descent.
+  const alternateIndentLevel = this.state.indentLevel;
+  if (
+    (alternateIndentLevel !== ifIndentLevel) &&
+    (ifIsWhiteBlock || this.matchBlockState("if", alternateIndentLevel))
+  ) {
     return null;
   }
 
