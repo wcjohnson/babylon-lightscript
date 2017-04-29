@@ -79,7 +79,7 @@ pp.parseForInIterationVariable = function (node, targetType = null) {
   }
 
   this.next();
-  node[iterType] = iterType === 'elem' || iterType === 'val'
+  node[iterType] = iterType === "elem" || iterType === "val"
     ? this.parseBindingAtom()
     : this.parseBindingIdentifier();
   return MATCHING_ITER_VARS[iterType];
