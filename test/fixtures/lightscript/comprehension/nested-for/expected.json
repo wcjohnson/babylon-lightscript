@@ -70,6 +70,7 @@
                 "column": 42
               }
             },
+            "await": false,
             "left": {
               "type": "VariableDeclaration",
               "start": 5,
@@ -151,6 +152,7 @@
                   "column": 42
                 }
               },
+              "await": false,
               "left": {
                 "type": "VariableDeclaration",
                 "start": 22,

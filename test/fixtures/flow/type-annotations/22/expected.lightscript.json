@@ -126,7 +126,6 @@
                   },
                   "kind": "get",
                   "variance": null,
-                  "variancePos": 7,
                   "id": null,
                   "generator": false,
                   "expression": false,

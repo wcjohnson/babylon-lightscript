@@ -57,7 +57,8 @@
             },
             "identifierName": "a"
           },
-          "name": "a"
+          "name": "a",
+          "extra": {}
         },
         "consequent": {
           "type": "BlockStatement",

@@ -42,6 +42,10 @@
             "column": 30
           }
         },
+        "extra": {
+          "hasParens": true
+        },
+        "await": false,
         "left": {
           "type": "Identifier",
           "start": 8,

@@ -135,7 +135,10 @@
                   "column": 2
                 }
               },
-              "extra": null,
+              "extra": {
+                "rawValue": "\n  ",
+                "raw": "\n  "
+              },
               "value": "\n  "
             },
             {
@@ -180,6 +183,7 @@
                       "column": 22
                     }
                   },
+                  "await": false,
                   "left": {
                     "type": "VariableDeclaration",
                     "start": 13,
@@ -351,7 +355,10 @@
                   "column": 0
                 }
               },
-              "extra": null,
+              "extra": {
+                "rawValue": "\n",
+                "raw": "\n"
+              },
               "value": "\n"
             }
           ]

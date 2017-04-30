@@ -6,10 +6,14 @@ contributing, please read the
 
 ## Setup local env
 
+> Install yarn beforehand: https://yarnpkg.com/en/docs/install
+
 To start developing on Babylon you only need to install its dependencies:
 
 ```bash
-npm install
+git clone https://github.com/babel/babylon
+cd babylon
+yarn
 ```
 
 ## Tests
@@ -19,17 +23,37 @@ npm install
 To run a build, tests and perform lint/flow checks:
 
 ```bash
-npm test
+yarn test
 ```
 
 If you only want to run the tests:
 
 ```bash
-npm run test-only
+yarn run test-only
 ```
 
-Note, this does not actually run a build, so you may have to call `npm run build` after
+Note, this does not actually run a build, so you may have to call `yarn run build` after
 performing any changes.
+
+### Running one test
+
+To run only a single test, add `"only": true` to the `options.json` inside any test fixture folder (you may have to create the file if it doesn't exist).
+For example, let's say we want to only run the test for the [`test/fixtures/comments/basic/shebang-import`](https://github.com/babel/babylon/tree/7.0/test/fixtures/comments/basic/shebang-import) fixture.
+
+Add `"only": true` to its `options.json`:
+
+```json
+{
+  "sourceType": "module",
+  "only": true
+}
+```
+
+Then, run the tests using the same command as before:
+
+```bash
+yarn run test-only
+```
 
 ### Checking code coverage locally
 
@@ -37,7 +61,7 @@ To generate code coverage, be sure to set `BABEL_ENV=test` so that code is instr
 the rollup build.
 
 ```bash
-BABEL_ENV=test npm run build && npm run test-ci
+BABEL_ENV=test yarn run build && yarn run test-coverage
 ```
 
 ### Writing tests
@@ -61,19 +85,21 @@ you will want to link both repositories together. This can be done by doing the 
 
 ```bash
 cd babylon/
-npm link
-npm run build
+yarn link
+yarn run build
 cd ../babel/
 make bootstrap
-npm link babylon
+yarn link babylon
 cd packages/babel-core/
-npm link babylon
-cd ../../packages/babel-template/
-npm link babylon
-cd ../../packages/babel-traverse/
-npm link babylon
-cd ../../packages/babel-generator/
-npm link babylon
+yarn link babylon
+cd ../babel-template/
+yarn link babylon
+cd ../babel-traverse/
+yarn link babylon
+cd ../babel-generator/
+yarn link babylon
+cd ../babel-types/
+yarn link babylon
 cd ../..
 make build
 make test

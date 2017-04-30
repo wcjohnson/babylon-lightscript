@@ -42,6 +42,9 @@
             "column": 28
           }
         },
+        "extra": {
+          "hasParens": true
+        },
         "init": {
           "type": "AssignmentExpression",
           "start": 5,
