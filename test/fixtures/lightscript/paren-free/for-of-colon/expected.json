@@ -42,6 +42,7 @@
             "column": 22
           }
         },
+        "await": false,
         "left": {
           "type": "ObjectPattern",
           "start": 8,

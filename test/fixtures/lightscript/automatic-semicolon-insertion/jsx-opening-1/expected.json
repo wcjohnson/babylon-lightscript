@@ -208,7 +208,10 @@
                   "column": 2
                 }
               },
-              "extra": null,
+              "extra": {
+                "rawValue": "\n  ",
+                "raw": "\n  "
+              },
               "value": "\n  "
             },
             {
@@ -304,7 +307,10 @@
                       "column": 9
                     }
                   },
-                  "extra": null,
+                  "extra": {
+                    "rawValue": "hi",
+                    "raw": "hi"
+                  },
                   "value": "hi"
                 }
               ]
@@ -323,7 +329,10 @@
                   "column": 2
                 }
               },
-              "extra": null,
+              "extra": {
+                "rawValue": "\n  ",
+                "raw": "\n  "
+              },
               "value": "\n  "
             },
             {
@@ -419,7 +428,10 @@
                       "column": 12
                     }
                   },
-                  "extra": null,
+                  "extra": {
+                    "rawValue": "hello",
+                    "raw": "hello"
+                  },
                   "value": "hello"
                 }
               ]
@@ -438,7 +450,10 @@
                   "column": 0
                 }
               },
-              "extra": null,
+              "extra": {
+                "rawValue": "\n",
+                "raw": "\n"
+              },
               "value": "\n"
             }
           ]

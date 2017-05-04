@@ -135,7 +135,10 @@
                   "column": 2
                 }
               },
-              "extra": null,
+              "extra": {
+                "rawValue": "\n  ",
+                "raw": "\n  "
+              },
               "value": "\n  "
             },
             {
@@ -231,7 +234,10 @@
                       "column": 1
                     }
                   },
-                  "extra": null,
+                  "extra": {
+                    "rawValue": "\n ",
+                    "raw": "\n "
+                  },
                   "value": "\n "
                 }
               ]
@@ -250,7 +256,10 @@
                   "column": 2
                 }
               },
-              "extra": null,
+              "extra": {
+                "rawValue": "\n  ",
+                "raw": "\n  "
+              },
               "value": "\n  "
             },
             {
@@ -302,7 +311,10 @@
                   "column": 0
                 }
               },
-              "extra": null,
+              "extra": {
+                "rawValue": "\n",
+                "raw": "\n"
+              },
               "value": "\n"
             }
           ]

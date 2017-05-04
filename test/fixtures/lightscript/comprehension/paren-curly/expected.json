@@ -70,6 +70,9 @@
                 "column": 27
               }
             },
+            "extra": {
+              "hasParens": true
+            },
             "init": {
               "type": "AssignmentExpression",
               "start": 6,

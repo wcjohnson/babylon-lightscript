@@ -71,6 +71,9 @@
                 "column": 36
               }
             },
+            "extra": {
+              "hasParens": true
+            },
             "idx": {
               "type": "Identifier",
               "start": 11,

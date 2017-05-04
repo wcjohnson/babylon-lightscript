@@ -42,6 +42,10 @@
             "column": 22
           }
         },
+        "extra": {
+          "hasParens": true
+        },
+        "await": false,
         "left": {
           "type": "ObjectPattern",
           "start": 9,
