@@ -613,7 +613,7 @@ pp.parseTernary = function(expr, noIn, startPos, startLoc) {
   return this.finishNode(node, "ConditionalExpression");
 };
 
-pp.parseSafeCall = function(expr, noIn, startPos, startLoc) {
+pp.parseSafeCall = function(expr, startPos, startLoc) {
   this.expect(tt.parenL);
   const node = this.startNodeAt(startPos, startLoc);
   node.callee = expr;
@@ -622,10 +622,46 @@ pp.parseSafeCall = function(expr, noIn, startPos, startLoc) {
   return this.finishNode(node, "CallExpression");
 };
 
-pp.parseExistential = function(expr, noIn, startPos, startLoc) {
+pp.parseExistential = function(expr, startPos, startLoc) {
   const node = this.startNodeAt(startPos, startLoc);
   node.argument = expr;
   return this.finishNode(node, "ExistentialExpression");
+};
+
+pp.parseQuestionSubscript = function(lhs, startPos, startLoc, noCalls) {
+  const priorTokenEnd = this.state.lastTokEnd;
+  const questionPos = this.state.pos;
+  const state = this.state.clone();
+
+  this.eat(tt.question);
+
+  // `?(` = safecall or poorly-formatted ternary
+  // TODO: lint rule for ternaries recommending space after ?
+  if (!noCalls && this.match(tt.parenL) && this.state.pos === (questionPos + 1)) {
+    try {
+      return this.parseSafeCall(lhs, startPos, startLoc);
+    } catch (e) {
+      this.state = state;
+      this.eat(tt.question);
+    }
+  }
+
+  // If the next token startsExpr, this is a ternary, which will be handled
+  // by babylon's own parseConditional. Rewind the state, return null, and
+  // parseSubscripts will unwind the descent back up to parseConditional.
+  if (this.state.type.startsExpr) {
+    this.state = state;
+    return null;
+  }
+
+  // Otherwise this is an existential, in which case the `?` must immediately
+  // follow the expr.
+  if (priorTokenEnd === (questionPos - 1)) {
+    return this.parseExistential(lhs, startPos, startLoc);
+  } else {
+    this.raise(questionPos, "Malformed ternary, existential, or safecall");
+  }
+
 };
 
 // Convert an existential to an optional flow parameter.
@@ -747,48 +783,5 @@ export default function (instance) {
       return this.parseIf(node, false);
     };
   });
-
-  instance.extend("parseConditional", function() {
-    return function (expr, noIn, startPos, startLoc) {
-      const priorTokenEnd = this.state.lastTokEnd;
-      const questionPos = this.state.pos;
-      let state = null;
-      let innerError = null;
-
-      if (this.eat(tt.question)) {
-        // Paren immediately after question = safecall or poorly-formatted ternary
-        // TODO: lint rule for ternaries recommending space after ?
-        if (this.match(tt.parenL) && this.state.pos === (questionPos + 1)) {
-          state = this.state.clone();
-          try {
-            return this.parseSafeCall(expr, noIn, startPos, startLoc);
-          } catch (e) {
-            this.state = state;
-          }
-        }
-
-        // Fallthrough to ternary
-        if (!state) state = this.state.clone();
-        try {
-          return this.parseTernary(expr, noIn, startPos, startLoc);
-        } catch (e) {
-          innerError = e;
-          this.state = state;
-        }
-
-        // Last resort is existential; question mark must immediately follow
-        // expr.
-        if (priorTokenEnd === (questionPos - 1)) {
-          return this.parseExistential(expr, noIn, startPos, startLoc);
-        } else {
-          if (innerError) throw innerError;
-          this.raise(questionPos, "Malformed ternary, safecall, or existential expression.");
-        }
-      }
-
-      return expr;
-    };
-  });
-
 
 }

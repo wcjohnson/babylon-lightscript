@@ -388,6 +388,10 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
         this.unexpected();
       }
       base = this.finishNode(node, "SafeMemberExpression");
+    } else if (this.hasPlugin("lightscript") && this.match(tt.question)) {
+      // Safecall, ternary, or existential.
+      const next = this.parseQuestionSubscript(base, startPos, startLoc, noCalls);
+      if (next) base = next; else return base;
     } else if (this.hasPlugin("lightscript") && !noCalls && this.eat(tt.tilde)) {
       const node = this.startNodeAt(startPos, startLoc);
       node.left = base;
