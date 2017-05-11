@@ -603,6 +603,36 @@ pp.tryParseNamedArrowDeclaration = function () {
   return node;
 };
 
+// c/p from expression.js: pp.parseConditional
+pp.parseTernary = function(expr, noIn, startPos, startLoc) {
+  const node = this.startNodeAt(startPos, startLoc);
+  node.test = expr;
+  node.consequent = this.parseMaybeAssign();
+  this.expect(tt.colon);
+  node.alternate = this.parseMaybeAssign(noIn);
+  return this.finishNode(node, "ConditionalExpression");
+};
+
+pp.parseSafeCall = function(expr, noIn, startPos, startLoc) {
+  this.expect(tt.parenL);
+  const node = this.startNodeAt(startPos, startLoc);
+  node.callee = expr;
+  node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
+  return this.finishNode(node, "SafeCallExpression");
+};
+
+pp.parseExistential = function(expr, noIn, startPos, startLoc) {
+  const node = this.startNodeAt(startPos, startLoc);
+  node.expr = expr;
+  return this.finishNode(node, "ExistentialExpression");
+};
+
+// Convert an existential to an optional flow parameter.
+// Resolves grammar ambiguity in arrow function arg lists.
+pp.existentialToParameter = function(node) {
+  node.expr.optional = true;
+  return node.expr;
+};
 
 export default function (instance) {
 
@@ -714,6 +744,38 @@ export default function (instance) {
   instance.extend("parseIfStatement", function () {
     return function (node) {
       return this.parseIf(node, false);
+    };
+  });
+
+  instance.extend("parseConditional", function() {
+    return function (expr, noIn, startPos, startLoc) {
+      const questionPos = this.state.pos;
+      let state = null;
+      if (this.eat(tt.question)) {
+        // Paren immediately after question = safecall or poorly-formatted ternary
+        // TODO: lint rule for ternaries recommending space after ?
+        if (this.match(tt.parenL) && this.state.pos === (questionPos + 1)) {
+          state = this.state.clone();
+          try {
+            return this.parseSafeCall(expr, noIn, startPos, startLoc);
+          } catch (e) {
+            this.state = state;
+          }
+        }
+
+        // Fallthrough to ternary
+        if (!state) state = this.state.clone();
+        try {
+          return this.parseTernary(expr, noIn, startPos, startLoc);
+        } catch (e) {
+          this.state = state;
+        }
+
+        // Last resort is existential
+        return this.parseExistential(expr, noIn, startPos, startLoc);
+      }
+
+      return expr;
     };
   });
 

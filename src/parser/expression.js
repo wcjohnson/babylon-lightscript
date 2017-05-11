@@ -205,6 +205,7 @@ pp.parseMaybeConditional = function (noIn, refShorthandDefaultPos, refNeedsArrow
   return this.parseConditional(expr, noIn, startPos, startLoc, refNeedsArrowPos);
 };
 
+// Overridden in lightscript
 pp.parseConditional = function (expr, noIn, startPos, startLoc) {
   if (this.eat(tt.question)) {
     const node = this.startNodeAt(startPos, startLoc);
