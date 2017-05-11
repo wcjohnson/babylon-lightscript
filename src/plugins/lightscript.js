@@ -749,8 +749,11 @@ export default function (instance) {
 
   instance.extend("parseConditional", function() {
     return function (expr, noIn, startPos, startLoc) {
+      const priorTokenEnd = this.state.lastTokEnd;
       const questionPos = this.state.pos;
       let state = null;
+      let innerError = null;
+
       if (this.eat(tt.question)) {
         // Paren immediately after question = safecall or poorly-formatted ternary
         // TODO: lint rule for ternaries recommending space after ?
@@ -768,11 +771,18 @@ export default function (instance) {
         try {
           return this.parseTernary(expr, noIn, startPos, startLoc);
         } catch (e) {
+          innerError = e;
           this.state = state;
         }
 
-        // Last resort is existential
-        return this.parseExistential(expr, noIn, startPos, startLoc);
+        // Last resort is existential; question mark must immediately follow
+        // expr.
+        if (priorTokenEnd === (questionPos - 1)) {
+          return this.parseExistential(expr, noIn, startPos, startLoc);
+        } else {
+          if (innerError) throw innerError;
+          this.raise(questionPos, "Malformed ternary, safecall, or existential expression.");
+        }
       }
 
       return expr;
