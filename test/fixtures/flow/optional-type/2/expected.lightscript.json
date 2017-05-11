@@ -88,7 +88,7 @@
                   "column": 13
                 }
               },
-              "expr": {
+              "argument": {
                 "type": "Identifier",
                 "start": 11,
                 "end": 12,

@@ -43,7 +43,7 @@
           }
         },
         "expression": {
-          "type": "SafeCallExpression",
+          "type": "CallExpression",
           "start": 0,
           "end": 5,
           "loc": {
@@ -91,7 +91,8 @@
               },
               "name": "x"
             }
-          ]
+          ],
+          "safe": true
         }
       }
     ],

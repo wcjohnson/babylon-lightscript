@@ -71,7 +71,7 @@
                   "column": 3
                 }
               },
-              "expr": {
+              "argument": {
                 "type": "Identifier",
                 "start": 1,
                 "end": 2,
@@ -103,7 +103,7 @@
                   "column": 7
                 }
               },
-              "expr": {
+              "argument": {
                 "type": "Identifier",
                 "start": 5,
                 "end": 6,
@@ -135,7 +135,7 @@
                   "column": 11
                 }
               },
-              "expr": {
+              "argument": {
                 "type": "Identifier",
                 "start": 9,
                 "end": 10,

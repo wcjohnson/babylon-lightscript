@@ -618,20 +618,21 @@ pp.parseSafeCall = function(expr, noIn, startPos, startLoc) {
   const node = this.startNodeAt(startPos, startLoc);
   node.callee = expr;
   node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
-  return this.finishNode(node, "SafeCallExpression");
+  node.safe = true;
+  return this.finishNode(node, "CallExpression");
 };
 
 pp.parseExistential = function(expr, noIn, startPos, startLoc) {
   const node = this.startNodeAt(startPos, startLoc);
-  node.expr = expr;
+  node.argument = expr;
   return this.finishNode(node, "ExistentialExpression");
 };
 
 // Convert an existential to an optional flow parameter.
 // Resolves grammar ambiguity in arrow function arg lists.
 pp.existentialToParameter = function(node) {
-  node.expr.optional = true;
-  return node.expr;
+  node.argument.optional = true;
+  return node.argument;
 };
 
 export default function (instance) {

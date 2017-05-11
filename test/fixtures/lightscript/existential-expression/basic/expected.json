@@ -56,7 +56,7 @@
               "column": 2
             }
           },
-          "expr": {
+          "argument": {
             "type": "Identifier",
             "start": 0,
             "end": 1,
