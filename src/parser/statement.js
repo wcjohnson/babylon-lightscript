@@ -1130,10 +1130,15 @@ pp.parseExportSpecifiers = function () {
 pp.parseImport = function (node) {
   this.eat(tt._import);
 
-  // import '...'
+  // import 'foo'
   if (this.match(tt.string)) {
     node.specifiers = [];
     node.source = this.parseExprAtom();
+
+    // import 'foo': a, { b, c, d as e }
+    if (this.hasPlugin("lightscript") && this.eat(tt.colon)) {
+      this.parseImportSpecifiers(node);
+    }
   } else {
     node.specifiers = [];
     this.parseImportSpecifiers(node);

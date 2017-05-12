@@ -1,0 +1,4 @@
+{
+  "plugins": ["lightscript", "jsx", "flow"],
+  "sourceType": "module"
+}
