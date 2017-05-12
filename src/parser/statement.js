@@ -438,6 +438,13 @@ const empty = [];
 
 pp.parseTryStatement = function (node) {
   this.next();
+  let isColon, tryIndentLevel;
+
+  if (this.hasPlugin("lightscript")) {
+    isColon = this.match(tt.colon);
+    tryIndentLevel = this.state.indentLevel;
+    if (isColon) this.pushBlockState("try", tryIndentLevel);
+  }
 
   node.block = this.parseBlock();
   node.handler = null;
@@ -465,11 +472,24 @@ pp.parseTryStatement = function (node) {
   }
 
   node.guardedHandlers = empty;
-  node.finalizer = this.eat(tt._finally) ? this.parseBlock() : null;
+  node.finalizer = null;
+
+  if (this.match(tt._finally)) {
+    if (
+      !this.hasPlugin("lightscript") ||
+      this.state.indentLevel === tryIndentLevel ||
+      !this.matchBlockState("try", this.state.indentLevel)
+    ) {
+      this.next();
+      node.finalizer = this.parseBlock();
+    }
+  }
 
   if (!node.handler && !node.finalizer) {
     this.raise(node.start, "Missing catch or finally clause");
   }
+
+  if (this.hasPlugin("lightscript") && isColon) this.popBlockState();
 
   return this.finishNode(node, "TryStatement");
 };
