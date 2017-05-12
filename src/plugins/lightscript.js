@@ -645,9 +645,7 @@ pp.parseQuestionSubscript = function(lhs, startPos, startLoc, noCalls) {
     }
   }
 
-  // If the next token startsExpr, this is a ternary, which will be handled
-  // by babylon's own parseConditional. Rewind the state, return null, and
-  // parseSubscripts will unwind the descent back up to parseConditional.
+  // If the next token startsExpr, this is a ternary -- unwind recursive descent
   if (this.state.type.startsExpr) {
     this.state = state;
     return null;
