@@ -603,16 +603,6 @@ pp.tryParseNamedArrowDeclaration = function () {
   return node;
 };
 
-// c/p from expression.js: pp.parseConditional
-pp.parseTernary = function(expr, noIn, startPos, startLoc) {
-  const node = this.startNodeAt(startPos, startLoc);
-  node.test = expr;
-  node.consequent = this.parseMaybeAssign();
-  this.expect(tt.colon);
-  node.alternate = this.parseMaybeAssign(noIn);
-  return this.finishNode(node, "ConditionalExpression");
-};
-
 pp.parseSafeCall = function(expr, startPos, startLoc) {
   this.expect(tt.parenL);
   const node = this.startNodeAt(startPos, startLoc);
