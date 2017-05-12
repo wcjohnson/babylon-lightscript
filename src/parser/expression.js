@@ -205,7 +205,6 @@ pp.parseMaybeConditional = function (noIn, refShorthandDefaultPos, refNeedsArrow
   return this.parseConditional(expr, noIn, startPos, startLoc, refNeedsArrowPos);
 };
 
-// Overridden in lightscript
 pp.parseConditional = function (expr, noIn, startPos, startLoc) {
   if (this.eat(tt.question)) {
     const node = this.startNodeAt(startPos, startLoc);
@@ -359,11 +358,26 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       node.object = base;
       node.callee = this.parseNoCallExpr();
       return this.parseSubscripts(this.finishNode(node, "BindExpression"), startPos, startLoc, noCalls);
-    } else if (this.eat(tt.dot)) {
+    } else if (this.match(tt.dot)) {
+      // catch malformed decimals (but allow `0.0.toString()`, which is actually valid)
+      if (this.hasPlugin("lightscript") && base.type === "NumericLiteral") {
+        if (!(base.extra && base.extra.raw && base.extra.raw.match(/\./))) {
+          this.unexpected(null, "Numbers with a decimal must end in a number (eg; `1.0`) in LightScript.");
+        }
+      }
+
+      this.next();
       const node = this.startNodeAt(startPos, startLoc);
       node.object = base;
-      node.property = this.parseIdentifier(true);
-      node.computed = false;
+
+      // parse arr.0 as arr[0]
+      if (this.hasPlugin("lightscript") && this.match(tt.num)) {
+        node.property = this.parseExprAtom();
+        node.computed = true;
+      } else {
+        node.property = this.parseIdentifier(true);
+        node.computed = false;
+      }
       base = this.finishNode(node, "MemberExpression");
     } else if (this.hasPlugin("lightscript") && this.match(tt.elvis)) {
       // `x?.y`
@@ -393,7 +407,8 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       // safecall, ternary, or existential.
       const next = this.parseQuestionSubscript(base, startPos, startLoc, noCalls);
       if (next) base = next; else return base;
-    } else if (this.hasPlugin("lightscript") && !noCalls && this.eat(tt.tilde)) {
+    } else if (this.hasPlugin("lightscript") && !noCalls && this.match(tt.tilde)) {
+      this.next();
       const node = this.startNodeAt(startPos, startLoc);
       node.left = base;
       // allow `this`, Identifier or MemberExpression, but not calls
@@ -406,13 +421,6 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       this.expect(tt.parenL);
       node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
       base = this.finishNode(node, "TildeCallExpression");
-    } else if (this.hasPlugin("lightscript") && this.isNumberStartingWithDot() && !this.isNonIndentedBreakFrom(startPos)) {
-      // parses x.0, x.1, etc, as x[0], x[1], etc.
-      const node = this.startNodeAt(startPos, startLoc);
-      node.object = base;
-      node.property = this.parseNumericLiteralMember();
-      node.computed = true;
-      base = this.finishNode(node, "MemberExpression");
     } else if (!(this.hasPlugin("lightscript") && this.isNonIndentedBreakFrom(startPos)) && this.eat(tt.bracketL)) {
       const node = this.startNodeAt(startPos, startLoc);
       node.object = base;
@@ -714,6 +722,11 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
     case tt._else: case tt._elif:
       if (this.hasPlugin("lightscript")) {
         this.unexpected(null, "Unmatched `else` (must match indentation of the line with `if`).");
+      }
+
+    case tt.dot:
+      if (this.hasPlugin("lightscript") && this.lookahead().type === tt.num) {
+        this.unexpected(null, "Decimal numbers must be prefixed with a `0` in LightScript (eg; `0.1`).");
       }
 
     default:
