@@ -205,6 +205,7 @@ pp.parseMaybeConditional = function (noIn, refShorthandDefaultPos, refNeedsArrow
   return this.parseConditional(expr, noIn, startPos, startLoc, refNeedsArrowPos);
 };
 
+// Overridden in lightscript
 pp.parseConditional = function (expr, noIn, startPos, startLoc) {
   if (this.eat(tt.question)) {
     const node = this.startNodeAt(startPos, startLoc);
@@ -387,12 +388,20 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
         this.unexpected();
       }
       base = this.finishNode(node, "SafeMemberExpression");
+    } else if (this.hasPlugin("lightscript") && this.match(tt.question) && this.state.lastTokEnd === (this.state.pos - 1)) {
+      // A `?` immediately following an expr (no whitespace) could be a
+      // safecall, ternary, or existential.
+      const next = this.parseQuestionSubscript(base, startPos, startLoc, noCalls);
+      if (next) base = next; else return base;
     } else if (this.hasPlugin("lightscript") && !noCalls && this.eat(tt.tilde)) {
       const node = this.startNodeAt(startPos, startLoc);
       node.left = base;
       // allow `this`, Identifier or MemberExpression, but not calls
       const right = this.match(tt._this) ? this.parseExprAtom() : this.parseIdentifier();
       node.right = this.parseSubscripts(right, this.state.start, this.state.startLoc, true);
+
+      // Allow safe tilde calls (a~b?(c))
+      if (this.eat(tt.question)) node.safe = true;
 
       this.expect(tt.parenL);
       node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
