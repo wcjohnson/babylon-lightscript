@@ -568,6 +568,15 @@ pp.tryParseNamedArrowDeclaration = function () {
   return node;
 };
 
+pp.isBitwiseOp = function () {
+  return (
+    this.match(tt.bitwiseOR) ||
+    this.match(tt.bitwiseAND) ||
+    this.match(tt.bitwiseXOR) ||
+    this.match(tt.bitShift)
+  );
+};
+
 pp.parseSafeCall = function(expr, startPos, startLoc) {
   this.expect(tt.parenL);
   const node = this.startNodeAt(startPos, startLoc);
