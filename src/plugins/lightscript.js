@@ -629,7 +629,6 @@ pp.parseExistential = function(expr, startPos, startLoc) {
 };
 
 pp.parseQuestionSubscript = function(lhs, startPos, startLoc, noCalls) {
-  const priorTokenEnd = this.state.lastTokEnd;
   const questionPos = this.state.pos;
   const state = this.state.clone();
 
@@ -654,14 +653,8 @@ pp.parseQuestionSubscript = function(lhs, startPos, startLoc, noCalls) {
     return null;
   }
 
-  // Otherwise this is an existential, in which case the `?` must immediately
-  // follow the expr.
-  if (priorTokenEnd === (questionPos - 1)) {
-    return this.parseExistential(lhs, startPos, startLoc);
-  } else {
-    this.raise(questionPos, "Malformed ternary, existential, or safecall");
-  }
-
+  // Otherwise this is an existential
+  return this.parseExistential(lhs, startPos, startLoc);
 };
 
 // Convert an existential to an optional flow parameter.

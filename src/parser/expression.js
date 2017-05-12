@@ -388,8 +388,9 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
         this.unexpected();
       }
       base = this.finishNode(node, "SafeMemberExpression");
-    } else if (this.hasPlugin("lightscript") && this.match(tt.question)) {
-      // Safecall, ternary, or existential.
+    } else if (this.hasPlugin("lightscript") && this.match(tt.question) && this.state.lastTokEnd === (this.state.pos - 1)) {
+      // A `?` immediately following an expr (no whitespace) could be a
+      // safecall, ternary, or existential.
       const next = this.parseQuestionSubscript(base, startPos, startLoc, noCalls);
       if (next) base = next; else return base;
     } else if (this.hasPlugin("lightscript") && !noCalls && this.eat(tt.tilde)) {
