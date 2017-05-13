@@ -172,14 +172,12 @@ pp.couldBeginStatement = function() {
 
 pp.parseWhiteBlockBody = function(node, indentLevel, isInlineBody, allowEmptyBody) {
   if (isInlineBody) {
-    // Inline body may be a simple expr. JS treats these as plain
-    // expressions rather than function bodies, so we must do the same.
-    // Return the plain expr node in this case.
+    // Passthru plain exprs
     if (this.state.type.startsExpr) {
       return this.parseMaybeAssign();
     }
 
-    // Otherwise treat as a one-statement block on the same line
+    // Otherwise treat as a one-statement block
     node.body = [];
     if (this.couldBeginStatement()) {
       node.body.push(this.parseStatement(true, false));
@@ -206,7 +204,7 @@ pp.parseWhiteBlock = function (allowDirectives?, isExpression?) {
   // must start with colon or arrow
   if (isExpression) {
     this.expect(tt.colon);
-    if (!this.isLineBreak()) return this.parseMaybeAssign();
+    if (!this.isLineBreak()) return this.parseWhiteBlockBody(node, indentLevel, true, false);
   } else if (this.eat(tt.colon)) {
     if (!this.isLineBreak()) return this.parseStatement(false);
   } else if (this.eat(tt.arrow)) {
