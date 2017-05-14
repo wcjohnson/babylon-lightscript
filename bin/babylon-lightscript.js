@@ -11,6 +11,6 @@ if (!filename) {
 }
 
 var file = fs.readFileSync(filename, "utf8");
-var ast  = babylon.parse(file, { plugins: ["lightscript", "flow"] });
+var ast  = babylon.parse(file, { plugins: ["lightscript", "jsx", "flow"] });
 
 console.log(JSON.stringify(ast, null, "  "));
