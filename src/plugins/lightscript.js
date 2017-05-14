@@ -134,8 +134,6 @@ pp.parseObjectComprehension = function(node) {
   return this.finishNode(node, "ObjectComprehension");
 };
 
-// c/p parseBlockBody
-
 pp.couldBeginStatement = function() {
   // ExpressionStatement
   if (this.state.type.startsExpr) return true;
@@ -170,23 +168,7 @@ pp.couldBeginStatement = function() {
   return false;
 };
 
-pp.parseWhiteBlockBody = function(node, indentLevel, isInlineBody, allowEmptyBody) {
-  if (isInlineBody) {
-    // Passthru plain exprs
-    if (this.state.type.startsExpr) {
-      return this.parseMaybeAssign();
-    }
-
-    // Otherwise treat as a one-statement block
-    node.body = [];
-    if (this.couldBeginStatement()) {
-      node.body.push(this.parseStatement(true, false));
-    }
-    node.directives = [];
-  } else {
-    this.parseBlockBody(node, false, false, indentLevel);
-  }
-
+pp.finishWhiteBlock = function(node, allowEmptyBody) {
   if (!allowEmptyBody && !node.body.length) {
     this.unexpected(node.start, "Expected an Indent or Statement");
   }
@@ -195,39 +177,35 @@ pp.parseWhiteBlockBody = function(node, indentLevel, isInlineBody, allowEmptyBod
   return this.finishNode(node, "BlockStatement");
 };
 
-// c/p parseBlock
+pp.parseInlineWhiteBlock = function(node, isExprContext, allowEmptyBody) {
+  if (this.state.type.startsExpr) return this.parseMaybeAssign();
+  // oneline statement case
+  node.body = this.couldBeginStatement() ? [this.parseStatement(true, false, isExprContext)] : [];
+  node.directives = [];
+  return this.finishWhiteBlock(node, allowEmptyBody);
+};
 
-pp.parseWhiteBlock = function (allowDirectives?, isExpression?) {
+pp.parseMultilineWhiteBlock = function(node, indentLevel, isExprContext, allowEmptyBody) {
+  this.parseBlockBody(node, false, false, indentLevel, isExprContext);
+  return this.finishWhiteBlock(node, allowEmptyBody);
+};
+
+pp.parseWhiteBlock = function (isExprContext?) {
   const node = this.startNode(), indentLevel = this.state.indentLevel;
-  let allowEmptyBody = false;
 
-  // must start with colon or arrow
-  if (isExpression) {
-    this.expect(tt.colon);
-    if (!this.isLineBreak()) return this.parseWhiteBlockBody(node, indentLevel, true, false);
-  } else if (this.eat(tt.colon)) {
-    if (!this.isLineBreak()) return this.parseStatement(false);
-  } else if (this.eat(tt.arrow)) {
-    allowEmptyBody = true;
+  if (!this.eat(tt.colon)) this.unexpected(null, "Whitespace Block must start with a colon or arrow");
 
-    if (!this.isLineBreak()) {
-      if (this.match(tt.braceL)) {
-        // restart node at brace start instead of arrow start
-        const node = this.startNode();
-        this.next();
-        this.parseBlockBody(node, allowDirectives, false, tt.braceR);
-        this.addExtra(node, "curly", true);
-        return this.finishNode(node, "BlockStatement");
-      } else {
-        // Inline arrow body
-        return this.parseWhiteBlockBody(node, indentLevel, true, true);
-      }
+  // Oneline whiteblock
+  if (!this.isLineBreak()) {
+    if (isExprContext) {
+      return this.parseInlineWhiteBlock(node, true, false);
+    } else {
+      return this.parseStatement(false, false, false);
     }
-  } else {
-    this.unexpected(null, "Whitespace Block must start with a colon or arrow");
   }
 
-  return this.parseWhiteBlockBody(node, indentLevel, false, allowEmptyBody);
+  // TODO: document the fact that directives aren't parsed
+  return this.parseMultilineWhiteBlock(node, indentLevel, isExprContext, false);
 };
 
 pp.expectCommaOrLineBreak = function () {
@@ -361,7 +339,23 @@ pp.parseArrowFunctionBody = function (node) {
   this.state.labels = [];
   this.state.inFunction = true;
 
-  node.body = this.parseWhiteBlock(true);
+  const indentLevel = this.state.indentLevel;
+  node.body = this.startNode();
+  this.expect(tt.arrow);
+  if (!this.isLineBreak()) {
+    if (this.match(tt.braceL)) {
+      // restart node at brace start instead of arrow start
+      node.body = this.startNode();
+      this.next();
+      this.parseBlockBody(node.body, true, false, tt.braceR);
+      this.addExtra(node.body, "curly", true);
+      node.body = this.finishNode(node.body, "BlockStatement");
+    } else {
+      node.body = this.parseInlineWhiteBlock(node.body, false, true);
+    }
+  } else {
+    node.body = this.parseMultilineWhiteBlock(node.body, indentLevel, false, true);
+  }
 
   if (node.body.type !== "BlockStatement") {
     node.expression = true;
@@ -432,11 +426,11 @@ pp.parseIf = function (node, isExpression) {
 
   if (isExpression) {
     if (this.match(tt.braceL)) {
-      node.consequent = this.parseBlock(false);
+      node.consequent = this.parseBlock(false, true);
     } else if (!isColon) {
       node.consequent = this.parseMaybeAssign();
     } else {
-      node.consequent = this.parseWhiteBlock(false, true);
+      node.consequent = this.parseWhiteBlock(true);
     }
   } else {
     node.consequent = this.parseStatement(false);
@@ -481,11 +475,11 @@ pp.parseIfAlternate = function (node, isExpression, ifIsWhiteBlock, ifIndentLeve
 
     if (isExpression) {
       if (this.match(tt.braceL)) {
-        return this.parseBlock(false);
+        return this.parseBlock(false, true);
       } else if (!this.match(tt.colon)) {
         return this.parseMaybeAssign();
       } else {
-        return this.parseWhiteBlock(false, true);
+        return this.parseWhiteBlock(true);
       }
     }
 
@@ -722,9 +716,9 @@ export default function (instance) {
   // whitespace following a colon
 
   instance.extend("parseBlock", function (inner) {
-    return function (allowDirectives) {
+    return function (allowDirectives, isExprContext) {
       if (this.match(tt.colon)) {
-        return this.parseWhiteBlock(allowDirectives);
+        return this.parseWhiteBlock(isExprContext);
       }
       const block = inner.apply(this, arguments);
       this.addExtra(block, "curly", true);

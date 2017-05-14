@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 45,
+  "end": 38,
   "loc": {
     "start": {
       "line": 1,
@@ -9,13 +9,13 @@
     },
     "end": {
       "line": 2,
-      "column": 42
+      "column": 35
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 45,
+    "end": 38,
     "loc": {
       "start": {
         "line": 1,
@@ -23,7 +23,7 @@
       },
       "end": {
         "line": 2,
-        "column": 42
+        "column": 35
       }
     },
     "sourceType": "script",
@@ -31,7 +31,7 @@
       {
         "type": "ExpressionStatement",
         "start": 0,
-        "end": 45,
+        "end": 38,
         "loc": {
           "start": {
             "line": 1,
@@ -39,13 +39,13 @@
           },
           "end": {
             "line": 2,
-            "column": 42
+            "column": 35
           }
         },
         "expression": {
           "type": "ArrowFunctionExpression",
           "start": 0,
-          "end": 45,
+          "end": 38,
           "loc": {
             "start": {
               "line": 1,
@@ -53,7 +53,7 @@
             },
             "end": {
               "line": 2,
-              "column": 42
+              "column": 35
             }
           },
           "id": null,
@@ -65,7 +65,7 @@
           "body": {
             "type": "BlockStatement",
             "start": 0,
-            "end": 45,
+            "end": 38,
             "loc": {
               "start": {
                 "line": 1,
@@ -73,14 +73,14 @@
               },
               "end": {
                 "line": 2,
-                "column": 42
+                "column": 35
               }
             },
             "body": [
               {
                 "type": "VariableDeclaration",
                 "start": 5,
-                "end": 45,
+                "end": 38,
                 "loc": {
                   "start": {
                     "line": 2,
@@ -88,7 +88,7 @@
                   },
                   "end": {
                     "line": 2,
-                    "column": 42
+                    "column": 35
                   }
                 },
                 "kind": "const",
@@ -99,7 +99,7 @@
                   {
                     "type": "VariableDeclarator",
                     "start": 5,
-                    "end": 45,
+                    "end": 38,
                     "loc": {
                       "start": {
                         "line": 2,
@@ -107,7 +107,7 @@
                       },
                       "end": {
                         "line": 2,
-                        "column": 42
+                        "column": 35
                       }
                     },
                     "id": {
@@ -130,7 +130,7 @@
                     "init": {
                       "type": "IfExpression",
                       "start": 9,
-                      "end": 45,
+                      "end": 38,
                       "loc": {
                         "start": {
                           "line": 2,
@@ -138,7 +138,7 @@
                         },
                         "end": {
                           "line": 2,
-                          "column": 42
+                          "column": 35
                         }
                       },
                       "test": {
@@ -159,113 +159,77 @@
                         "name": "y"
                       },
                       "consequent": {
-                        "type": "BlockStatement",
-                        "start": 13,
-                        "end": 23,
+                        "type": "Identifier",
+                        "start": 15,
+                        "end": 16,
                         "loc": {
                           "start": {
                             "line": 2,
-                            "column": 10
+                            "column": 12
                           },
                           "end": {
                             "line": 2,
-                            "column": 20
-                          }
+                            "column": 13
+                          },
+                          "identifierName": "z"
                         },
-                        "body": [
-                          {
-                            "type": "ReturnStatement",
-                            "start": 15,
-                            "end": 23,
-                            "loc": {
-                              "start": {
-                                "line": 2,
-                                "column": 12
-                              },
-                              "end": {
-                                "line": 2,
-                                "column": 20
-                              }
-                            },
-                            "argument": {
-                              "type": "Identifier",
-                              "start": 22,
-                              "end": 23,
-                              "loc": {
-                                "start": {
-                                  "line": 2,
-                                  "column": 19
-                                },
-                                "end": {
-                                  "line": 2,
-                                  "column": 20
-                                },
-                                "identifierName": "z"
-                              },
-                              "name": "z"
-                            }
-                          }
-                        ],
-                        "directives": [],
-                        "extra": {
-                          "curly": false
-                        }
+                        "name": "z"
                       },
                       "alternate": {
                         "type": "BlockStatement",
-                        "start": 28,
-                        "end": 45,
+                        "start": 21,
+                        "end": 38,
                         "loc": {
                           "start": {
                             "line": 2,
-                            "column": 25
+                            "column": 18
                           },
                           "end": {
                             "line": 2,
-                            "column": 42
+                            "column": 35
                           }
                         },
                         "body": [
                           {
                             "type": "ThrowStatement",
-                            "start": 30,
-                            "end": 45,
+                            "start": 23,
+                            "end": 38,
                             "loc": {
                               "start": {
                                 "line": 2,
-                                "column": 27
+                                "column": 20
                               },
                               "end": {
                                 "line": 2,
-                                "column": 42
+                                "column": 35
                               }
                             },
                             "argument": {
                               "type": "NewExpression",
-                              "start": 36,
-                              "end": 45,
+                              "start": 29,
+                              "end": 38,
                               "loc": {
                                 "start": {
                                   "line": 2,
-                                  "column": 33
+                                  "column": 26
                                 },
                                 "end": {
                                   "line": 2,
-                                  "column": 42
+                                  "column": 35
                                 }
                               },
                               "callee": {
                                 "type": "Identifier",
-                                "start": 40,
-                                "end": 45,
+                                "start": 33,
+                                "end": 38,
                                 "loc": {
                                   "start": {
                                     "line": 2,
-                                    "column": 37
+                                    "column": 30
                                   },
                                   "end": {
                                     "line": 2,
-                                    "column": 42
+                                    "column": 35
                                   },
                                   "identifierName": "Error"
                                 },

@@ -880,14 +880,14 @@ export default function (instance) {
 
   // interfaces
   instance.extend("parseStatement", function (inner) {
-    return function (declaration, topLevel) {
+    return function (declaration, topLevel, isExprContext) {
       // strict mode handling of `interface` since it's a reserved word
       if (this.state.strict && this.match(tt.name) && this.state.value === "interface") {
         const node = this.startNode();
         this.next();
         return this.flowParseInterface(node);
       } else {
-        return inner.call(this, declaration, topLevel);
+        return inner.call(this, declaration, topLevel, isExprContext);
       }
     };
   });
