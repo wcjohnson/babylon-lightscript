@@ -1,2 +1,2 @@
 ->
-  x = if y: z else: throw new Error
+  x = if y: return z else: throw new Error

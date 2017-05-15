@@ -178,35 +178,35 @@ pp.finishWhiteBlock = function(node, allowEmptyBody) {
   return this.finishNode(node, "BlockStatement");
 };
 
-pp.parseInlineWhiteBlock = function(node, isExprContext, allowEmptyBody) {
+pp.parseInlineWhiteBlock = function(node, allowEmptyBody) {
   if (this.state.type.startsExpr) return this.parseMaybeAssign();
   // oneline statement case
-  node.body = this.couldBeginStatement() ? [this.parseStatement(true, false, isExprContext)] : [];
+  node.body = this.couldBeginStatement() ? [this.parseStatement(true)] : [];
   node.directives = [];
   return this.finishWhiteBlock(node, allowEmptyBody);
 };
 
-pp.parseMultilineWhiteBlock = function(node, indentLevel, isExprContext, allowEmptyBody) {
-  this.parseBlockBody(node, false, false, indentLevel, isExprContext);
+pp.parseMultilineWhiteBlock = function(node, indentLevel, allowEmptyBody) {
+  this.parseBlockBody(node, false, false, indentLevel);
   return this.finishWhiteBlock(node, allowEmptyBody);
 };
 
-pp.parseWhiteBlock = function (isExprContext?) {
+pp.parseWhiteBlock = function (isExpression?) {
   const node = this.startNode(), indentLevel = this.state.indentLevel;
 
   if (!this.eat(tt.colon)) this.unexpected(null, "Whitespace Block must start with a colon or arrow");
 
   // Oneline whiteblock
   if (!this.isLineBreak()) {
-    if (isExprContext) {
-      return this.parseInlineWhiteBlock(node, true, false);
+    if (isExpression) {
+      return this.parseInlineWhiteBlock(node, false);
     } else {
-      return this.parseStatement(false, false, false);
+      return this.parseStatement(false);
     }
   }
 
   // TODO: document the fact that directives aren't parsed
-  return this.parseMultilineWhiteBlock(node, indentLevel, isExprContext, false);
+  return this.parseMultilineWhiteBlock(node, indentLevel, false);
 };
 
 pp.expectCommaOrLineBreak = function () {
@@ -352,10 +352,10 @@ pp.parseArrowFunctionBody = function (node) {
       this.addExtra(node.body, "curly", true);
       node.body = this.finishNode(node.body, "BlockStatement");
     } else {
-      node.body = this.parseInlineWhiteBlock(node.body, false, true);
+      node.body = this.parseInlineWhiteBlock(node.body, true);
     }
   } else {
-    node.body = this.parseMultilineWhiteBlock(node.body, indentLevel, false, true);
+    node.body = this.parseMultilineWhiteBlock(node.body, indentLevel, true);
   }
 
   if (node.body.type !== "BlockStatement") {
@@ -427,7 +427,7 @@ pp.parseIf = function (node, isExpression) {
 
   if (isExpression) {
     if (this.match(tt.braceL)) {
-      node.consequent = this.parseBlock(false, true);
+      node.consequent = this.parseBlock(false);
     } else if (!isColon) {
       node.consequent = this.parseMaybeAssign();
     } else {
@@ -476,7 +476,7 @@ pp.parseIfAlternate = function (node, isExpression, ifIsWhiteBlock, ifIndentLeve
 
     if (isExpression) {
       if (this.match(tt.braceL)) {
-        return this.parseBlock(false, true);
+        return this.parseBlock(false);
       } else if (!this.match(tt.colon)) {
         return this.parseMaybeAssign();
       } else {
@@ -835,9 +835,9 @@ export default function (instance) {
   // whitespace following a colon
 
   instance.extend("parseBlock", function (inner) {
-    return function (allowDirectives, isExprContext) {
+    return function () {
       if (this.match(tt.colon)) {
-        return this.parseWhiteBlock(isExprContext);
+        return this.parseWhiteBlock();
       }
       const block = inner.apply(this, arguments);
       this.addExtra(block, "curly", true);

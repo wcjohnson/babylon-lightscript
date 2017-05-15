@@ -53,7 +53,7 @@ pp.stmtToDirective = function (stmt) {
 // `if (foo) /blah/.exec(foo)`, where looking at the previous token
 // does not help.
 
-pp.parseStatement = function (declaration, topLevel, isExprContext) {
+pp.parseStatement = function (declaration, topLevel) {
   if (this.match(tt.at)) {
     this.parseDecorators(true);
   }
@@ -66,12 +66,7 @@ pp.parseStatement = function (declaration, topLevel, isExprContext) {
   // complexity.
 
   switch (starttype) {
-    case tt._break:
-      if (this.hasPlugin("lightscript") && isExprContext) this.unexpected(null, "break is illegal inside LightScript expressions");
-    case tt._continue:
-      if (this.hasPlugin("lightscript") && isExprContext) this.unexpected(null, "continue is illegal inside LightScript expressions");
-      return this.parseBreakContinueStatement(node, starttype.keyword);
-
+    case tt._break: case tt._continue: return this.parseBreakContinueStatement(node, starttype.keyword);
     case tt._debugger: return this.parseDebuggerStatement(node);
     case tt._do: return this.parseDoStatement(node);
     case tt._for: return this.parseForStatement(node);
@@ -84,11 +79,7 @@ pp.parseStatement = function (declaration, topLevel, isExprContext) {
       return this.parseClass(node, true);
 
     case tt._if: return this.parseIfStatement(node);
-
-    case tt._return:
-      if (this.hasPlugin("lightscript") && isExprContext) this.unexpected(null, "return is illegal inside LightScript expressions");
-      return this.parseReturnStatement(node);
-
+    case tt._return: return this.parseReturnStatement(node);
     case tt._switch: return this.parseSwitchStatement(node);
     case tt._throw: return this.parseThrowStatement(node);
     case tt._try: return this.parseTryStatement(node);
@@ -573,10 +564,10 @@ pp.parseExpressionStatement = function (node, expr) {
 // strict"` declarations when `allowStrict` is true (used for
 // function bodies).
 
-pp.parseBlock = function (allowDirectives?, isExprContext?) {
+pp.parseBlock = function (allowDirectives?) {
   const node = this.startNode();
   this.expect(tt.braceL);
-  this.parseBlockBody(node, allowDirectives, false, tt.braceR, isExprContext);
+  this.parseBlockBody(node, allowDirectives, false, tt.braceR);
   return this.finishNode(node, "BlockStatement");
 };
 
@@ -586,7 +577,7 @@ pp.isValidDirective = function (stmt) {
     !stmt.expression.extra.parenthesized;
 };
 
-pp.parseBlockBody = function (node, allowDirectives, topLevel, end, isExprContext) {
+pp.parseBlockBody = function (node, allowDirectives, topLevel, end) {
   node.body = [];
   node.directives = [];
 
@@ -606,7 +597,7 @@ pp.parseBlockBody = function (node, allowDirectives, topLevel, end, isExprContex
       octalPosition = this.state.octalPosition;
     }
 
-    const stmt = this.parseStatement(true, topLevel, isExprContext);
+    const stmt = this.parseStatement(true, topLevel);
 
     if (allowDirectives && !parsedNonDirective && this.isValidDirective(stmt)) {
       const directive = this.stmtToDirective(stmt);
