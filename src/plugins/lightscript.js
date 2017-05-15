@@ -620,6 +620,124 @@ pp.existentialToParameter = function(node) {
   return node.argument;
 };
 
+pp.parseMatch = function () {
+  const node = this.startNode();
+  this.expect(tt._match);
+  node.discriminant = this.parseParenExpression();
+
+  let isEnd;
+  if (this.match(tt.colon)) {
+    const indentLevel = this.state.indentLevel;
+    this.next();
+    isEnd = () => this.state.indentLevel <= indentLevel || this.match(tt.eof);
+  } else {
+    this.expect(tt.braceL);
+    isEnd = () => this.eat(tt.braceR);
+  }
+
+  node.cases = [];
+  let hasUsedElse = false;
+  while (!isEnd()) {
+    if (hasUsedElse) {
+      this.unexpected(null, "`else` must be last case.");
+    }
+
+    const matchCase = this.parseMatchCase();
+    if (matchCase.test && matchCase.test.type === "MatchElse") {
+      hasUsedElse = true;
+    }
+    node.cases.push(matchCase);
+  }
+
+  return this.finishNode(node, "MatchExpression");
+};
+
+pp.parseMatchCase = function () {
+  const node = this.startNode();
+
+  node.test = this.parseMatchCaseTest();
+
+  if (this.eat(tt._with)) {
+    const oldInMatchCaseConsequent = this.state.inMatchCaseConsequent;
+    this.state.inMatchCaseConsequent = true;
+    node.consequent = this.parseMaybeAssign();
+    this.state.inMatchCaseConsequent = oldInMatchCaseConsequent;
+    if (node.consequent.type !== "ArrowFunctionExpression") {
+      this.unexpected(node.consequent.start, tt.arrow);
+    }
+    node.functional = true;
+  } else {
+    const oldInMatchCaseConsequent = this.state.inMatchCaseConsequent;
+    this.state.inMatchCaseConsequent = true;
+    // c/p parseIf
+    if (this.match(tt.braceL)) {
+      node.consequent = this.parseBlock(false, true);
+    } else {
+      node.consequent = this.parseWhiteBlock(true);
+    }
+    this.state.inMatchCaseConsequent = oldInMatchCaseConsequent;
+  }
+
+  return this.finishNode(node, "MatchCase");
+};
+
+pp.parseMatchCaseTest = function () {
+  // can't be nested so no need to read/restore old value
+  this.state.inMatchCaseTest = true;
+
+  this.expect(tt.bitwiseOR);
+  if (this.isLineBreak()) this.unexpected(this.state.lastTokEnd, "Illegal newline.");
+
+  let test;
+  if (this.match(tt._else)) {
+    const elseNode = this.startNode();
+    this.next();
+    test = this.finishNode(elseNode, "MatchElse");
+  } else {
+    test = this.parseExprOps();
+  }
+
+  this.state.inMatchCaseTest = false;
+  return test;
+};
+
+pp.isBinaryTokenForMatchCase = function (tokenType) {
+  return (
+    tokenType.binop != null &&
+    tokenType !== tt.logicalOR &&
+    tokenType !== tt.logicalAND &&
+    tokenType !== tt.bitwiseOR
+  );
+};
+
+pp.isSubscriptTokenForMatchCase = function (tokenType) {
+  return (
+    tokenType === tt.dot ||
+    tokenType === tt.elvis ||
+    tokenType === tt.tilde ||
+    tokenType === tt.bracketL ||
+    tokenType === tt.question
+  );
+};
+
+pp.allowMatchCasePlaceholder = function () {
+  if (!this.state.inMatchCaseTest) {
+    return false;
+  }
+  const cur = this.state.type;
+  const prev = this.state.tokens[this.state.tokens.length - 1].type;
+
+  // don't allow two binary tokens in a row to use placeholders, eg; `+ *`
+  if (this.isBinaryTokenForMatchCase(cur)) {
+    return !this.isBinaryTokenForMatchCase(prev);
+  }
+  // don't allow two subscripts in a row to use placeholders, eg; `..`
+  if (this.isSubscriptTokenForMatchCase(cur)) {
+    return !this.isSubscriptTokenForMatchCase(prev);
+  }
+  return false;
+};
+
 export default function (instance) {
 
   // if, switch, while, with --> don't need no stinkin' parens no more

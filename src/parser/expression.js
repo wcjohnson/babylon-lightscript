@@ -244,6 +244,12 @@ pp.parseExprOp = function(left, leftStartPos, leftStartLoc, minPrec, noIn) {
     if (this.match(tt.plusMin) && !this.isNextCharWhitespace()) {
       return left;
     }
+    // if it's a `|` in a match/case on a newline, assume it's for the "case"
+    // TODO: consider using indentation to be more precise about this
+    // TODO: just remove all bitwise operators so this isn't necessary.
+    if (this.match(tt.bitwiseOR) && this.state.inMatchCaseConsequent) {
+      return left;
+    }
   }
 
   if (this.hasPlugin("lightscript") && this.isBitwiseOp()) {
@@ -288,7 +294,12 @@ pp.parseExprOp = function(left, leftStartPos, leftStartLoc, minPrec, noIn) {
 // Parse unary operators, both prefix and postfix.
 
 pp.parseMaybeUnary = function (refShorthandDefaultPos) {
-  if (this.state.type.prefix) {
+  const matchCaseBinaryPlusMin = this.hasPlugin("lightscript") &&
+    this.state.inMatchCaseTest &&
+    this.match(tt.plusMin) &&
+    this.isNextCharWhitespace();
+
+  if (this.state.type.prefix && !matchCaseBinaryPlusMin) {
     if (this.hasPlugin("lightscript") && this.match(tt.plusMin)) {
       if (this.isNextCharWhitespace()) this.unexpected(null, "Unary +/- cannot be followed by a space in lightscript.");
     }
@@ -407,7 +418,14 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
         this.unexpected();
       }
       base = this.finishNode(node, "SafeMemberExpression");
-    } else if (this.hasPlugin("lightscript") && this.match(tt.question) && this.state.lastTokEnd === (this.state.pos - 1)) {
+    } else if (
+      this.hasPlugin("lightscript") &&
+      this.match(tt.question) &&
+      (
+        this.state.inMatchCaseTest ||
+        this.state.lastTokEnd === (this.state.pos - 1)
+      )
+    ) {
       // A `?` immediately following an expr (no whitespace) could be a
       // safecall, ternary, or existential.
       const next = this.parseQuestionSubscript(base, startPos, startLoc, noCalls);
@@ -710,6 +728,11 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
         return this.parseIfExpression(node);
       }
 
+    case tt._match:
+      if (this.hasPlugin("lightscript")) {
+        return this.parseMatch();
+      }
+
     case tt.arrow:
       if (this.hasPlugin("lightscript")) {
         node = this.startNode();
@@ -730,11 +753,16 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       }
 
     case tt.dot:
-      if (this.hasPlugin("lightscript") && this.lookahead().type === tt.num) {
+      if (this.hasPlugin("lightscript") && !this.allowMatchCasePlaceholder() && this.lookahead().type === tt.num) {
         this.unexpected(null, "Decimal numbers must be prefixed with a `0` in LightScript (eg; `0.1`).");
       }
 
     default:
+      if (this.hasPlugin("lightscript") && this.allowMatchCasePlaceholder()) {
+        // use the blank space as an empty value (perhaps 0-length would be better)
+        node = this.startNodeAt(this.state.lastTokEnd, this.state.lastTokEndLoc);
+        return this.finishNodeAt(node, "PlaceholderExpression", this.state.start, this.state.startLoc);
+      }
       this.unexpected();
   }
 };
