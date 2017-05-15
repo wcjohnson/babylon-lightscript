@@ -140,7 +140,8 @@ pp.couldBeginStatement = function() {
 
   // c/p from parseStatement
   switch (this.state.type) {
-    // break and continue only allowed within loops; omitted here
+    case tt._break:
+    case tt._continue:
     case tt._debugger:
     case tt._do:
     case tt._for:
