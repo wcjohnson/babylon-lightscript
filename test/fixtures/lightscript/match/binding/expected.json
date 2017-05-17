@@ -1,0 +1,400 @@
+{
+  "type": "File",
+  "start": 0,
+  "end": 105,
+  "loc": {
+    "start": {
+      "line": 1,
+      "column": 0
+    },
+    "end": {
+      "line": 4,
+      "column": 45
+    }
+  },
+  "program": {
+    "type": "Program",
+    "start": 0,
+    "end": 105,
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 0
+      },
+      "end": {
+        "line": 4,
+        "column": 45
+      }
+    },
+    "sourceType": "script",
+    "body": [
+      {
+        "type": "MatchStatement",
+        "start": 0,
+        "end": 105,
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 4,
+            "column": 45
+          }
+        },
+        "discriminant": {
+          "type": "Identifier",
+          "start": 6,
+          "end": 7,
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 6
+            },
+            "end": {
+              "line": 1,
+              "column": 7
+            },
+            "identifierName": "x"
+          },
+          "name": "x"
+        },
+        "cases": [
+          {
+            "type": "MatchCase",
+            "start": 11,
+            "end": 24,
+            "loc": {
+              "start": {
+                "line": 2,
+                "column": 2
+              },
+              "end": {
+                "line": 2,
+                "column": 15
+              }
+            },
+            "test": {
+              "type": "NumericLiteral",
+              "start": 13,
+              "end": 14,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 4
+                },
+                "end": {
+                  "line": 2,
+                  "column": 5
+                }
+              },
+              "extra": {
+                "rawValue": 1,
+                "raw": "1"
+              },
+              "value": 1
+            },
+            "binding": {
+              "type": "Identifier",
+              "start": 20,
+              "end": 21,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 11
+                },
+                "end": {
+                  "line": 2,
+                  "column": 12
+                },
+                "identifierName": "y"
+              },
+              "name": "y"
+            },
+            "consequent": {
+              "type": "Identifier",
+              "start": 23,
+              "end": 24,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 14
+                },
+                "end": {
+                  "line": 2,
+                  "column": 15
+                },
+                "identifierName": "y"
+              },
+              "name": "y"
+            }
+          },
+          {
+            "type": "MatchCase",
+            "start": 27,
+            "end": 59,
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 2
+              },
+              "end": {
+                "line": 3,
+                "column": 34
+              }
+            },
+            "test": {
+              "type": "TildeCallExpression",
+              "start": 29,
+              "end": 39,
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 4
+                },
+                "end": {
+                  "line": 3,
+                  "column": 14
+                }
+              },
+              "left": {
+                "type": "PlaceholderExpression",
+                "start": 28,
+                "end": 29,
+                "loc": {
+                  "start": {
+                    "line": 3,
+                    "column": 3
+                  },
+                  "end": {
+                    "line": 3,
+                    "column": 4
+                  }
+                }
+              },
+              "right": {
+                "type": "Identifier",
+                "start": 30,
+                "end": 37,
+                "loc": {
+                  "start": {
+                    "line": 3,
+                    "column": 5
+                  },
+                  "end": {
+                    "line": 3,
+                    "column": 12
+                  },
+                  "identifierName": "isArray"
+                },
+                "name": "isArray"
+              },
+              "arguments": []
+            },
+            "binding": {
+              "type": "ArrayPattern",
+              "start": 45,
+              "end": 52,
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 20
+                },
+                "end": {
+                  "line": 3,
+                  "column": 27
+                }
+              },
+              "elements": [
+                {
+                  "type": "Identifier",
+                  "start": 46,
+                  "end": 51,
+                  "loc": {
+                    "start": {
+                      "line": 3,
+                      "column": 21
+                    },
+                    "end": {
+                      "line": 3,
+                      "column": 26
+                    },
+                    "identifierName": "first"
+                  },
+                  "name": "first"
+                }
+              ]
+            },
+            "consequent": {
+              "type": "Identifier",
+              "start": 54,
+              "end": 59,
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 29
+                },
+                "end": {
+                  "line": 3,
+                  "column": 34
+                },
+                "identifierName": "first"
+              },
+              "name": "first"
+            }
+          },
+          {
+            "type": "MatchCase",
+            "start": 62,
+            "end": 105,
+            "loc": {
+              "start": {
+                "line": 4,
+                "column": 2
+              },
+              "end": {
+                "line": 4,
+                "column": 45
+              }
+            },
+            "test": {
+              "type": "TildeCallExpression",
+              "start": 64,
+              "end": 75,
+              "loc": {
+                "start": {
+                  "line": 4,
+                  "column": 4
+                },
+                "end": {
+                  "line": 4,
+                  "column": 15
+                }
+              },
+              "left": {
+                "type": "PlaceholderExpression",
+                "start": 63,
+                "end": 64,
+                "loc": {
+                  "start": {
+                    "line": 4,
+                    "column": 3
+                  },
+                  "end": {
+                    "line": 4,
+                    "column": 4
+                  }
+                }
+              },
+              "right": {
+                "type": "Identifier",
+                "start": 65,
+                "end": 73,
+                "loc": {
+                  "start": {
+                    "line": 4,
+                    "column": 5
+                  },
+                  "end": {
+                    "line": 4,
+                    "column": 13
+                  },
+                  "identifierName": "isObject"
+                },
+                "name": "isObject"
+              },
+              "arguments": []
+            },
+            "binding": {
+              "type": "ObjectPattern",
+              "start": 81,
+              "end": 98,
+              "loc": {
+                "start": {
+                  "line": 4,
+                  "column": 21
+                },
+                "end": {
+                  "line": 4,
+                  "column": 38
+                }
+              },
+              "properties": [
+                {
+                  "type": "ObjectProperty",
+                  "start": 83,
+                  "end": 96,
+                  "loc": {
+                    "start": {
+                      "line": 4,
+                      "column": 23
+                    },
+                    "end": {
+                      "line": 4,
+                      "column": 36
+                    }
+                  },
+                  "method": false,
+                  "shorthand": false,
+                  "computed": false,
+                  "key": {
+                    "type": "Identifier",
+                    "start": 83,
+                    "end": 89,
+                    "loc": {
+                      "start": {
+                        "line": 4,
+                        "column": 23
+                      },
+                      "end": {
+                        "line": 4,
+                        "column": 29
+                      },
+                      "identifierName": "second"
+                    },
+                    "name": "second"
+                  },
+                  "value": {
+                    "type": "Identifier",
+                    "start": 91,
+                    "end": 96,
+                    "loc": {
+                      "start": {
+                        "line": 4,
+                        "column": 31
+                      },
+                      "end": {
+                        "line": 4,
+                        "column": 36
+                      },
+                      "identifierName": "third"
+                    },
+                    "name": "third"
+                  }
+                }
+              ]
+            },
+            "consequent": {
+              "type": "Identifier",
+              "start": 100,
+              "end": 105,
+              "loc": {
+                "start": {
+                  "line": 4,
+                  "column": 40
+                },
+                "end": {
+                  "line": 4,
+                  "column": 45
+                },
+                "identifierName": "third"
+              },
+              "name": "third"
+            }
+          }
+        ]
+      }
+    ],
+    "directives": []
+  }
+}

@@ -29,7 +29,7 @@
     "sourceType": "script",
     "body": [
       {
-        "type": "ExpressionStatement",
+        "type": "MatchStatement",
         "start": 0,
         "end": 22,
         "loc": {
@@ -42,103 +42,88 @@
             "column": 13
           }
         },
-        "expression": {
-          "type": "MatchExpression",
-          "start": 0,
-          "end": 22,
+        "discriminant": {
+          "type": "Identifier",
+          "start": 6,
+          "end": 7,
           "loc": {
             "start": {
               "line": 1,
-              "column": 0
+              "column": 6
             },
             "end": {
-              "line": 2,
-              "column": 13
-            }
+              "line": 1,
+              "column": 7
+            },
+            "identifierName": "x"
           },
-          "discriminant": {
-            "type": "Identifier",
-            "start": 6,
-            "end": 7,
+          "name": "x"
+        },
+        "cases": [
+          {
+            "type": "MatchCase",
+            "start": 11,
+            "end": 22,
             "loc": {
               "start": {
-                "line": 1,
-                "column": 6
+                "line": 2,
+                "column": 2
               },
               "end": {
-                "line": 1,
-                "column": 7
-              },
-              "identifierName": "x"
+                "line": 2,
+                "column": 13
+              }
             },
-            "name": "x"
-          },
-          "cases": [
-            {
-              "type": "MatchCase",
-              "start": 11,
+            "test": {
+              "type": "CallExpression",
+              "start": 13,
+              "end": 16,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 4
+                },
+                "end": {
+                  "line": 2,
+                  "column": 7
+                }
+              },
+              "callee": {
+                "type": "PlaceholderExpression",
+                "start": 12,
+                "end": 13,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 3
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 4
+                  }
+                }
+              },
+              "arguments": [],
+              "safe": true
+            },
+            "consequent": {
+              "type": "BooleanLiteral",
+              "start": 18,
               "end": 22,
               "loc": {
                 "start": {
                   "line": 2,
-                  "column": 2
+                  "column": 9
                 },
                 "end": {
                   "line": 2,
                   "column": 13
                 }
               },
-              "test": {
-                "type": "CallExpression",
-                "start": 13,
-                "end": 16,
-                "loc": {
-                  "start": {
-                    "line": 2,
-                    "column": 4
-                  },
-                  "end": {
-                    "line": 2,
-                    "column": 7
-                  }
-                },
-                "callee": {
-                  "type": "PlaceholderExpression",
-                  "start": 12,
-                  "end": 13,
-                  "loc": {
-                    "start": {
-                      "line": 2,
-                      "column": 3
-                    },
-                    "end": {
-                      "line": 2,
-                      "column": 4
-                    }
-                  }
-                },
-                "arguments": [],
-                "safe": true
-              },
-              "consequent": {
-                "type": "BooleanLiteral",
-                "start": 18,
-                "end": 22,
-                "loc": {
-                  "start": {
-                    "line": 2,
-                    "column": 9
-                  },
-                  "end": {
-                    "line": 2,
-                    "column": 13
-                  }
-                },
-                "value": true
-              }
+              "value": true
             }
-          ]
-        }
+          }
+        ]
       }
     ],
     "directives": []

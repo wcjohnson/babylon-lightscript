@@ -1,2 +1,2 @@
-match x:
+z = match x:
   | y: <div />

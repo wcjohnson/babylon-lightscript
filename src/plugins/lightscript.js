@@ -620,8 +620,15 @@ pp.existentialToParameter = function(node) {
   return node.argument;
 };
 
-pp.parseMatch = function () {
-  const node = this.startNode();
+pp.parseMatchStatement = function(node) {
+  return this.parseMatch(node);
+};
+
+pp.parseMatchExpression = function() {
+  return this.parseMatch(this.startNode(), true);
+};
+
+pp.parseMatch = function (node, isExpression) {
   this.expect(tt._match);
   node.discriminant = this.parseParenExpression();
 
@@ -649,7 +656,42 @@ pp.parseMatch = function () {
     node.cases.push(matchCase);
   }
 
-  return this.finishNode(node, "MatchExpression");
+  return this.finishNode(node, isExpression ? "MatchExpression" : "MatchStatement");
+};
+
+pp.parseMatchCaseConsequent = function(matchNode) {
+  // c/p parseIf
+  if (this.match(tt.braceL)) {
+    matchNode.consequent = this.parseBlock(false, true);
+  } else {
+    matchNode.consequent = this.parseWhiteBlock(true);
+  }
+};
+
+pp.parseMatchCaseWithConsequent = function(matchNode) {
+  // with (x) -> ..., with async, with ->
+  if (this.match(tt.parenL) || this.match(tt.arrow) || this.isContextual("async")) {
+    const consequent = this.parseMaybeAssign();
+    if (consequent.type !== "ArrowFunctionExpression") {
+      this.unexpected(consequent.start, tt.arrow);
+    }
+    matchNode.consequent = consequent;
+    matchNode.functional = true;
+    return;
+  }
+
+  // with <Identifier> -> ...
+  // with <BindingAtom>: ...
+  const node = this.startNode();
+  const bindingAtom = this.parseBindingAtom();
+  if (this.match(tt.arrow)) {
+    matchNode.consequent = this.parseArrowExpression(node, bindingAtom ? [bindingAtom] : [], false);
+    matchNode.functional = true;
+    return;
+  }
+
+  matchNode.binding = bindingAtom;
+  this.parseMatchCaseConsequent(matchNode);
 };
 
 pp.parseMatchCase = function () {
@@ -657,26 +699,14 @@ pp.parseMatchCase = function () {
 
   node.test = this.parseMatchCaseTest();
 
+  const oldInMatchCaseConsequent = this.state.inMatchCaseConsequent;
+  this.state.inMatchCaseConsequent = true;
   if (this.eat(tt._with)) {
-    const oldInMatchCaseConsequent = this.state.inMatchCaseConsequent;
-    this.state.inMatchCaseConsequent = true;
-    node.consequent = this.parseMaybeAssign();
-    this.state.inMatchCaseConsequent = oldInMatchCaseConsequent;
-    if (node.consequent.type !== "ArrowFunctionExpression") {
-      this.unexpected(node.consequent.start, tt.arrow);
-    }
-    node.functional = true;
+    this.parseMatchCaseWithConsequent(node);
   } else {
-    const oldInMatchCaseConsequent = this.state.inMatchCaseConsequent;
-    this.state.inMatchCaseConsequent = true;
-    // c/p parseIf
-    if (this.match(tt.braceL)) {
-      node.consequent = this.parseBlock(false, true);
-    } else {
-      node.consequent = this.parseWhiteBlock(true);
-    }
-    this.state.inMatchCaseConsequent = oldInMatchCaseConsequent;
+    this.parseMatchCaseConsequent(node);
   }
+  this.state.inMatchCaseConsequent = oldInMatchCaseConsequent;
 
   return this.finishNode(node, "MatchCase");
 };

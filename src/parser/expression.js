@@ -730,7 +730,7 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
 
     case tt._match:
       if (this.hasPlugin("lightscript")) {
-        return this.parseMatch();
+        return this.parseMatchExpression();
       }
 
     case tt.arrow:

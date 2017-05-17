@@ -29,7 +29,7 @@
     "sourceType": "script",
     "body": [
       {
-        "type": "ExpressionStatement",
+        "type": "MatchStatement",
         "start": 0,
         "end": 33,
         "loc": {
@@ -42,103 +42,103 @@
             "column": 24
           }
         },
-        "expression": {
-          "type": "MatchExpression",
-          "start": 0,
-          "end": 33,
+        "discriminant": {
+          "type": "Identifier",
+          "start": 6,
+          "end": 7,
           "loc": {
             "start": {
               "line": 1,
-              "column": 0
+              "column": 6
             },
             "end": {
-              "line": 2,
-              "column": 24
-            }
+              "line": 1,
+              "column": 7
+            },
+            "identifierName": "x"
           },
-          "discriminant": {
-            "type": "Identifier",
-            "start": 6,
-            "end": 7,
+          "name": "x"
+        },
+        "cases": [
+          {
+            "type": "MatchCase",
+            "start": 11,
+            "end": 33,
             "loc": {
               "start": {
-                "line": 1,
-                "column": 6
+                "line": 2,
+                "column": 2
               },
               "end": {
-                "line": 1,
-                "column": 7
-              },
-              "identifierName": "x"
+                "line": 2,
+                "column": 24
+              }
             },
-            "name": "x"
-          },
-          "cases": [
-            {
-              "type": "MatchCase",
-              "start": 11,
-              "end": 33,
+            "test": {
+              "type": "TildeCallExpression",
+              "start": 13,
+              "end": 19,
               "loc": {
                 "start": {
                   "line": 2,
-                  "column": 2
+                  "column": 4
                 },
                 "end": {
                   "line": 2,
-                  "column": 24
+                  "column": 10
                 }
               },
-              "test": {
-                "type": "TildeCallExpression",
-                "start": 13,
-                "end": 19,
+              "left": {
+                "type": "PlaceholderExpression",
+                "start": 12,
+                "end": 13,
                 "loc": {
                   "start": {
                     "line": 2,
-                    "column": 4
+                    "column": 3
                   },
                   "end": {
                     "line": 2,
-                    "column": 10
+                    "column": 4
                   }
-                },
-                "left": {
-                  "type": "PlaceholderExpression",
-                  "start": 12,
-                  "end": 13,
-                  "loc": {
-                    "start": {
-                      "line": 2,
-                      "column": 3
-                    },
-                    "end": {
-                      "line": 2,
-                      "column": 4
-                    }
-                  }
-                },
-                "right": {
-                  "type": "Identifier",
-                  "start": 14,
-                  "end": 15,
-                  "loc": {
-                    "start": {
-                      "line": 2,
-                      "column": 5
-                    },
-                    "end": {
-                      "line": 2,
-                      "column": 6
-                    },
-                    "identifierName": "c"
+                }
+              },
+              "right": {
+                "type": "Identifier",
+                "start": 14,
+                "end": 15,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 5
                   },
-                  "name": "c"
+                  "end": {
+                    "line": 2,
+                    "column": 6
+                  },
+                  "identifierName": "c"
                 },
-                "arguments": [
-                  {
-                    "type": "MemberExpression",
+                "name": "c"
+              },
+              "arguments": [
+                {
+                  "type": "MemberExpression",
+                  "start": 16,
+                  "end": 18,
+                  "loc": {
+                    "start": {
+                      "line": 2,
+                      "column": 7
+                    },
+                    "end": {
+                      "line": 2,
+                      "column": 9
+                    }
+                  },
+                  "object": {
+                    "type": "PlaceholderExpression",
                     "start": 16,
-                    "end": 18,
+                    "end": 16,
                     "loc": {
                       "start": {
                         "line": 2,
@@ -146,68 +146,53 @@
                       },
                       "end": {
                         "line": 2,
-                        "column": 9
+                        "column": 7
                       }
-                    },
-                    "object": {
-                      "type": "PlaceholderExpression",
-                      "start": 16,
-                      "end": 16,
-                      "loc": {
-                        "start": {
-                          "line": 2,
-                          "column": 7
-                        },
-                        "end": {
-                          "line": 2,
-                          "column": 7
-                        }
-                      }
-                    },
-                    "property": {
-                      "type": "Identifier",
-                      "start": 17,
-                      "end": 18,
-                      "loc": {
-                        "start": {
-                          "line": 2,
-                          "column": 8
-                        },
-                        "end": {
-                          "line": 2,
-                          "column": 9
-                        },
-                        "identifierName": "d"
-                      },
-                      "name": "d"
-                    },
-                    "computed": false
-                  }
-                ]
-              },
-              "consequent": {
-                "type": "StringLiteral",
-                "start": 21,
-                "end": 33,
-                "loc": {
-                  "start": {
-                    "line": 2,
-                    "column": 12
+                    }
                   },
-                  "end": {
-                    "line": 2,
-                    "column": 24
-                  }
+                  "property": {
+                    "type": "Identifier",
+                    "start": 17,
+                    "end": 18,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 8
+                      },
+                      "end": {
+                        "line": 2,
+                        "column": 9
+                      },
+                      "identifierName": "d"
+                    },
+                    "name": "d"
+                  },
+                  "computed": false
+                }
+              ]
+            },
+            "consequent": {
+              "type": "StringLiteral",
+              "start": 21,
+              "end": 33,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 12
                 },
-                "extra": {
-                  "rawValue": "its a func",
-                  "raw": "'its a func'"
-                },
-                "value": "its a func"
-              }
+                "end": {
+                  "line": 2,
+                  "column": 24
+                }
+              },
+              "extra": {
+                "rawValue": "its a func",
+                "raw": "'its a func'"
+              },
+              "value": "its a func"
             }
-          ]
-        }
+          }
+        ]
       }
     ],
     "directives": []

@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 23,
+  "end": 27,
   "loc": {
     "start": {
       "line": 1,
@@ -15,7 +15,7 @@
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 23,
+    "end": 27,
     "loc": {
       "start": {
         "line": 1,
@@ -29,9 +29,9 @@
     "sourceType": "script",
     "body": [
       {
-        "type": "ExpressionStatement",
+        "type": "VariableDeclaration",
         "start": 0,
-        "end": 23,
+        "end": 27,
         "loc": {
           "start": {
             "line": 1,
@@ -42,122 +42,160 @@
             "column": 14
           }
         },
-        "expression": {
-          "type": "MatchExpression",
-          "start": 0,
-          "end": 23,
-          "loc": {
-            "start": {
-              "line": 1,
-              "column": 0
-            },
-            "end": {
-              "line": 2,
-              "column": 14
-            }
-          },
-          "discriminant": {
-            "type": "Identifier",
-            "start": 6,
-            "end": 7,
+        "kind": "const",
+        "extra": {
+          "implicit": true
+        },
+        "declarations": [
+          {
+            "type": "VariableDeclarator",
+            "start": 0,
+            "end": 27,
             "loc": {
               "start": {
                 "line": 1,
-                "column": 6
+                "column": 0
               },
               "end": {
-                "line": 1,
-                "column": 7
-              },
-              "identifierName": "x"
+                "line": 2,
+                "column": 14
+              }
             },
-            "name": "x"
-          },
-          "cases": [
-            {
-              "type": "MatchCase",
-              "start": 11,
-              "end": 23,
+            "id": {
+              "type": "Identifier",
+              "start": 0,
+              "end": 1,
               "loc": {
                 "start": {
-                  "line": 2,
-                  "column": 2
+                  "line": 1,
+                  "column": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 1
+                },
+                "identifierName": "z"
+              },
+              "name": "z"
+            },
+            "init": {
+              "type": "MatchExpression",
+              "start": 4,
+              "end": 27,
+              "loc": {
+                "start": {
+                  "line": 1,
+                  "column": 4
                 },
                 "end": {
                   "line": 2,
                   "column": 14
                 }
               },
-              "test": {
+              "discriminant": {
                 "type": "Identifier",
-                "start": 13,
-                "end": 14,
+                "start": 10,
+                "end": 11,
                 "loc": {
                   "start": {
-                    "line": 2,
-                    "column": 4
+                    "line": 1,
+                    "column": 10
                   },
                   "end": {
-                    "line": 2,
-                    "column": 5
+                    "line": 1,
+                    "column": 11
                   },
-                  "identifierName": "y"
+                  "identifierName": "x"
                 },
-                "name": "y"
+                "name": "x"
               },
-              "consequent": {
-                "type": "JSXElement",
-                "start": 16,
-                "end": 23,
-                "loc": {
-                  "start": {
-                    "line": 2,
-                    "column": 7
-                  },
-                  "end": {
-                    "line": 2,
-                    "column": 14
-                  }
-                },
-                "openingElement": {
-                  "type": "JSXOpeningElement",
-                  "start": 16,
-                  "end": 23,
+              "cases": [
+                {
+                  "type": "MatchCase",
+                  "start": 15,
+                  "end": 27,
                   "loc": {
                     "start": {
                       "line": 2,
-                      "column": 7
+                      "column": 2
                     },
                     "end": {
                       "line": 2,
                       "column": 14
                     }
                   },
-                  "attributes": [],
-                  "name": {
-                    "type": "JSXIdentifier",
+                  "test": {
+                    "type": "Identifier",
                     "start": 17,
-                    "end": 20,
+                    "end": 18,
                     "loc": {
                       "start": {
                         "line": 2,
-                        "column": 8
+                        "column": 4
                       },
                       "end": {
                         "line": 2,
-                        "column": 11
+                        "column": 5
+                      },
+                      "identifierName": "y"
+                    },
+                    "name": "y"
+                  },
+                  "consequent": {
+                    "type": "JSXElement",
+                    "start": 20,
+                    "end": 27,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 7
+                      },
+                      "end": {
+                        "line": 2,
+                        "column": 14
                       }
                     },
-                    "name": "div"
-                  },
-                  "selfClosing": true
-                },
-                "closingElement": null,
-                "children": []
-              }
+                    "openingElement": {
+                      "type": "JSXOpeningElement",
+                      "start": 20,
+                      "end": 27,
+                      "loc": {
+                        "start": {
+                          "line": 2,
+                          "column": 7
+                        },
+                        "end": {
+                          "line": 2,
+                          "column": 14
+                        }
+                      },
+                      "attributes": [],
+                      "name": {
+                        "type": "JSXIdentifier",
+                        "start": 21,
+                        "end": 24,
+                        "loc": {
+                          "start": {
+                            "line": 2,
+                            "column": 8
+                          },
+                          "end": {
+                            "line": 2,
+                            "column": 11
+                          }
+                        },
+                        "name": "div"
+                      },
+                      "selfClosing": true
+                    },
+                    "closingElement": null,
+                    "children": []
+                  }
+                }
+              ]
             }
-          ]
-        }
+          }
+        ]
       }
     ],
     "directives": []
