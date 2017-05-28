@@ -929,7 +929,7 @@ pp.parseClassId = function (node, isStatement, optionalId) {
     if (optionalId || !isStatement) {
       node.id = null;
     } else {
-      this.unexpected();
+      this.unexpected(null, "A class name is required");
     }
   }
 };
