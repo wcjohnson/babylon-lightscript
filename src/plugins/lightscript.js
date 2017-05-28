@@ -265,6 +265,10 @@ pp.parseArrowType = function (node) {
     case "=*>": case "-*>":
       node.generator = true;
       break;
+    case "=*/>": case "-*/>":
+      node.async = true;
+      node.generator = true;
+      break;
     case "-get>":
       // TODO: validate that it's in a method not a function
       if (!node.kind) this.unexpected(null, "Only methods can be getters.");

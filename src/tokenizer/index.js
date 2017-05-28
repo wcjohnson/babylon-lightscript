@@ -401,6 +401,14 @@ export default class Tokenizer {
         return this.finishToken(tt.arrow, "-*>");
       }
 
+      if (this.hasPlugin("asyncGenerators")) {
+        const next3 = this.input.charCodeAt(this.state.pos + 3);
+        if (next === 42 && next2 === 47 && next3 === 62) {
+          this.state.pos += 4;
+          return this.finishToken(tt.arrow, "-*/>");
+        }
+      }
+
       let getOrSet;
       if (next === 103) getOrSet = "get";
       if (next === 115) getOrSet = "set";
@@ -477,6 +485,14 @@ export default class Tokenizer {
       if (next === 42 && next2 === 62) {
         this.state.pos += 3;
         return this.finishToken(tt.arrow, "=*>");
+      }
+
+      if (this.hasPlugin("asyncGenerators")) {
+        const next3 = this.input.charCodeAt(this.state.pos + 3);
+        if (next === 42 && next2 === 47 && next3 === 62) {
+          this.state.pos += 4;
+          return this.finishToken(tt.arrow, "=*/>");
+        }
       }
     }
 
