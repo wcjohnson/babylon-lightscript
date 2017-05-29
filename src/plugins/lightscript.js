@@ -163,6 +163,7 @@ pp.couldBeginStatement = function() {
     case tt._export:
     case tt._import:
     case tt.name:
+    case tt.awaitArrow:
       return true;
   }
 
