@@ -441,18 +441,24 @@ const empty = [];
 
 pp.parseTryStatement = function (node) {
   this.next();
-  let isColon, tryIndentLevel;
 
+  let indentLevel, isColon;
   if (this.hasPlugin("lightscript")) {
+    indentLevel = this.state.indentLevel;
     isColon = this.match(tt.colon);
-    tryIndentLevel = this.state.indentLevel;
-    if (isColon) this.pushBlockState("try", tryIndentLevel);
+    if (isColon) this.pushBlockState("try", indentLevel);
   }
 
   node.block = this.parseBlock();
   node.handler = null;
 
-  if (this.match(tt._catch)) {
+  const shouldParseCatch = this.match(tt._catch) && (
+    !this.hasPlugin("lightscript") ||
+    indentLevel === this.state.indentLevel ||
+    (!isColon && !this.matchBlockState("try", this.state.indentLevel))
+  );
+
+  if (shouldParseCatch) {
     const clause = this.startNode();
     this.next();
 
@@ -467,6 +473,11 @@ pp.parseTryStatement = function (node) {
     this.checkLVal(clause.param, true, Object.create(null), "catch clause");
     if (this.hasPlugin("lightscript")) {
       this.expectParenFreeBlockStart(clause);
+      if (isColon) {
+        this.check(tt.colon);
+      } else {
+        this.check(tt.braceL);
+      }
     } else {
       this.expect(tt.parenR);
     }
@@ -475,17 +486,26 @@ pp.parseTryStatement = function (node) {
   }
 
   node.guardedHandlers = empty;
-  node.finalizer = null;
 
-  if (this.match(tt._finally)) {
-    if (
-      !this.hasPlugin("lightscript") ||
-      this.state.indentLevel === tryIndentLevel ||
-      !this.matchBlockState("try", this.state.indentLevel)
-    ) {
+
+  if (this.hasPlugin("lightscript")) {
+    const shouldParseFinally = this.match(tt._finally) && (
+      indentLevel === this.state.indentLevel ||
+      (!isColon && !this.matchBlockState("try", this.state.indentLevel))
+    );
+    if (shouldParseFinally) {
       this.next();
+      if (isColon) {
+        this.check(tt.colon);
+      } else {
+        this.check(tt.braceL);
+      }
       node.finalizer = this.parseBlock();
+    } else {
+      node.finalizer = null;
     }
+  } else {
+    node.finalizer = this.eat(tt._finally) ? this.parseBlock() : null;
   }
 
   if (!node.handler && !node.finalizer) {
