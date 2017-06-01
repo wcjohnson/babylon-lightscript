@@ -29,7 +29,7 @@
     "sourceType": "script",
     "body": [
       {
-        "type": "ExpressionStatement",
+        "type": "MatchStatement",
         "start": 0,
         "end": 29,
         "loc": {
@@ -42,71 +42,71 @@
             "column": 11
           }
         },
-        "expression": {
-          "type": "MatchExpression",
-          "start": 0,
-          "end": 29,
+        "discriminant": {
+          "type": "Identifier",
+          "start": 6,
+          "end": 7,
           "loc": {
             "start": {
               "line": 1,
-              "column": 0
+              "column": 6
             },
             "end": {
-              "line": 3,
-              "column": 11
-            }
+              "line": 1,
+              "column": 7
+            },
+            "identifierName": "x"
           },
-          "discriminant": {
-            "type": "Identifier",
-            "start": 6,
-            "end": 7,
+          "name": "x"
+        },
+        "cases": [
+          {
+            "type": "MatchCase",
+            "start": 11,
+            "end": 17,
             "loc": {
               "start": {
-                "line": 1,
-                "column": 6
+                "line": 2,
+                "column": 2
               },
               "end": {
-                "line": 1,
-                "column": 7
-              },
-              "identifierName": "x"
+                "line": 2,
+                "column": 8
+              }
             },
-            "name": "x"
-          },
-          "cases": [
-            {
-              "type": "MatchCase",
-              "start": 11,
+            "test": {
+              "type": "Identifier",
+              "start": 13,
+              "end": 14,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 4
+                },
+                "end": {
+                  "line": 2,
+                  "column": 5
+                },
+                "identifierName": "a"
+              },
+              "name": "a"
+            },
+            "consequent": {
+              "type": "ExpressionStatement",
+              "start": 16,
               "end": 17,
               "loc": {
                 "start": {
                   "line": 2,
-                  "column": 2
+                  "column": 7
                 },
                 "end": {
                   "line": 2,
                   "column": 8
                 }
               },
-              "test": {
+              "expression": {
                 "type": "Identifier",
-                "start": 13,
-                "end": 14,
-                "loc": {
-                  "start": {
-                    "line": 2,
-                    "column": 4
-                  },
-                  "end": {
-                    "line": 2,
-                    "column": 5
-                  },
-                  "identifierName": "a"
-                },
-                "name": "a"
-              },
-              "consequent": {
-                "type": "ExpressionStatement",
                 "start": 16,
                 "end": 17,
                 "loc": {
@@ -117,58 +117,58 @@
                   "end": {
                     "line": 2,
                     "column": 8
-                  }
-                },
-                "expression": {
-                  "type": "Identifier",
-                  "start": 16,
-                  "end": 17,
-                  "loc": {
-                    "start": {
-                      "line": 2,
-                      "column": 7
-                    },
-                    "end": {
-                      "line": 2,
-                      "column": 8
-                    },
-                    "identifierName": "b"
                   },
-                  "name": "b"
+                  "identifierName": "b"
+                },
+                "name": "b"
+              }
+            }
+          },
+          {
+            "type": "MatchCase",
+            "start": 20,
+            "end": 29,
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 2
+              },
+              "end": {
+                "line": 3,
+                "column": 11
+              }
+            },
+            "test": {
+              "type": "MatchElse",
+              "start": 22,
+              "end": 26,
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 4
+                },
+                "end": {
+                  "line": 3,
+                  "column": 8
                 }
               }
             },
-            {
-              "type": "MatchCase",
-              "start": 20,
+            "consequent": {
+              "type": "ExpressionStatement",
+              "start": 28,
               "end": 29,
               "loc": {
                 "start": {
                   "line": 3,
-                  "column": 2
+                  "column": 10
                 },
                 "end": {
                   "line": 3,
                   "column": 11
                 }
               },
-              "test": {
-                "type": "MatchElse",
-                "start": 22,
-                "end": 26,
-                "loc": {
-                  "start": {
-                    "line": 3,
-                    "column": 4
-                  },
-                  "end": {
-                    "line": 3,
-                    "column": 8
-                  }
-                }
-              },
-              "consequent": {
-                "type": "ExpressionStatement",
+              "expression": {
+                "type": "Identifier",
                 "start": 28,
                 "end": 29,
                 "loc": {
@@ -179,29 +179,14 @@
                   "end": {
                     "line": 3,
                     "column": 11
-                  }
-                },
-                "expression": {
-                  "type": "Identifier",
-                  "start": 28,
-                  "end": 29,
-                  "loc": {
-                    "start": {
-                      "line": 3,
-                      "column": 10
-                    },
-                    "end": {
-                      "line": 3,
-                      "column": 11
-                    },
-                    "identifierName": "c"
                   },
-                  "name": "c"
-                }
+                  "identifierName": "c"
+                },
+                "name": "c"
               }
             }
-          ]
-        }
+          }
+        ]
       }
     ],
     "directives": []

@@ -29,7 +29,7 @@
     "sourceType": "script",
     "body": [
       {
-        "type": "ExpressionStatement",
+        "type": "MatchStatement",
         "start": 0,
         "end": 23,
         "loc": {
@@ -42,71 +42,71 @@
             "column": 14
           }
         },
-        "expression": {
-          "type": "MatchExpression",
-          "start": 0,
-          "end": 23,
+        "discriminant": {
+          "type": "Identifier",
+          "start": 6,
+          "end": 7,
           "loc": {
             "start": {
               "line": 1,
-              "column": 0
+              "column": 6
             },
             "end": {
-              "line": 2,
-              "column": 14
-            }
+              "line": 1,
+              "column": 7
+            },
+            "identifierName": "x"
           },
-          "discriminant": {
-            "type": "Identifier",
-            "start": 6,
-            "end": 7,
+          "name": "x"
+        },
+        "cases": [
+          {
+            "type": "MatchCase",
+            "start": 11,
+            "end": 23,
             "loc": {
               "start": {
-                "line": 1,
-                "column": 6
+                "line": 2,
+                "column": 2
               },
               "end": {
-                "line": 1,
-                "column": 7
-              },
-              "identifierName": "x"
+                "line": 2,
+                "column": 14
+              }
             },
-            "name": "x"
-          },
-          "cases": [
-            {
-              "type": "MatchCase",
-              "start": 11,
+            "test": {
+              "type": "Identifier",
+              "start": 13,
+              "end": 14,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 4
+                },
+                "end": {
+                  "line": 2,
+                  "column": 5
+                },
+                "identifierName": "y"
+              },
+              "name": "y"
+            },
+            "consequent": {
+              "type": "ExpressionStatement",
+              "start": 16,
               "end": 23,
               "loc": {
                 "start": {
                   "line": 2,
-                  "column": 2
+                  "column": 7
                 },
                 "end": {
                   "line": 2,
                   "column": 14
                 }
               },
-              "test": {
-                "type": "Identifier",
-                "start": 13,
-                "end": 14,
-                "loc": {
-                  "start": {
-                    "line": 2,
-                    "column": 4
-                  },
-                  "end": {
-                    "line": 2,
-                    "column": 5
-                  },
-                  "identifierName": "y"
-                },
-                "name": "y"
-              },
-              "consequent": {
-                "type": "ExpressionStatement",
+              "expression": {
+                "type": "JSXElement",
                 "start": 16,
                 "end": 23,
                 "loc": {
@@ -119,8 +119,8 @@
                     "column": 14
                   }
                 },
-                "expression": {
-                  "type": "JSXElement",
+                "openingElement": {
+                  "type": "JSXOpeningElement",
                   "start": 16,
                   "end": 23,
                   "loc": {
@@ -133,46 +133,31 @@
                       "column": 14
                     }
                   },
-                  "openingElement": {
-                    "type": "JSXOpeningElement",
-                    "start": 16,
-                    "end": 23,
+                  "attributes": [],
+                  "name": {
+                    "type": "JSXIdentifier",
+                    "start": 17,
+                    "end": 20,
                     "loc": {
                       "start": {
                         "line": 2,
-                        "column": 7
+                        "column": 8
                       },
                       "end": {
                         "line": 2,
-                        "column": 14
+                        "column": 11
                       }
                     },
-                    "attributes": [],
-                    "name": {
-                      "type": "JSXIdentifier",
-                      "start": 17,
-                      "end": 20,
-                      "loc": {
-                        "start": {
-                          "line": 2,
-                          "column": 8
-                        },
-                        "end": {
-                          "line": 2,
-                          "column": 11
-                        }
-                      },
-                      "name": "div"
-                    },
-                    "selfClosing": true
+                    "name": "div"
                   },
-                  "closingElement": null,
-                  "children": []
-                }
+                  "selfClosing": true
+                },
+                "closingElement": null,
+                "children": []
               }
             }
-          ]
-        }
+          }
+        ]
       }
     ],
     "directives": []

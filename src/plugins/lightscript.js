@@ -550,8 +550,15 @@ pp.isBitwiseOp = function () {
   );
 };
 
-pp.parseMatch = function () {
-  const node = this.startNode();
+pp.parseMatchExpression = function (node) {
+  return this.parseMatch(node, true);
+};
+
+pp.parseMatchStatement = function (node) {
+  return this.parseMatch(node, false);
+};
+
+pp.parseMatch = function (node, isExpression) {
   this.expect(tt._match);
   node.discriminant = this.parseParenExpression();
 
@@ -572,17 +579,17 @@ pp.parseMatch = function () {
       this.unexpected(null, "`else` must be last case.");
     }
 
-    const matchCase = this.parseMatchCase();
+    const matchCase = this.parseMatchCase(isExpression);
     if (matchCase.test.type === "MatchElse") {
       hasUsedElse = true;
     }
     node.cases.push(matchCase);
   }
 
-  return this.finishNode(node, "MatchExpression");
+  return this.finishNode(node, isExpression ? "MatchExpression" : "MatchStatement");
 };
 
-pp.parseMatchCase = function () {
+pp.parseMatchCase = function (isExpression) {
   const node = this.startNode();
 
   node.test = this.parseMatchCaseTest();
@@ -591,7 +598,20 @@ pp.parseMatchCase = function () {
     node.binding = this.parseBindingAtom();
   }
 
-  node.consequent = this.parseBlock(false);
+  if (isExpression) {
+    // disallow return/continue/break, etc. c/p doExpression
+    const oldInFunction = this.state.inFunction;
+    const oldLabels = this.state.labels;
+    this.state.labels = [];
+    this.state.inFunction = false;
+
+    node.consequent = this.parseBlock(false);
+
+    this.state.inFunction = oldInFunction;
+    this.state.labels = oldLabels;
+  } else {
+    node.consequent = this.parseBlock(false);
+  }
 
   return this.finishNode(node, "MatchCase");
 };
