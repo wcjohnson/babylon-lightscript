@@ -1,2 +1,2 @@
 match x:
-  | y, -> <div />
+  | y: <div />

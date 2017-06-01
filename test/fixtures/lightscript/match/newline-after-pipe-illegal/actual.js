@@ -1,3 +1,3 @@
 match x:
   |
-    d, -> 'its a func'
+    d: 'its a func'

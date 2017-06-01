@@ -1,2 +1,2 @@
 match x:
-  | <div />, -> "does this make sense?"
+  | <div />: "does this make sense?"

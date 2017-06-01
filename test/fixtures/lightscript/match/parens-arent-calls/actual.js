@@ -1,2 +1,2 @@
 a = match x:
-  | (y), -> "bigger than two"
+  | (y): "bigger than two"

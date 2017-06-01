@@ -1,2 +1,2 @@
 match x:
-  | else, -> "some other thing"
+  | else: "some other thing"

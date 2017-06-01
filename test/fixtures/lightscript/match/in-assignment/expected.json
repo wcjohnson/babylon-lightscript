@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 74,
+  "end": 68,
   "loc": {
     "start": {
       "line": 1,
@@ -9,13 +9,13 @@
     },
     "end": {
       "line": 3,
-      "column": 31
+      "column": 28
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 74,
+    "end": 68,
     "loc": {
       "start": {
         "line": 1,
@@ -23,7 +23,7 @@
       },
       "end": {
         "line": 3,
-        "column": 31
+        "column": 28
       }
     },
     "sourceType": "script",
@@ -31,7 +31,7 @@
       {
         "type": "VariableDeclaration",
         "start": 0,
-        "end": 74,
+        "end": 68,
         "loc": {
           "start": {
             "line": 1,
@@ -39,7 +39,7 @@
           },
           "end": {
             "line": 3,
-            "column": 31
+            "column": 28
           }
         },
         "kind": "const",
@@ -50,7 +50,7 @@
           {
             "type": "VariableDeclarator",
             "start": 0,
-            "end": 74,
+            "end": 68,
             "loc": {
               "start": {
                 "line": 1,
@@ -58,7 +58,7 @@
               },
               "end": {
                 "line": 3,
-                "column": 31
+                "column": 28
               }
             },
             "id": {
@@ -81,7 +81,7 @@
             "init": {
               "type": "MatchExpression",
               "start": 4,
-              "end": 74,
+              "end": 68,
               "loc": {
                 "start": {
                   "line": 1,
@@ -89,7 +89,7 @@
                 },
                 "end": {
                   "line": 3,
-                  "column": 31
+                  "column": 28
                 }
               },
               "discriminant": {
@@ -113,7 +113,7 @@
                 {
                   "type": "MatchCase",
                   "start": 15,
-                  "end": 42,
+                  "end": 39,
                   "loc": {
                     "start": {
                       "line": 2,
@@ -121,7 +121,7 @@
                     },
                     "end": {
                       "line": 2,
-                      "column": 29
+                      "column": 26
                     }
                   },
                   "test": {
@@ -176,9 +176,9 @@
                     }
                   },
                   "consequent": {
-                    "type": "ArrowFunctionExpression",
+                    "type": "ExpressionStatement",
                     "start": 22,
-                    "end": 42,
+                    "end": 39,
                     "loc": {
                       "start": {
                         "line": 2,
@@ -186,27 +186,21 @@
                       },
                       "end": {
                         "line": 2,
-                        "column": 29
+                        "column": 26
                       }
                     },
-                    "id": null,
-                    "generator": false,
-                    "expression": true,
-                    "async": false,
-                    "params": [],
-                    "skinny": true,
-                    "body": {
+                    "expression": {
                       "type": "StringLiteral",
-                      "start": 25,
-                      "end": 42,
+                      "start": 22,
+                      "end": 39,
                       "loc": {
                         "start": {
                           "line": 2,
-                          "column": 12
+                          "column": 9
                         },
                         "end": {
                           "line": 2,
-                          "column": 29
+                          "column": 26
                         }
                       },
                       "extra": {
@@ -219,8 +213,8 @@
                 },
                 {
                   "type": "MatchCase",
-                  "start": 45,
-                  "end": 74,
+                  "start": 42,
+                  "end": 68,
                   "loc": {
                     "start": {
                       "line": 3,
@@ -228,13 +222,13 @@
                     },
                     "end": {
                       "line": 3,
-                      "column": 31
+                      "column": 28
                     }
                   },
                   "test": {
                     "type": "MatchElse",
-                    "start": 47,
-                    "end": 51,
+                    "start": 44,
+                    "end": 48,
                     "loc": {
                       "start": {
                         "line": 3,
@@ -247,9 +241,9 @@
                     }
                   },
                   "consequent": {
-                    "type": "ArrowFunctionExpression",
-                    "start": 53,
-                    "end": 74,
+                    "type": "ExpressionStatement",
+                    "start": 50,
+                    "end": 68,
                     "loc": {
                       "start": {
                         "line": 3,
@@ -257,27 +251,21 @@
                       },
                       "end": {
                         "line": 3,
-                        "column": 31
+                        "column": 28
                       }
                     },
-                    "id": null,
-                    "generator": false,
-                    "expression": true,
-                    "async": false,
-                    "params": [],
-                    "skinny": true,
-                    "body": {
+                    "expression": {
                       "type": "StringLiteral",
-                      "start": 56,
-                      "end": 74,
+                      "start": 50,
+                      "end": 68,
                       "loc": {
                         "start": {
                           "line": 3,
-                          "column": 13
+                          "column": 10
                         },
                         "end": {
                           "line": 3,
-                          "column": 31
+                          "column": 28
                         }
                       },
                       "extra": {

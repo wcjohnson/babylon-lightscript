@@ -573,7 +573,7 @@ pp.parseMatch = function () {
     }
 
     const matchCase = this.parseMatchCase();
-    if (matchCase.test && matchCase.test.type === "MatchElse") {
+    if (matchCase.test.type === "MatchElse") {
       hasUsedElse = true;
     }
     node.cases.push(matchCase);
@@ -586,16 +586,12 @@ pp.parseMatchCase = function () {
   const node = this.startNode();
 
   node.test = this.parseMatchCaseTest();
-  this.expect(tt.comma);
 
-  // parse arrow function expression. (TODO: consider allowing NamedArrowExpression)
-  const oldInMatchCaseConsequent = this.state.inMatchCaseConsequent;
-  this.state.inMatchCaseConsequent = true;
-  node.consequent = this.parseMaybeAssign();
-  this.state.inMatchCaseConsequent = oldInMatchCaseConsequent;
-  if (node.consequent.type !== "ArrowFunctionExpression") {
-    this.unexpected(node.consequent.start, tt.arrow);
+  if (this.eat(tt._with)) {
+    node.binding = this.parseBindingAtom();
   }
+
+  node.consequent = this.parseBlock(false);
 
   return this.finishNode(node, "MatchCase");
 };
@@ -634,8 +630,7 @@ pp.isSubscriptTokenForMatchCase = function (tokenType) {
     tokenType === tt.dot ||
     tokenType === tt.elvis ||
     tokenType === tt.tilde ||
-    tokenType === tt.bracketL ||
-    (tokenType === this.state.type && this.isNumberStartingWithDot())
+    tokenType === tt.bracketL
   );
 };
 

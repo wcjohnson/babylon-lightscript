@@ -1,3 +1,3 @@
 match x:
-  | `a`, -> 'is "a"'
-  | `${b}`, -> 'is str of b'
+  | `a`: 'is "a"'
+  | `${b}`: 'is str of b'

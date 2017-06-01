@@ -1,2 +1,2 @@
 match x:
-  | .a + .b, -> 'has a and b'
+  | .a + .b: 'has a and b'

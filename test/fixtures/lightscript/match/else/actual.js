@@ -1,3 +1,3 @@
 match x:
-  | a, -> b
-  | else, -> c
+  | a: b
+  | else: c

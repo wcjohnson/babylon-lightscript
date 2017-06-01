@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 38,
+  "end": 35,
   "loc": {
     "start": {
       "line": 1,
@@ -9,13 +9,13 @@
     },
     "end": {
       "line": 2,
-      "column": 29
+      "column": 26
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 38,
+    "end": 35,
     "loc": {
       "start": {
         "line": 1,
@@ -23,7 +23,7 @@
       },
       "end": {
         "line": 2,
-        "column": 29
+        "column": 26
       }
     },
     "sourceType": "script",
@@ -31,7 +31,7 @@
       {
         "type": "ExpressionStatement",
         "start": 0,
-        "end": 38,
+        "end": 35,
         "loc": {
           "start": {
             "line": 1,
@@ -39,13 +39,13 @@
           },
           "end": {
             "line": 2,
-            "column": 29
+            "column": 26
           }
         },
         "expression": {
           "type": "MatchExpression",
           "start": 0,
-          "end": 38,
+          "end": 35,
           "loc": {
             "start": {
               "line": 1,
@@ -53,7 +53,7 @@
             },
             "end": {
               "line": 2,
-              "column": 29
+              "column": 26
             }
           },
           "discriminant": {
@@ -77,7 +77,7 @@
             {
               "type": "MatchCase",
               "start": 11,
-              "end": 38,
+              "end": 35,
               "loc": {
                 "start": {
                   "line": 2,
@@ -85,7 +85,7 @@
                 },
                 "end": {
                   "line": 2,
-                  "column": 29
+                  "column": 26
                 }
               },
               "test": {
@@ -201,9 +201,9 @@
                 }
               },
               "consequent": {
-                "type": "ArrowFunctionExpression",
+                "type": "ExpressionStatement",
                 "start": 22,
-                "end": 38,
+                "end": 35,
                 "loc": {
                   "start": {
                     "line": 2,
@@ -211,27 +211,21 @@
                   },
                   "end": {
                     "line": 2,
-                    "column": 29
+                    "column": 26
                   }
                 },
-                "id": null,
-                "generator": false,
-                "expression": true,
-                "async": false,
-                "params": [],
-                "skinny": true,
-                "body": {
+                "expression": {
                   "type": "StringLiteral",
-                  "start": 25,
-                  "end": 38,
+                  "start": 22,
+                  "end": 35,
                   "loc": {
                     "start": {
                       "line": 2,
-                      "column": 16
+                      "column": 13
                     },
                     "end": {
                       "line": 2,
-                      "column": 29
+                      "column": 26
                     }
                   },
                   "extra": {

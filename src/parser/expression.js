@@ -239,15 +239,12 @@ pp.parseExprOps = function (noIn, refShorthandDefaultPos) {
 pp.parseExprOp = function(left, leftStartPos, leftStartLoc, minPrec, noIn) {
   // correct ASI failures.
   if (this.hasPlugin("lightscript") && this.isLineBreak()) {
-
     // if it's a newline followed by a unary +/-, bail so it can be parsed separately.
     if (this.match(tt.plusMin) && !this.isNextCharWhitespace()) {
       return left;
     }
-    // if it's a `|` in a match/case on a newline, assume it's for the "case"
-    // TODO: consider using indentation to be more precise about this
-    // TODO: just remove all bitwise operators so this isn't necessary.
-    if (this.match(tt.bitwiseOR) && this.state.inMatchCaseConsequent) {
+    // for match/case
+    if (this.match(tt.bitwiseOR)) {
       return left;
     }
   }
@@ -752,7 +749,7 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       }
 
     case tt.dot:
-      if (this.hasPlugin("lightscript") && this.lookahead().type === tt.num) {
+      if (this.hasPlugin("lightscript") && this.lookahead().type === tt.num && !this.allowMatchCasePlaceholder()) {
         this.unexpected(null, "Decimal numbers must be prefixed with a `0` in LightScript (eg; `0.1`).");
       }
 
