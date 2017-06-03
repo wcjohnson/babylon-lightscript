@@ -1,6 +1,7 @@
 # babylon-lightscript
 
-The parser for [LightScript](http://lightscript.org).
+The parser for [LightScript](http://lightscript.org), a concise syntax for JavaScript.
+
 To be used through [babel-plugin-lightscript](https://github.com/lightscript/babel-plugin-lightscript).
 
 A minimally-invasive fork of [Babylon](https://github.com/babel/babylon).
