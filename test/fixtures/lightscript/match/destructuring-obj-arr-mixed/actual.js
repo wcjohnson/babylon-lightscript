@@ -4,7 +4,7 @@ match x:
       b
       {
         d
-        e: 'e'
+        e = 1
         ...f
       }
       g
