@@ -678,6 +678,10 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       return this.parseParenAndDistinguishExpression(null, null, canBeArrow);
 
     case tt.bracketL:
+      if (this.hasPlugin("lightscript") && this.state.inMatchCaseTest && !refShorthandDefaultPos) {
+        // re-enter this fn, but with refShorthandDefaultPos and state tracking
+        return this.parseMatchCaseTestPattern();
+      }
       node = this.startNode();
       this.next();
       if (this.hasPlugin("lightscript") && this.match(tt._for)) {
@@ -688,6 +692,10 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       return this.finishNode(node, "ArrayExpression");
 
     case tt.braceL:
+      if (this.hasPlugin("lightscript") && this.state.inMatchCaseTest && !refShorthandDefaultPos) {
+        // re-enter this fn, but with refShorthandDefaultPos and state tracking
+        return this.parseMatchCaseTestPattern();
+      }
       return this.parseObj(false, refShorthandDefaultPos);
 
     case tt._function:
@@ -1170,6 +1178,9 @@ pp.parsePropertyName = function (prop) {
 // Initialize empty function node.
 
 pp.initFunction = function (node, isAsync) {
+  if (this.hasPlugin("lightscript") && this.state.inMatchCaseTest) {
+    this.unexpected(node.start, "Cannot match on functions.");
+  }
   node.id = null;
   node.generator = false;
   node.expression = false;

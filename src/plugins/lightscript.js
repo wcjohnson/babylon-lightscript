@@ -559,6 +559,7 @@ pp.parseMatchStatement = function (node) {
 };
 
 pp.parseMatch = function (node, isExpression) {
+  if (this.state.inMatchCaseTest) this.unexpected();
   this.expect(tt._match);
   node.discriminant = this.parseParenExpression();
 
@@ -594,8 +595,12 @@ pp.parseMatchCase = function (isExpression) {
 
   node.test = this.parseMatchCaseTest();
 
-  if (this.eat(tt._with)) {
-    node.binding = this.parseBindingAtom();
+  if (this.isContextual("as")) {
+    if (!this.state.allowMatchCaseTestPattern) {
+      this.unexpected(null, "Cannot rename after destructuring.");
+    }
+    this.next();
+    node.binding = this.parseIdentifier();
   }
 
   if (isExpression) {
@@ -619,6 +624,7 @@ pp.parseMatchCase = function (isExpression) {
 pp.parseMatchCaseTest = function () {
   // can't be nested so no need to read/restore old value
   this.state.inMatchCaseTest = true;
+  this.state.allowMatchCaseTestPattern = true;
 
   this.expect(tt.bitwiseOR);
   if (this.isLineBreak()) this.unexpected(this.state.lastTokEnd, "Illegal newline.");
@@ -633,6 +639,7 @@ pp.parseMatchCaseTest = function () {
   }
 
   this.state.inMatchCaseTest = false;
+  this.state.allowMatchCaseTestPattern = false;
   return test;
 };
 
@@ -649,8 +656,7 @@ pp.isSubscriptTokenForMatchCase = function (tokenType) {
   return (
     tokenType === tt.dot ||
     tokenType === tt.elvis ||
-    tokenType === tt.tilde ||
-    tokenType === tt.bracketL
+    tokenType === tt.tilde
   );
 };
 
@@ -670,6 +676,27 @@ pp.allowMatchCasePlaceholder = function () {
     return !this.isSubscriptTokenForMatchCase(prev);
   }
   return false;
+};
+
+pp.parseMatchCaseTestPattern = function () {
+  if (!this.state.allowMatchCaseTestPattern) {
+    this.unexpected(null, "Only one pattern allowed per match case test.");
+  }
+
+  const oldInMatchCaseTestPattern = this.state.inMatchCaseTestPattern;
+  this.state.inMatchCaseTestPattern = true;
+
+  // re-enter parent function, allowing patterns.
+  const refShorthandDefaultPos = { start: 0 };
+  const node = this.parseExprAtom(refShorthandDefaultPos);
+
+  // once we have finished recursing through a pattern, disallow future patterns
+  this.state.inMatchCaseTestPattern = oldInMatchCaseTestPattern;
+  if (this.state.inMatchCaseTestPattern === false) {
+    this.state.allowMatchCaseTestPattern = false;
+  }
+
+  return node;
 };
 
 
