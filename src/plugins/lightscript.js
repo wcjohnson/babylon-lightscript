@@ -726,6 +726,10 @@ pp.parseMatchCaseTest = function (node) {
     try {
       // | <pattern> :
       node.binding = this.parseMatchCaseBinding();
+      if (!(this.match(tt.colon) || this.match(tt.braceL))) {
+        node.binding = null;
+        this.unexpected(null, "Expected a Block.");
+      }
     } catch (e) {
       this.state = state;
       // | <test>:
