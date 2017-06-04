@@ -679,75 +679,63 @@ pp.parseMatch = function (node, isExpression) {
 };
 
 pp.parseMatchCaseConsequent = function(matchNode) {
+  const oldInMatchCaseConsequent = this.state.inMatchCaseConsequent;
+  this.state.inMatchCaseConsequent = true;
+
   // c/p parseIf
   if (this.match(tt.braceL)) {
     matchNode.consequent = this.parseBlock(false, true);
   } else {
     matchNode.consequent = this.parseWhiteBlock(true);
   }
-};
 
-pp.parseMatchCaseWithConsequent = function(matchNode) {
-  // with (x) -> ..., with async, with ->
-  if (this.match(tt.parenL) || this.match(tt.arrow) || this.isContextual("async")) {
-    const consequent = this.parseMaybeAssign();
-    if (consequent.type !== "ArrowFunctionExpression") {
-      this.unexpected(consequent.start, tt.arrow);
-    }
-    matchNode.consequent = consequent;
-    matchNode.functional = true;
-    return;
-  }
-
-  // with <Identifier> -> ...
-  // with <BindingAtom>: ...
-  const node = this.startNode();
-  const bindingAtom = this.parseBindingAtom();
-  if (this.match(tt.arrow)) {
-    matchNode.consequent = this.parseArrowExpression(node, bindingAtom ? [bindingAtom] : [], false);
-    matchNode.functional = true;
-    return;
-  }
-
-  matchNode.binding = bindingAtom;
-  this.parseMatchCaseConsequent(matchNode);
+  this.state.inMatchCaseConsequent = oldInMatchCaseConsequent;
 };
 
 pp.parseMatchCase = function () {
   const node = this.startNode();
 
-  node.test = this.parseMatchCaseTest();
-
-  const oldInMatchCaseConsequent = this.state.inMatchCaseConsequent;
-  this.state.inMatchCaseConsequent = true;
-  if (this.eat(tt._with)) {
-    this.parseMatchCaseWithConsequent(node);
-  } else {
-    this.parseMatchCaseConsequent(node);
-  }
-  this.state.inMatchCaseConsequent = oldInMatchCaseConsequent;
+  this.parseMatchCaseTest(node);
+  this.parseMatchCaseConsequent(node);
 
   return this.finishNode(node, "MatchCase");
 };
 
-pp.parseMatchCaseTest = function () {
+pp.parseMatchCaseBinding = function() {
+  const errorPos = this.state.pos;
+  const bindingAtom = this.parseBindingAtom();
+  if (bindingAtom.type !== "ArrayPattern" && bindingAtom.type !== "ObjectPattern") {
+    this.unexpected(errorPos, "Expected an array or object destructuring pattern.");
+  }
+  return bindingAtom;
+};
+
+pp.parseMatchCaseTest = function (node) {
   // can't be nested so no need to read/restore old value
   this.state.inMatchCaseTest = true;
 
   this.expect(tt.bitwiseOR);
   if (this.isLineBreak()) this.unexpected(this.state.lastTokEnd, "Illegal newline.");
 
-  let test;
   if (this.match(tt._else)) {
     const elseNode = this.startNode();
     this.next();
-    test = this.finishNode(elseNode, "MatchElse");
+    node.test = this.finishNode(elseNode, "MatchElse");
   } else {
-    test = this.parseExprOps();
+    const state = this.state.clone();
+    try {
+      // | <pattern> :
+      node.binding = this.parseMatchCaseBinding();
+    } catch (e) {
+      this.state = state;
+      // | <test>:
+      node.test = this.parseExprOps();
+      // | <test> with <pattern>:
+      if (this.eat(tt._with)) node.binding = this.parseMatchCaseBinding();
+    }
   }
 
   this.state.inMatchCaseTest = false;
-  return test;
 };
 
 pp.isBinaryTokenForMatchCase = function (tokenType) {
