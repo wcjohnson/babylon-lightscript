@@ -176,7 +176,7 @@
                     }
                   },
                   "consequent": {
-                    "type": "StringLiteral",
+                    "type": "ExpressionStatement",
                     "start": 22,
                     "end": 39,
                     "loc": {
@@ -189,11 +189,26 @@
                         "column": 26
                       }
                     },
-                    "extra": {
-                      "rawValue": "bigger than two",
-                      "raw": "\"bigger than two\""
-                    },
-                    "value": "bigger than two"
+                    "expression": {
+                      "type": "StringLiteral",
+                      "start": 22,
+                      "end": 39,
+                      "loc": {
+                        "start": {
+                          "line": 2,
+                          "column": 9
+                        },
+                        "end": {
+                          "line": 2,
+                          "column": 26
+                        }
+                      },
+                      "extra": {
+                        "rawValue": "bigger than two",
+                        "raw": "\"bigger than two\""
+                      },
+                      "value": "bigger than two"
+                    }
                   }
                 },
                 {
@@ -226,7 +241,7 @@
                     }
                   },
                   "consequent": {
-                    "type": "StringLiteral",
+                    "type": "ExpressionStatement",
                     "start": 50,
                     "end": 68,
                     "loc": {
@@ -239,11 +254,26 @@
                         "column": 28
                       }
                     },
-                    "extra": {
-                      "rawValue": "some other thing",
-                      "raw": "\"some other thing\""
-                    },
-                    "value": "some other thing"
+                    "expression": {
+                      "type": "StringLiteral",
+                      "start": 50,
+                      "end": 68,
+                      "loc": {
+                        "start": {
+                          "line": 3,
+                          "column": 10
+                        },
+                        "end": {
+                          "line": 3,
+                          "column": 28
+                        }
+                      },
+                      "extra": {
+                        "rawValue": "some other thing",
+                        "raw": "\"some other thing\""
+                      },
+                      "value": "some other thing"
+                    }
                   }
                 }
               ]

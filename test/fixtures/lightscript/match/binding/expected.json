@@ -157,7 +157,7 @@
               ]
             },
             "consequent": {
-              "type": "Identifier",
+              "type": "ExpressionStatement",
               "start": 40,
               "end": 45,
               "loc": {
@@ -168,10 +168,25 @@
                 "end": {
                   "line": 2,
                   "column": 36
-                },
-                "identifierName": "first"
+                }
               },
-              "name": "first"
+              "expression": {
+                "type": "Identifier",
+                "start": 40,
+                "end": 45,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 31
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 36
+                  },
+                  "identifierName": "first"
+                },
+                "name": "first"
+              }
             }
           },
           {
@@ -306,7 +321,7 @@
               ]
             },
             "consequent": {
-              "type": "Identifier",
+              "type": "ExpressionStatement",
               "start": 86,
               "end": 91,
               "loc": {
@@ -317,10 +332,25 @@
                 "end": {
                   "line": 3,
                   "column": 45
-                },
-                "identifierName": "third"
+                }
               },
-              "name": "third"
+              "expression": {
+                "type": "Identifier",
+                "start": 86,
+                "end": 91,
+                "loc": {
+                  "start": {
+                    "line": 3,
+                    "column": 40
+                  },
+                  "end": {
+                    "line": 3,
+                    "column": 45
+                  },
+                  "identifierName": "third"
+                },
+                "name": "third"
+              }
             }
           }
         ]

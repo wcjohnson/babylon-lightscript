@@ -146,8 +146,9 @@
                 }
               ]
             },
+            "test": null,
             "consequent": {
-              "type": "Identifier",
+              "type": "ExpressionStatement",
               "start": 20,
               "end": 21,
               "loc": {
@@ -158,10 +159,25 @@
                 "end": {
                   "line": 2,
                   "column": 12
-                },
-                "identifierName": "y"
+                }
               },
-              "name": "y"
+              "expression": {
+                "type": "Identifier",
+                "start": 20,
+                "end": 21,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 11
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 12
+                  },
+                  "identifierName": "y"
+                },
+                "name": "y"
+              }
             }
           }
         ]

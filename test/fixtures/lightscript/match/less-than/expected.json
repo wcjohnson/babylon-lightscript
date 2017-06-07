@@ -126,7 +126,7 @@
               }
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 18,
               "end": 27,
               "loc": {
@@ -139,11 +139,26 @@
                   "column": 18
                 }
               },
-              "extra": {
-                "rawValue": "not jsx",
-                "raw": "\"not jsx\""
-              },
-              "value": "not jsx"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 18,
+                "end": 27,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 9
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 18
+                  }
+                },
+                "extra": {
+                  "rawValue": "not jsx",
+                  "raw": "\"not jsx\""
+                },
+                "value": "not jsx"
+              }
             }
           },
           {
@@ -212,7 +227,7 @@
               }
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 36,
               "end": 45,
               "loc": {
@@ -225,11 +240,26 @@
                   "column": 17
                 }
               },
-              "extra": {
-                "rawValue": "not jsx",
-                "raw": "\"not jsx\""
-              },
-              "value": "not jsx"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 36,
+                "end": 45,
+                "loc": {
+                  "start": {
+                    "line": 3,
+                    "column": 8
+                  },
+                  "end": {
+                    "line": 3,
+                    "column": 17
+                  }
+                },
+                "extra": {
+                  "rawValue": "not jsx",
+                  "raw": "\"not jsx\""
+                },
+                "value": "not jsx"
+              }
             }
           }
         ]

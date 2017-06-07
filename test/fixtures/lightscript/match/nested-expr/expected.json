@@ -126,7 +126,7 @@
               }
             },
             "consequent": {
-              "type": "MatchExpression",
+              "type": "MatchStatement",
               "start": 18,
               "end": 102,
               "loc": {
@@ -223,7 +223,7 @@
                     }
                   },
                   "consequent": {
-                    "type": "StringLiteral",
+                    "type": "ExpressionStatement",
                     "start": 39,
                     "end": 48,
                     "loc": {
@@ -236,11 +236,26 @@
                         "column": 21
                       }
                     },
-                    "extra": {
-                      "rawValue": "soo big",
-                      "raw": "\"soo big\""
-                    },
-                    "value": "soo big"
+                    "expression": {
+                      "type": "StringLiteral",
+                      "start": 39,
+                      "end": 48,
+                      "loc": {
+                        "start": {
+                          "line": 3,
+                          "column": 12
+                        },
+                        "end": {
+                          "line": 3,
+                          "column": 21
+                        }
+                      },
+                      "extra": {
+                        "rawValue": "soo big",
+                        "raw": "\"soo big\""
+                      },
+                      "value": "soo big"
+                    }
                   }
                 },
                 {
@@ -309,7 +324,7 @@
                     }
                   },
                   "consequent": {
-                    "type": "StringLiteral",
+                    "type": "ExpressionStatement",
                     "start": 60,
                     "end": 78,
                     "loc": {
@@ -322,11 +337,26 @@
                         "column": 29
                       }
                     },
-                    "extra": {
-                      "rawValue": "still pretty big",
-                      "raw": "\"still pretty big\""
-                    },
-                    "value": "still pretty big"
+                    "expression": {
+                      "type": "StringLiteral",
+                      "start": 60,
+                      "end": 78,
+                      "loc": {
+                        "start": {
+                          "line": 4,
+                          "column": 11
+                        },
+                        "end": {
+                          "line": 4,
+                          "column": 29
+                        }
+                      },
+                      "extra": {
+                        "rawValue": "still pretty big",
+                        "raw": "\"still pretty big\""
+                      },
+                      "value": "still pretty big"
+                    }
                   }
                 },
                 {
@@ -359,7 +389,7 @@
                     }
                   },
                   "consequent": {
-                    "type": "StringLiteral",
+                    "type": "ExpressionStatement",
                     "start": 91,
                     "end": 102,
                     "loc": {
@@ -372,11 +402,26 @@
                         "column": 23
                       }
                     },
-                    "extra": {
-                      "rawValue": "kinda big",
-                      "raw": "\"kinda big\""
-                    },
-                    "value": "kinda big"
+                    "expression": {
+                      "type": "StringLiteral",
+                      "start": 91,
+                      "end": 102,
+                      "loc": {
+                        "start": {
+                          "line": 5,
+                          "column": 12
+                        },
+                        "end": {
+                          "line": 5,
+                          "column": 23
+                        }
+                      },
+                      "extra": {
+                        "rawValue": "kinda big",
+                        "raw": "\"kinda big\""
+                      },
+                      "value": "kinda big"
+                    }
                   }
                 }
               ]
@@ -412,7 +457,7 @@
               }
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 113,
               "end": 131,
               "loc": {
@@ -425,11 +470,26 @@
                   "column": 28
                 }
               },
-              "extra": {
-                "rawValue": "some other thing",
-                "raw": "\"some other thing\""
-              },
-              "value": "some other thing"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 113,
+                "end": 131,
+                "loc": {
+                  "start": {
+                    "line": 6,
+                    "column": 10
+                  },
+                  "end": {
+                    "line": 6,
+                    "column": 28
+                  }
+                },
+                "extra": {
+                  "rawValue": "some other thing",
+                  "raw": "\"some other thing\""
+                },
+                "value": "some other thing"
+              }
             }
           }
         ]

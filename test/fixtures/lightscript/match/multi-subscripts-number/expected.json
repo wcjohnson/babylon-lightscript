@@ -190,7 +190,7 @@
               }
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 24,
               "end": 47,
               "loc": {
@@ -203,11 +203,26 @@
                   "column": 38
                 }
               },
-              "extra": {
-                "rawValue": "has a and first child",
-                "raw": "'has a and first child'"
-              },
-              "value": "has a and first child"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 24,
+                "end": 47,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 15
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 38
+                  }
+                },
+                "extra": {
+                  "rawValue": "has a and first child",
+                  "raw": "'has a and first child'"
+                },
+                "value": "has a and first child"
+              }
             }
           },
           {
@@ -312,7 +327,7 @@
               "computed": true
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 58,
               "end": 86,
               "loc": {
@@ -325,11 +340,26 @@
                   "column": 38
                 }
               },
-              "extra": {
-                "rawValue": "first child of first child",
-                "raw": "'first child of first child'"
-              },
-              "value": "first child of first child"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 58,
+                "end": 86,
+                "loc": {
+                  "start": {
+                    "line": 3,
+                    "column": 10
+                  },
+                  "end": {
+                    "line": 3,
+                    "column": 38
+                  }
+                },
+                "extra": {
+                  "rawValue": "first child of first child",
+                  "raw": "'first child of first child'"
+                },
+                "value": "first child of first child"
+              }
             }
           }
         ]

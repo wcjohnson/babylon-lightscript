@@ -1,5 +1,5 @@
 match x:
-  | ~isObject() with {y}: match y:
+  | > 2: match x:
     | > 10: "soo big"
     | > 5: "still pretty big"
     | else: "kinda big"

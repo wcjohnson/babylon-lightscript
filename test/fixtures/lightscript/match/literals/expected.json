@@ -95,7 +95,7 @@
               "value": 2
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 16,
               "end": 21,
               "loc": {
@@ -108,11 +108,26 @@
                   "column": 12
                 }
               },
-              "extra": {
-                "rawValue": "two",
-                "raw": "\"two\""
-              },
-              "value": "two"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 16,
+                "end": 21,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 7
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 12
+                  }
+                },
+                "extra": {
+                  "rawValue": "two",
+                  "raw": "\"two\""
+                },
+                "value": "two"
+              }
             }
           },
           {
@@ -150,7 +165,7 @@
               "value": "hello"
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 35,
               "end": 39,
               "loc": {
@@ -163,11 +178,26 @@
                   "column": 17
                 }
               },
-              "extra": {
-                "rawValue": "hi",
-                "raw": "\"hi\""
-              },
-              "value": "hi"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 35,
+                "end": 39,
+                "loc": {
+                  "start": {
+                    "line": 3,
+                    "column": 13
+                  },
+                  "end": {
+                    "line": 3,
+                    "column": 17
+                  }
+                },
+                "extra": {
+                  "rawValue": "hi",
+                  "raw": "\"hi\""
+                },
+                "value": "hi"
+              }
             }
           },
           {
@@ -205,7 +235,7 @@
               "flags": ""
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 51,
               "end": 57,
               "loc": {
@@ -218,11 +248,26 @@
                   "column": 17
                 }
               },
-              "extra": {
-                "rawValue": "word",
-                "raw": "\"word\""
-              },
-              "value": "word"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 51,
+                "end": 57,
+                "loc": {
+                  "start": {
+                    "line": 4,
+                    "column": 11
+                  },
+                  "end": {
+                    "line": 4,
+                    "column": 17
+                  }
+                },
+                "extra": {
+                  "rawValue": "word",
+                  "raw": "\"word\""
+                },
+                "value": "word"
+              }
             }
           },
           {
@@ -260,7 +305,7 @@
               "flags": "ig"
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 71,
               "end": 77,
               "loc": {
@@ -273,11 +318,26 @@
                   "column": 19
                 }
               },
-              "extra": {
-                "rawValue": "word",
-                "raw": "\"word\""
-              },
-              "value": "word"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 71,
+                "end": 77,
+                "loc": {
+                  "start": {
+                    "line": 5,
+                    "column": 13
+                  },
+                  "end": {
+                    "line": 5,
+                    "column": 19
+                  }
+                },
+                "extra": {
+                  "rawValue": "word",
+                  "raw": "\"word\""
+                },
+                "value": "word"
+              }
             }
           },
           {
@@ -335,7 +395,7 @@
               }
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 86,
               "end": 109,
               "loc": {
@@ -348,11 +408,26 @@
                   "column": 31
                 }
               },
-              "extra": {
-                "rawValue": "equal to positive one",
-                "raw": "\"equal to positive one\""
-              },
-              "value": "equal to positive one"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 86,
+                "end": 109,
+                "loc": {
+                  "start": {
+                    "line": 6,
+                    "column": 8
+                  },
+                  "end": {
+                    "line": 6,
+                    "column": 31
+                  }
+                },
+                "extra": {
+                  "rawValue": "equal to positive one",
+                  "raw": "\"equal to positive one\""
+                },
+                "value": "equal to positive one"
+              }
             }
           },
           {
@@ -410,7 +485,7 @@
               }
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 118,
               "end": 141,
               "loc": {
@@ -423,11 +498,26 @@
                   "column": 31
                 }
               },
-              "extra": {
-                "rawValue": "equal to negative one",
-                "raw": "\"equal to negative one\""
-              },
-              "value": "equal to negative one"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 118,
+                "end": 141,
+                "loc": {
+                  "start": {
+                    "line": 7,
+                    "column": 8
+                  },
+                  "end": {
+                    "line": 7,
+                    "column": 31
+                  }
+                },
+                "extra": {
+                  "rawValue": "equal to negative one",
+                  "raw": "\"equal to negative one\""
+                },
+                "value": "equal to negative one"
+              }
             }
           },
           {
@@ -460,7 +550,7 @@
               }
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 152,
               "end": 158,
               "loc": {
@@ -473,11 +563,26 @@
                   "column": 16
                 }
               },
-              "extra": {
-                "rawValue": "null",
-                "raw": "\"null\""
-              },
-              "value": "null"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 152,
+                "end": 158,
+                "loc": {
+                  "start": {
+                    "line": 8,
+                    "column": 10
+                  },
+                  "end": {
+                    "line": 8,
+                    "column": 16
+                  }
+                },
+                "extra": {
+                  "rawValue": "null",
+                  "raw": "\"null\""
+                },
+                "value": "null"
+              }
             }
           },
           {
@@ -512,7 +617,7 @@
               "name": "undefined"
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 174,
               "end": 185,
               "loc": {
@@ -525,11 +630,26 @@
                   "column": 26
                 }
               },
-              "extra": {
-                "rawValue": "undefined",
-                "raw": "\"undefined\""
-              },
-              "value": "undefined"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 174,
+                "end": 185,
+                "loc": {
+                  "start": {
+                    "line": 9,
+                    "column": 15
+                  },
+                  "end": {
+                    "line": 9,
+                    "column": 26
+                  }
+                },
+                "extra": {
+                  "rawValue": "undefined",
+                  "raw": "\"undefined\""
+                },
+                "value": "undefined"
+              }
             }
           },
           {
@@ -563,7 +683,7 @@
               "value": true
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 196,
               "end": 209,
               "loc": {
@@ -576,11 +696,26 @@
                   "column": 23
                 }
               },
-              "extra": {
-                "rawValue": "strict true",
-                "raw": "\"strict true\""
-              },
-              "value": "strict true"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 196,
+                "end": 209,
+                "loc": {
+                  "start": {
+                    "line": 10,
+                    "column": 10
+                  },
+                  "end": {
+                    "line": 10,
+                    "column": 23
+                  }
+                },
+                "extra": {
+                  "rawValue": "strict true",
+                  "raw": "\"strict true\""
+                },
+                "value": "strict true"
+              }
             }
           },
           {
@@ -614,7 +749,7 @@
               "value": false
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 221,
               "end": 235,
               "loc": {
@@ -627,11 +762,26 @@
                   "column": 25
                 }
               },
-              "extra": {
-                "rawValue": "strict false",
-                "raw": "\"strict false\""
-              },
-              "value": "strict false"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 221,
+                "end": 235,
+                "loc": {
+                  "start": {
+                    "line": 11,
+                    "column": 11
+                  },
+                  "end": {
+                    "line": 11,
+                    "column": 25
+                  }
+                },
+                "extra": {
+                  "rawValue": "strict false",
+                  "raw": "\"strict false\""
+                },
+                "value": "strict false"
+              }
             }
           }
         ]

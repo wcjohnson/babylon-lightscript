@@ -187,7 +187,7 @@
               }
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 22,
               "end": 35,
               "loc": {
@@ -200,11 +200,26 @@
                   "column": 26
                 }
               },
-              "extra": {
-                "rawValue": "has a and b",
-                "raw": "'has a and b'"
-              },
-              "value": "has a and b"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 22,
+                "end": 35,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 13
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 26
+                  }
+                },
+                "extra": {
+                  "rawValue": "has a and b",
+                  "raw": "'has a and b'"
+                },
+                "value": "has a and b"
+              }
             }
           }
         ]

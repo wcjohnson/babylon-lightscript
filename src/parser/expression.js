@@ -239,15 +239,12 @@ pp.parseExprOps = function (noIn, refShorthandDefaultPos) {
 pp.parseExprOp = function(left, leftStartPos, leftStartLoc, minPrec, noIn) {
   // correct ASI failures.
   if (this.hasPlugin("lightscript") && this.isLineBreak()) {
-
     // if it's a newline followed by a unary +/-, bail so it can be parsed separately.
     if (this.match(tt.plusMin) && !this.isNextCharWhitespace()) {
       return left;
     }
-    // if it's a `|` in a match/case on a newline, assume it's for the "case"
-    // TODO: consider using indentation to be more precise about this
-    // TODO: just remove all bitwise operators so this isn't necessary.
-    if (this.match(tt.bitwiseOR) && this.state.inMatchCaseConsequent) {
+    // for match/case
+    if (this.match(tt.bitwiseOR)) {
       return left;
     }
   }
@@ -297,6 +294,7 @@ pp.parseMaybeUnary = function (refShorthandDefaultPos) {
   const matchCaseBinaryPlusMin = this.hasPlugin("lightscript") &&
     this.state.inMatchCaseTest &&
     this.match(tt.plusMin) &&
+    this.state.tokens[this.state.tokens.length - 1].value !== "!" &&
     this.isNextCharWhitespace();
 
   if (this.state.type.prefix && !matchCaseBinaryPlusMin) {
@@ -315,7 +313,19 @@ pp.parseMaybeUnary = function (refShorthandDefaultPos) {
     this.next();
 
     const argType = this.state.type;
-    node.argument = this.parseMaybeUnary();
+
+    // change precedence / allow autofill of `not` within `match` test
+    if (this.hasPlugin("lightscript") && node.operator === "!" && this.state.inMatchCaseTest && !argType.startsExpr) {
+      if (this.match(tt.colon) || this.match(tt.logicalOR) || this.match(tt.logicalAND)) {
+        // allow `| not:`, `| !!:`, `| not or x:`
+        node.argument = this.parseMatchCasePlaceholder();
+      } else {
+        // change precedence of `| not < 3:` to `!(x < 3)` from `(!x) < 3`
+        node.argument = this.parseExprOps();
+      }
+    } else {
+      node.argument = this.parseMaybeUnary();
+    }
 
     this.addExtra(node, "parenthesizedArgument", argType === tt.parenL && (!node.argument.extra || !node.argument.extra.parenthesized));
 
@@ -730,7 +740,8 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
 
     case tt._match:
       if (this.hasPlugin("lightscript")) {
-        return this.parseMatchExpression();
+        node = this.startNode();
+        return this.parseMatchExpression(node);
       }
 
     case tt.arrow:
@@ -753,15 +764,13 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       }
 
     case tt.dot:
-      if (this.hasPlugin("lightscript") && !this.allowMatchCasePlaceholder() && this.lookahead().type === tt.num) {
+      if (this.hasPlugin("lightscript") && this.lookahead().type === tt.num && !this.allowMatchCasePlaceholder()) {
         this.unexpected(null, "Decimal numbers must be prefixed with a `0` in LightScript (eg; `0.1`).");
       }
 
     default:
       if (this.hasPlugin("lightscript") && this.allowMatchCasePlaceholder()) {
-        // use the blank space as an empty value (perhaps 0-length would be better)
-        node = this.startNodeAt(this.state.lastTokEnd, this.state.lastTokEndLoc);
-        return this.finishNodeAt(node, "PlaceholderExpression", this.state.start, this.state.startLoc);
+        return this.parseMatchCasePlaceholder();
       }
       this.unexpected();
   }
@@ -1173,6 +1182,9 @@ pp.parsePropertyName = function (prop) {
 // Initialize empty function node.
 
 pp.initFunction = function (node, isAsync) {
+  if (this.hasPlugin("lightscript") && this.state.inMatchCaseTest) {
+    this.unexpected(node.start, "Cannot match on functions.");
+  }
   node.id = null;
   node.generator = false;
   node.expression = false;

@@ -92,7 +92,7 @@
               "name": "a"
             },
             "consequent": {
-              "type": "Identifier",
+              "type": "ExpressionStatement",
               "start": 16,
               "end": 17,
               "loc": {
@@ -103,10 +103,25 @@
                 "end": {
                   "line": 2,
                   "column": 8
-                },
-                "identifierName": "b"
+                }
               },
-              "name": "b"
+              "expression": {
+                "type": "Identifier",
+                "start": 16,
+                "end": 17,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 7
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 8
+                  },
+                  "identifierName": "b"
+                },
+                "name": "b"
+              }
             }
           },
           {
@@ -139,7 +154,7 @@
               }
             },
             "consequent": {
-              "type": "Identifier",
+              "type": "ExpressionStatement",
               "start": 28,
               "end": 29,
               "loc": {
@@ -150,10 +165,25 @@
                 "end": {
                   "line": 3,
                   "column": 11
-                },
-                "identifierName": "c"
+                }
               },
-              "name": "c"
+              "expression": {
+                "type": "Identifier",
+                "start": 28,
+                "end": 29,
+                "loc": {
+                  "start": {
+                    "line": 3,
+                    "column": 10
+                  },
+                  "end": {
+                    "line": 3,
+                    "column": 11
+                  },
+                  "identifierName": "c"
+                },
+                "name": "c"
+              }
             }
           }
         ]

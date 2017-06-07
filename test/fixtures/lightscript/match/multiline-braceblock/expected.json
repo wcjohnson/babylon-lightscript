@@ -242,7 +242,7 @@
               }
             },
             "consequent": {
-              "type": "Identifier",
+              "type": "ExpressionStatement",
               "start": 49,
               "end": 50,
               "loc": {
@@ -253,10 +253,25 @@
                 "end": {
                   "line": 7,
                   "column": 11
-                },
-                "identifierName": "d"
+                }
               },
-              "name": "d"
+              "expression": {
+                "type": "Identifier",
+                "start": 49,
+                "end": 50,
+                "loc": {
+                  "start": {
+                    "line": 7,
+                    "column": 10
+                  },
+                  "end": {
+                    "line": 7,
+                    "column": 11
+                  },
+                  "identifierName": "d"
+                },
+                "name": "d"
+              }
             }
           }
         ]

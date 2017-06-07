@@ -40,9 +40,9 @@ export default class State {
 
     // for lightscript
     this.indentLevel = 0;
-    this.inMatchCaseConsequent =
-      this.inMatchCaseTest =
-        false;
+    this.inMatchCaseTest = false;
+    this.inMatchCaseTestPattern = false;
+    this.allowMatchCaseTestPattern = false;
 
     this.type = tt.eof;
     this.value = null;

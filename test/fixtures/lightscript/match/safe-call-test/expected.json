@@ -107,7 +107,7 @@
               "safe": true
             },
             "consequent": {
-              "type": "BooleanLiteral",
+              "type": "ExpressionStatement",
               "start": 18,
               "end": 22,
               "loc": {
@@ -120,7 +120,22 @@
                   "column": 13
                 }
               },
-              "value": true
+              "expression": {
+                "type": "BooleanLiteral",
+                "start": 18,
+                "end": 22,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 9
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 13
+                  }
+                },
+                "value": true
+              }
             }
           }
         ]

@@ -134,15 +134,6 @@ pp.parseObjectComprehension = function(node) {
   return this.finishNode(node, "ObjectComprehension");
 };
 
-pp.finishWhiteBlock = function(node, allowEmptyBody) {
-  if (!allowEmptyBody && !node.body.length) {
-    this.unexpected(node.start, "Expected an Indent or Statement");
-  }
-
-  this.addExtra(node, "curly", false);
-  return this.finishNode(node, "BlockStatement");
-};
-
 pp.parseInlineWhiteBlock = function (node) {
   if (this.state.type.startsExpr) return this.parseMaybeAssign();
   // oneline statement case
@@ -609,20 +600,22 @@ pp.existentialToParameter = function(node) {
   return node.argument;
 };
 
-pp.parseMatchStatement = function(node) {
-  return this.parseMatch(node);
+pp.parseMatchExpression = function (node) {
+  return this.parseMatch(node, true);
 };
 
-pp.parseMatchExpression = function() {
-  return this.parseMatch(this.startNode(), true);
+pp.parseMatchStatement = function (node) {
+  return this.parseMatch(node, false);
 };
 
 pp.parseMatch = function (node, isExpression) {
+  if (this.state.inMatchCaseTest) this.unexpected();
   this.expect(tt._match);
   node.discriminant = this.parseParenExpression();
 
+  const isColon = this.match(tt.colon);
   let isEnd;
-  if (this.match(tt.colon)) {
+  if (isColon) {
     const indentLevel = this.state.indentLevel;
     this.next();
     isEnd = () => this.state.indentLevel <= indentLevel || this.match(tt.eof);
@@ -632,52 +625,51 @@ pp.parseMatch = function (node, isExpression) {
   }
 
   node.cases = [];
+  const caseIndentLevel = this.state.indentLevel;
   let hasUsedElse = false;
   while (!isEnd()) {
     if (hasUsedElse) {
       this.unexpected(null, "`else` must be last case.");
     }
+    if (isColon && this.state.indentLevel !== caseIndentLevel) {
+      this.unexpected(null, "Mismatched indent.");
+    }
 
-    const matchCase = this.parseMatchCase();
+    const matchCase = this.parseMatchCase(isExpression);
     if (matchCase.test && matchCase.test.type === "MatchElse") {
       hasUsedElse = true;
     }
     node.cases.push(matchCase);
   }
 
+  if (!node.cases.length) {
+    this.unexpected(null, tt.bitwiseOR);
+  }
+
   return this.finishNode(node, isExpression ? "MatchExpression" : "MatchStatement");
 };
 
-pp.parseMatchCaseConsequent = function(matchNode) {
-  const oldInMatchCaseConsequent = this.state.inMatchCaseConsequent;
-  this.state.inMatchCaseConsequent = true;
-
-  // c/p parseIf
-  if (this.match(tt.braceL)) {
-    matchNode.consequent = this.parseBlock(false, true);
-  } else {
-    matchNode.consequent = this.parseWhiteBlock(true);
-  }
-
-  this.state.inMatchCaseConsequent = oldInMatchCaseConsequent;
-};
-
-pp.parseMatchCase = function () {
+pp.parseMatchCase = function (isExpression) {
   const node = this.startNode();
 
   this.parseMatchCaseTest(node);
-  this.parseMatchCaseConsequent(node);
+
+  if (isExpression) {
+    // disallow return/continue/break, etc. c/p doExpression
+    const oldInFunction = this.state.inFunction;
+    const oldLabels = this.state.labels;
+    this.state.labels = [];
+    this.state.inFunction = false;
+
+    node.consequent = this.parseBlock(false);
+
+    this.state.inFunction = oldInFunction;
+    this.state.labels = oldLabels;
+  } else {
+    node.consequent = this.parseBlock(false);
+  }
 
   return this.finishNode(node, "MatchCase");
-};
-
-pp.parseMatchCaseBinding = function() {
-  const errorPos = this.state.pos;
-  const bindingAtom = this.parseBindingAtom();
-  if (bindingAtom.type !== "ArrayPattern" && bindingAtom.type !== "ObjectPattern") {
-    this.unexpected(errorPos, "Expected an array or object destructuring pattern.");
-  }
-  return bindingAtom;
 };
 
 pp.parseMatchCaseTest = function (node) {
@@ -691,22 +683,25 @@ pp.parseMatchCaseTest = function (node) {
     const elseNode = this.startNode();
     this.next();
     node.test = this.finishNode(elseNode, "MatchElse");
-  } else {
-    const state = this.state.clone();
+  } else if (this.match(tt.braceL) || this.match(tt.bracketL)) {
+    // disambiguate `| { a, b }:` from `| { a, b }~someFn():`
+    const bindingOrTest = this.parseExprOps(false, { start: 0 });
     try {
-      // | <pattern> :
-      node.binding = this.parseMatchCaseBinding();
-      if (!(this.match(tt.colon) || this.match(tt.braceL))) {
-        node.binding = null;
-        this.unexpected(null, "Expected a Block.");
-      }
-    } catch (e) {
-      this.state = state;
-      // | <test>:
-      node.test = this.parseExprOps();
-      // | <test> with <pattern>:
-      if (this.eat(tt._with)) node.binding = this.parseMatchCaseBinding();
+      node.binding = this.toAssignable(bindingOrTest.__clone(), true, "match test");
+      node.test = null;
+    } catch (_err) {
+      node.test = bindingOrTest;
     }
+  } else {
+    node.test = this.parseExprOps();
+  }
+
+  if (this.eat(tt._with)) {
+    if (node.binding) this.unexpected(this.state.lastTokStart, "Cannot destructure twice.");
+    if (!(this.match(tt.braceL) || this.match(tt.bracketL))) {
+      this.unexpected(null, "Expected an array or object destructuring pattern.");
+    }
+    node.binding = this.parseBindingAtom();
   }
 
   this.state.inMatchCaseTest = false;
@@ -747,6 +742,31 @@ pp.allowMatchCasePlaceholder = function () {
     return !this.isSubscriptTokenForMatchCase(prev);
   }
   return false;
+};
+
+pp.parseMatchCaseTestPattern = function () {
+  if (!this.state.allowMatchCaseTestPattern) {
+    this.unexpected(null, "Only one pattern allowed per match case test.");
+  }
+
+  const oldInMatchCaseTestPattern = this.state.inMatchCaseTestPattern;
+  this.state.inMatchCaseTestPattern = true;
+
+  const node = this.parseBindingAtom();
+
+  // once we have finished recursing through a pattern, disallow future patterns
+  this.state.inMatchCaseTestPattern = oldInMatchCaseTestPattern;
+  if (this.state.inMatchCaseTestPattern === false) {
+    this.state.allowMatchCaseTestPattern = false;
+  }
+
+  return node;
+};
+
+pp.parseMatchCasePlaceholder = function () {
+  // use the blank space as an empty value (perhaps 0-length would be better)
+  const node = this.startNodeAt(this.state.lastTokEnd, this.state.lastTokEndLoc);
+  return this.finishNodeAt(node, "PlaceholderExpression", this.state.start, this.state.startLoc);
 };
 
 export default function (instance) {

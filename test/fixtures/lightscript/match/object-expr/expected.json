@@ -74,7 +74,6 @@
                 "column": 17
               }
             },
-            "binding": null,
             "test": {
               "type": "TildeCallExpression",
               "start": 13,
@@ -181,7 +180,7 @@
               "arguments": []
             },
             "consequent": {
-              "type": "NumericLiteral",
+              "type": "ExpressionStatement",
               "start": 25,
               "end": 26,
               "loc": {
@@ -194,11 +193,26 @@
                   "column": 17
                 }
               },
-              "extra": {
-                "rawValue": 1,
-                "raw": "1"
-              },
-              "value": 1
+              "expression": {
+                "type": "NumericLiteral",
+                "start": 25,
+                "end": 26,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 16
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 17
+                  }
+                },
+                "extra": {
+                  "rawValue": 1,
+                  "raw": "1"
+                },
+                "value": 1
+              }
             }
           }
         ]

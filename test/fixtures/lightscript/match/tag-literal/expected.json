@@ -113,7 +113,7 @@
               ]
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 18,
               "end": 26,
               "loc": {
@@ -126,11 +126,26 @@
                   "column": 17
                 }
               },
-              "extra": {
-                "rawValue": "is \"a\"",
-                "raw": "'is \"a\"'"
-              },
-              "value": "is \"a\""
+              "expression": {
+                "type": "StringLiteral",
+                "start": 18,
+                "end": 26,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 9
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 17
+                  }
+                },
+                "extra": {
+                  "rawValue": "is \"a\"",
+                  "raw": "'is \"a\"'"
+                },
+                "value": "is \"a\""
+              }
             }
           },
           {
@@ -224,7 +239,7 @@
               ]
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 39,
               "end": 52,
               "loc": {
@@ -237,11 +252,26 @@
                   "column": 25
                 }
               },
-              "extra": {
-                "rawValue": "is str of b",
-                "raw": "'is str of b'"
-              },
-              "value": "is str of b"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 39,
+                "end": 52,
+                "loc": {
+                  "start": {
+                    "line": 3,
+                    "column": 12
+                  },
+                  "end": {
+                    "line": 3,
+                    "column": 25
+                  }
+                },
+                "extra": {
+                  "rawValue": "is str of b",
+                  "raw": "'is str of b'"
+                },
+                "value": "is str of b"
+              }
             }
           }
         ]

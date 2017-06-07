@@ -126,7 +126,7 @@
               }
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 18,
               "end": 35,
               "loc": {
@@ -139,11 +139,26 @@
                   "column": 26
                 }
               },
-              "extra": {
-                "rawValue": "bigger than two",
-                "raw": "\"bigger than two\""
-              },
-              "value": "bigger than two"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 18,
+                "end": 35,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 9
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 26
+                  }
+                },
+                "extra": {
+                  "rawValue": "bigger than two",
+                  "raw": "\"bigger than two\""
+                },
+                "value": "bigger than two"
+              }
             }
           },
           {
@@ -279,7 +294,7 @@
               }
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 53,
               "end": 62,
               "loc": {
@@ -292,11 +307,26 @@
                   "column": 26
                 }
               },
-              "extra": {
-                "rawValue": "so cool",
-                "raw": "\"so cool\""
-              },
-              "value": "so cool"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 53,
+                "end": 62,
+                "loc": {
+                  "start": {
+                    "line": 3,
+                    "column": 17
+                  },
+                  "end": {
+                    "line": 3,
+                    "column": 26
+                  }
+                },
+                "extra": {
+                  "rawValue": "so cool",
+                  "raw": "\"so cool\""
+                },
+                "value": "so cool"
+              }
             }
           },
           {
@@ -401,7 +431,7 @@
               }
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 77,
               "end": 91,
               "loc": {
@@ -414,11 +444,26 @@
                   "column": 28
                 }
               },
-              "extra": {
-                "rawValue": "its one shhh",
-                "raw": "\"its one shhh\""
-              },
-              "value": "its one shhh"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 77,
+                "end": 91,
+                "loc": {
+                  "start": {
+                    "line": 4,
+                    "column": 14
+                  },
+                  "end": {
+                    "line": 4,
+                    "column": 28
+                  }
+                },
+                "extra": {
+                  "rawValue": "its one shhh",
+                  "raw": "\"its one shhh\""
+                },
+                "value": "its one shhh"
+              }
             }
           },
           {
@@ -532,7 +577,7 @@
               }
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 106,
               "end": 136,
               "loc": {
@@ -545,11 +590,26 @@
                   "column": 44
                 }
               },
-              "extra": {
-                "rawValue": "equal to one or negative one",
-                "raw": "\"equal to one or negative one\""
-              },
-              "value": "equal to one or negative one"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 106,
+                "end": 136,
+                "loc": {
+                  "start": {
+                    "line": 5,
+                    "column": 14
+                  },
+                  "end": {
+                    "line": 5,
+                    "column": 44
+                  }
+                },
+                "extra": {
+                  "rawValue": "equal to one or negative one",
+                  "raw": "\"equal to one or negative one\""
+                },
+                "value": "equal to one or negative one"
+              }
             }
           },
           {
@@ -663,7 +723,7 @@
               }
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 151,
               "end": 181,
               "loc": {
@@ -676,11 +736,26 @@
                   "column": 44
                 }
               },
-              "extra": {
-                "rawValue": "equal to one or negative one",
-                "raw": "\"equal to one or negative one\""
-              },
-              "value": "equal to one or negative one"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 151,
+                "end": 181,
+                "loc": {
+                  "start": {
+                    "line": 6,
+                    "column": 14
+                  },
+                  "end": {
+                    "line": 6,
+                    "column": 44
+                  }
+                },
+                "extra": {
+                  "rawValue": "equal to one or negative one",
+                  "raw": "\"equal to one or negative one\""
+                },
+                "value": "equal to one or negative one"
+              }
             }
           },
           {
@@ -746,7 +821,7 @@
               }
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 204,
               "end": 224,
               "loc": {
@@ -759,11 +834,26 @@
                   "column": 42
                 }
               },
-              "extra": {
-                "rawValue": "its a Class thing!",
-                "raw": "\"its a Class thing!\""
-              },
-              "value": "its a Class thing!"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 204,
+                "end": 224,
+                "loc": {
+                  "start": {
+                    "line": 7,
+                    "column": 22
+                  },
+                  "end": {
+                    "line": 7,
+                    "column": 42
+                  }
+                },
+                "extra": {
+                  "rawValue": "its a Class thing!",
+                  "raw": "\"its a Class thing!\""
+                },
+                "value": "its a Class thing!"
+              }
             }
           },
           {
@@ -970,7 +1060,7 @@
               }
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 254,
               "end": 265,
               "loc": {
@@ -983,11 +1073,26 @@
                   "column": 40
                 }
               },
-              "extra": {
-                "rawValue": "triangle?",
-                "raw": "\"triangle?\""
-              },
-              "value": "triangle?"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 254,
+                "end": 265,
+                "loc": {
+                  "start": {
+                    "line": 8,
+                    "column": 29
+                  },
+                  "end": {
+                    "line": 8,
+                    "column": 40
+                  }
+                },
+                "extra": {
+                  "rawValue": "triangle?",
+                  "raw": "\"triangle?\""
+                },
+                "value": "triangle?"
+              }
             }
           }
         ]

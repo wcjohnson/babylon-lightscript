@@ -90,7 +90,7 @@
               }
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 19,
               "end": 37,
               "loc": {
@@ -103,11 +103,26 @@
                   "column": 28
                 }
               },
-              "extra": {
-                "rawValue": "some other thing",
-                "raw": "\"some other thing\""
-              },
-              "value": "some other thing"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 19,
+                "end": 37,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 10
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 28
+                  }
+                },
+                "extra": {
+                  "rawValue": "some other thing",
+                  "raw": "\"some other thing\""
+                },
+                "value": "some other thing"
+              }
             }
           }
         ]

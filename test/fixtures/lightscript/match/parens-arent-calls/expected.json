@@ -146,7 +146,7 @@
                     }
                   },
                   "consequent": {
-                    "type": "StringLiteral",
+                    "type": "ExpressionStatement",
                     "start": 22,
                     "end": 39,
                     "loc": {
@@ -159,11 +159,26 @@
                         "column": 26
                       }
                     },
-                    "extra": {
-                      "rawValue": "bigger than two",
-                      "raw": "\"bigger than two\""
-                    },
-                    "value": "bigger than two"
+                    "expression": {
+                      "type": "StringLiteral",
+                      "start": 22,
+                      "end": 39,
+                      "loc": {
+                        "start": {
+                          "line": 2,
+                          "column": 9
+                        },
+                        "end": {
+                          "line": 2,
+                          "column": 26
+                        }
+                      },
+                      "extra": {
+                        "rawValue": "bigger than two",
+                        "raw": "\"bigger than two\""
+                      },
+                      "value": "bigger than two"
+                    }
                   }
                 }
               ]

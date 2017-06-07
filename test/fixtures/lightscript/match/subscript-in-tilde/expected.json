@@ -172,7 +172,7 @@
               ]
             },
             "consequent": {
-              "type": "StringLiteral",
+              "type": "ExpressionStatement",
               "start": 21,
               "end": 33,
               "loc": {
@@ -185,11 +185,26 @@
                   "column": 24
                 }
               },
-              "extra": {
-                "rawValue": "its a func",
-                "raw": "'its a func'"
-              },
-              "value": "its a func"
+              "expression": {
+                "type": "StringLiteral",
+                "start": 21,
+                "end": 33,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 12
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 24
+                  }
+                },
+                "extra": {
+                  "rawValue": "its a func",
+                  "raw": "'its a func'"
+                },
+                "value": "its a func"
+              }
             }
           }
         ]
