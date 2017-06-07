@@ -1,17 +1,10 @@
 {
-  "name": "@oigroup/babylon-lightscript",
+  "name": "@oigroup/babylon-lightscript-self-host",
   "version": "1.1.0",
-  "description": "A LightScript parser, based on babylon (a JavaScript parser)",
+  "description": "LightScript parser for use in self-hosting environments",
   "author": "Alex Rattray <rattray.alex@gmail.com>",
   "homepage": "http://lightscript.org/",
   "license": "MIT",
-  "keywords": [
-    "babel",
-    "javascript",
-    "parser",
-    "babylon",
-    "lightscript"
-  ],
   "repository": "https://github.com/lightscript/babylon-lightscript",
   "main": "lib/index.js",
   "files": [
@@ -42,9 +35,6 @@
     "try-resolve": "^1.0.1",
     "unicode-9.0.0": "~0.7.0"
   },
-  "bin": {
-    "babylon-lightscript": "./bin/babylon-lightscript.js"
-  },
   "scripts": {
     "build": "npm run clean && rollup -c",
     "coverage": "nyc report --reporter=json && codecov -f coverage/coverage-final.json",
@@ -57,8 +47,7 @@
     "test-only": "ava",
     "test-ci": "nyc npm run test-only",
     "changelog": "git log `git describe --tags --abbrev=0`..HEAD --pretty=format:' * %s (%an)' | grep -v 'Merge pull request'",
-    "watch": "npm run clean && cross-env BABEL_ENV=watch babel src --out-dir lib --watch",
-    "debug-parse": "node --inspect --debug-brk bin/babylon-lightscript.js"
+    "watch": "npm run clean && cross-env BABEL_ENV=watch babel src --out-dir lib --watch"
   },
   "nyc": {
     "include": [
