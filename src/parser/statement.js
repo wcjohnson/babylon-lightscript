@@ -375,7 +375,7 @@ pp.parseReturnStatement = function (node) {
   // optional arguments, we eagerly look for a semicolon or the
   // possibility to insert one.
 
-  if (this.isLineTerminator()) {
+  if (this.isLineTerminator() || (this.hasPlugin("lightscript") && !this.state.type.startsExpr)) {
     node.argument = null;
   } else {
     node.argument = this.parseExpression();
