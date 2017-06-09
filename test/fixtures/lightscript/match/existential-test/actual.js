@@ -1,2 +1,2 @@
 match x:
-  | ?: true
+  | it?: true

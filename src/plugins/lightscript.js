@@ -111,9 +111,10 @@ pp.expectParenFreeBlockStart = function (node) {
   // if true: blah
   // if true { blah }
   // if (true) blah
+  // match (foo) as bar:
   if (node && node.extra && node.extra.hasParens) {
     this.expect(tt.parenR);
-  } else if (!(this.match(tt.colon) || this.match(tt.braceL))) {
+  } else if (!(this.match(tt.colon) || this.match(tt.braceL) || this.isContextual("as"))) {
     this.unexpected(null, "Paren-free test expressions must be followed by braces or a colon.");
   }
 };
@@ -134,7 +135,7 @@ pp.parseObjectComprehension = function(node) {
   return this.finishNode(node, "ObjectComprehension");
 };
 
-pp.parseInlineWhiteBlock = function (node) {
+pp.parseInlineWhiteBlock = function(node) {
   if (this.state.type.startsExpr) return this.parseMaybeAssign();
   // oneline statement case
   node.body = [this.parseStatement(true)];
@@ -611,7 +612,11 @@ pp.parseMatchStatement = function (node) {
 pp.parseMatch = function (node, isExpression) {
   if (this.state.inMatchCaseTest) this.unexpected();
   this.expect(tt._match);
+
   node.discriminant = this.parseParenExpression();
+  if (this.eatContextual("as")) {
+    node.alias = this.parseIdentifier();
+  }
 
   const isColon = this.match(tt.colon);
   let isEnd;
@@ -683,91 +688,27 @@ pp.parseMatchCaseTest = function (node) {
     const elseNode = this.startNode();
     this.next();
     node.test = this.finishNode(elseNode, "MatchElse");
-  } else if (this.match(tt.braceL) || this.match(tt.bracketL)) {
-    // disambiguate `| { a, b }:` from `| { a, b }~someFn():`
-    const bindingOrTest = this.parseExprOps(false, { start: 0 });
-    try {
-      node.binding = this.toAssignable(bindingOrTest.__clone(), true, "match test");
-      node.test = null;
-    } catch (_err) {
-      node.test = bindingOrTest;
-    }
+  } else if (this.eat(tt._with)) {
+    this.parseMatchCaseBinding(node);
   } else {
     node.test = this.parseExprOps();
   }
 
   if (this.eat(tt._with)) {
-    if (node.binding) this.unexpected(this.state.lastTokStart, "Cannot destructure twice.");
-    if (!(this.match(tt.braceL) || this.match(tt.bracketL))) {
-      this.unexpected(null, "Expected an array or object destructuring pattern.");
-    }
-    node.binding = this.parseBindingAtom();
+    this.parseMatchCaseBinding(node);
   }
 
   this.state.inMatchCaseTest = false;
 };
 
-pp.isBinaryTokenForMatchCase = function (tokenType) {
-  return (
-    tokenType.binop != null &&
-    tokenType !== tt.logicalOR &&
-    tokenType !== tt.logicalAND &&
-    tokenType !== tt.bitwiseOR
-  );
+pp.parseMatchCaseBinding = function (node) {
+  if (node.binding) this.unexpected(this.state.lastTokStart, "Cannot destructure twice.");
+  if (!(this.match(tt.braceL) || this.match(tt.bracketL))) {
+    this.unexpected(null, "Expected an array or object destructuring pattern.");
+  }
+  node.binding = this.parseBindingAtom();
 };
 
-pp.isSubscriptTokenForMatchCase = function (tokenType) {
-  return (
-    tokenType === tt.dot ||
-    tokenType === tt.elvis ||
-    tokenType === tt.tilde ||
-    tokenType === tt.bracketL ||
-    tokenType === tt.question
-  );
-};
-
-pp.allowMatchCasePlaceholder = function () {
-  if (!this.state.inMatchCaseTest) {
-    return false;
-  }
-  const cur = this.state.type;
-  const prev = this.state.tokens[this.state.tokens.length - 1].type;
-
-  // don't allow two binary tokens in a row to use placeholders, eg; `+ *`
-  if (this.isBinaryTokenForMatchCase(cur)) {
-    return !this.isBinaryTokenForMatchCase(prev);
-  }
-  // don't allow two subscripts in a row to use placeholders, eg; `..`
-  if (this.isSubscriptTokenForMatchCase(cur)) {
-    return !this.isSubscriptTokenForMatchCase(prev);
-  }
-  return false;
-};
-
-pp.parseMatchCaseTestPattern = function () {
-  if (!this.state.allowMatchCaseTestPattern) {
-    this.unexpected(null, "Only one pattern allowed per match case test.");
-  }
-
-  const oldInMatchCaseTestPattern = this.state.inMatchCaseTestPattern;
-  this.state.inMatchCaseTestPattern = true;
-
-  const node = this.parseBindingAtom();
-
-  // once we have finished recursing through a pattern, disallow future patterns
-  this.state.inMatchCaseTestPattern = oldInMatchCaseTestPattern;
-  if (this.state.inMatchCaseTestPattern === false) {
-    this.state.allowMatchCaseTestPattern = false;
-  }
-
-  return node;
-};
-
-pp.parseMatchCasePlaceholder = function () {
-  // use the blank space as an empty value (perhaps 0-length would be better)
-  const node = this.startNodeAt(this.state.lastTokEnd, this.state.lastTokEndLoc);
-  return this.finishNodeAt(node, "PlaceholderExpression", this.state.start, this.state.startLoc);
-};
 
 export default function (instance) {
 
@@ -786,7 +727,8 @@ export default function (instance) {
         // first, try paren-free style
         try {
           const val = this.parseExpression();
-          if (this.match(tt.braceL) || this.match(tt.colon)) {
+          // "as" for `match (foo) as bar:`, bit dirty to allow for all but not a problem
+          if (this.match(tt.braceL) || this.match(tt.colon) || this.isContextual("as")) {
             if (val.extra && val.extra.parenthesized) {
               delete val.extra.parenthesized;
               delete val.extra.parenStart;

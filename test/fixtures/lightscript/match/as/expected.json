@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 23,
+  "end": 36,
   "loc": {
     "start": {
       "line": 1,
@@ -9,13 +9,13 @@
     },
     "end": {
       "line": 2,
-      "column": 14
+      "column": 20
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 23,
+    "end": 36,
     "loc": {
       "start": {
         "line": 1,
@@ -23,7 +23,7 @@
       },
       "end": {
         "line": 2,
-        "column": 14
+        "column": 20
       }
     },
     "sourceType": "script",
@@ -31,7 +31,7 @@
       {
         "type": "MatchStatement",
         "start": 0,
-        "end": 23,
+        "end": 36,
         "loc": {
           "start": {
             "line": 1,
@@ -39,7 +39,7 @@
           },
           "end": {
             "line": 2,
-            "column": 14
+            "column": 20
           }
         },
         "discriminant": {
@@ -59,11 +59,28 @@
           },
           "name": "x"
         },
+        "alias": {
+          "type": "Identifier",
+          "start": 11,
+          "end": 14,
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 11
+            },
+            "end": {
+              "line": 1,
+              "column": 14
+            },
+            "identifierName": "foo"
+          },
+          "name": "foo"
+        },
         "cases": [
           {
             "type": "MatchCase",
-            "start": 11,
-            "end": 23,
+            "start": 18,
+            "end": 36,
             "loc": {
               "start": {
                 "line": 2,
@@ -71,13 +88,13 @@
               },
               "end": {
                 "line": 2,
-                "column": 14
+                "column": 20
               }
             },
             "test": {
               "type": "MemberExpression",
-              "start": 13,
-              "end": 17,
+              "start": 20,
+              "end": 27,
               "loc": {
                 "start": {
                   "line": 2,
@@ -85,13 +102,13 @@
                 },
                 "end": {
                   "line": 2,
-                  "column": 8
+                  "column": 11
                 }
               },
               "object": {
                 "type": "Identifier",
-                "start": 13,
-                "end": 15,
+                "start": 20,
+                "end": 23,
                 "loc": {
                   "start": {
                     "line": 2,
@@ -99,63 +116,97 @@
                   },
                   "end": {
                     "line": 2,
-                    "column": 6
+                    "column": 7
                   },
-                  "identifierName": "it"
+                  "identifierName": "foo"
                 },
-                "name": "it"
+                "name": "foo"
               },
               "property": {
-                "type": "NumericLiteral",
-                "start": 16,
-                "end": 17,
+                "type": "Identifier",
+                "start": 24,
+                "end": 27,
                 "loc": {
                   "start": {
                     "line": 2,
-                    "column": 7
+                    "column": 8
                   },
                   "end": {
                     "line": 2,
-                    "column": 8
-                  }
+                    "column": 11
+                  },
+                  "identifierName": "bar"
                 },
-                "extra": {
-                  "rawValue": 0,
-                  "raw": "0"
-                },
-                "value": 0
+                "name": "bar"
               },
-              "computed": true
+              "computed": false
             },
             "consequent": {
               "type": "ExpressionStatement",
-              "start": 19,
-              "end": 23,
+              "start": 29,
+              "end": 36,
               "loc": {
                 "start": {
                   "line": 2,
-                  "column": 10
+                  "column": 13
                 },
                 "end": {
                   "line": 2,
-                  "column": 14
+                  "column": 20
                 }
               },
               "expression": {
-                "type": "BooleanLiteral",
-                "start": 19,
-                "end": 23,
+                "type": "BinaryExpression",
+                "start": 29,
+                "end": 36,
                 "loc": {
                   "start": {
                     "line": 2,
-                    "column": 10
+                    "column": 13
                   },
                   "end": {
                     "line": 2,
-                    "column": 14
+                    "column": 20
                   }
                 },
-                "value": true
+                "left": {
+                  "type": "Identifier",
+                  "start": 29,
+                  "end": 32,
+                  "loc": {
+                    "start": {
+                      "line": 2,
+                      "column": 13
+                    },
+                    "end": {
+                      "line": 2,
+                      "column": 16
+                    },
+                    "identifierName": "foo"
+                  },
+                  "name": "foo"
+                },
+                "operator": "+",
+                "right": {
+                  "type": "NumericLiteral",
+                  "start": 35,
+                  "end": 36,
+                  "loc": {
+                    "start": {
+                      "line": 2,
+                      "column": 19
+                    },
+                    "end": {
+                      "line": 2,
+                      "column": 20
+                    }
+                  },
+                  "extra": {
+                    "rawValue": 1,
+                    "raw": "1"
+                  },
+                  "value": 1
+                }
               }
             }
           }

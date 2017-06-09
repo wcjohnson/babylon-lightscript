@@ -1,3 +1,3 @@
 match x:
-  | ~isArray() with [ first ]: first
-  | ~isObject() with { second: third }: third
+  | it~isArray() with [ first ]: first
+  | it~isObject() with { second: third }: third

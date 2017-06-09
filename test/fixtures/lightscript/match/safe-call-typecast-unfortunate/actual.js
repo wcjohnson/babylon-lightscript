@@ -1,2 +1,2 @@
 match x:
-  | (?(a) : b): c
+  | (it?(a) : b): c

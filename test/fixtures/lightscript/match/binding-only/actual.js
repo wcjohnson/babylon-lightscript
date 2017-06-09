@@ -1,2 +1,2 @@
 match x:
-  | { y }: y
+  | with { y }: y

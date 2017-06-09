@@ -1,2 +1,2 @@
 match x:
-  | y and (? b : c) : d
+  | y and (it ? b : c) : d
