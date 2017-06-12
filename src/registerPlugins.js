@@ -3,6 +3,7 @@ import estreePlugin from "./plugins/estree";
 import flowPlugin from "./plugins/flow";
 import jsxPlugin from "./plugins/jsx";
 import safeCallExistentialPlugin from "./plugins/safeCallExistential";
+import bangCallPlugin from "./plugins/bangCall";
 
 function noncePlugin() {}
 
@@ -13,6 +14,7 @@ export default function registerPlugins(plugins) {
   plugins.jsx = jsxPlugin;
   plugins.safeCallExpression = safeCallExistentialPlugin;
   plugins.existentialExpression = safeCallExistentialPlugin;
+  plugins.bangCall = bangCallPlugin;
 
   // Plugins with string tags only
   ([

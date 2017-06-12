@@ -367,7 +367,9 @@ pp.parseExprSubscripts = function (refShorthandDefaultPos) {
 
 pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
   for (;;) {
-    if (!noCalls && this.eat(tt.doubleColon)) {
+    if (this.hasPlugin("bangCall") && this.shouldUnwindBangSubscript()) {
+      return base;
+    } else if (!noCalls && this.eat(tt.doubleColon)) {
       const node = this.startNodeAt(startPos, startLoc);
       node.object = base;
       node.callee = this.parseNoCallExpr();
@@ -436,9 +438,27 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       // Allow safe tilde calls (a~b?(c))
       if (this.eat(tt.question)) node.safe = true;
 
-      this.expect(tt.parenL);
-      node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
-      base = this.finishNode(node, "TildeCallExpression");
+      // Allow bang tilde calls
+      if (this.hasPlugin("bangCall") && this.isBang()) {
+        this.next();
+        const next = this.parseBangCall(node, "TildeCallExpression");
+        if (next) base = next; else return node;
+      } else {
+        this.expect(tt.parenL);
+        node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
+        base = this.finishNode(node, "TildeCallExpression");
+      }
+    } else if (
+      !noCalls &&
+      this.hasPlugin("bangCall") &&
+      this.isBang() &&
+      (this.state.lastTokEnd === (this.state.pos - 1))
+    ) {
+      const node = this.startNodeAt(startPos, startLoc);
+      this.next();
+      node.callee = base;
+      const next = this.parseBangCall(node, "CallExpression");
+      if (next) base = next; else return node;
     } else if (!(this.hasPlugin("lightscript") && this.isNonIndentedBreakFrom(startPos)) && this.eat(tt.bracketL)) {
       const node = this.startNodeAt(startPos, startLoc);
       node.object = base;
