@@ -1,3 +1,4 @@
 {
+  "excludePlugins": ["exportExtensions"],
   "throws": "Unexpected token, expected ; (1:20)"
 }

@@ -1,8 +1,7 @@
 {
-  "throws": "Unexpected token, expected ( (2:6)",
   "alternatives": {
     "all": {
-      "optionsOverride": "options.lightscript.json"
+      "throws": "Unexpected token, expected { (2:7)"
     },
     "noLsc": {
       "allPlugins": true,

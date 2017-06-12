@@ -11,14 +11,9 @@ import { types as tokTypes } from "./tokenizer/types";
 import "./tokenizer";
 import "./tokenizer/context";
 
-import lightscriptPlugin from "./plugins/lightscript";
-import estreePlugin from "./plugins/estree";
-import flowPlugin from "./plugins/flow";
-import jsxPlugin from "./plugins/jsx";
-plugins.lightscript = lightscriptPlugin;
-plugins.estree = estreePlugin;
-plugins.flow = flowPlugin;
-plugins.jsx = jsxPlugin;
+import registerPlugins from "./registerPlugins";
+
+registerPlugins(plugins);
 
 export function parse(input, options) {
   return new Parser(options, input).parse();
@@ -32,5 +27,8 @@ export function parseExpression(input, options) {
   return parser.getExpression();
 }
 
+export function getAvailablePlugins() {
+  return Object.keys(plugins).slice();
+}
 
 export { tokTypes };

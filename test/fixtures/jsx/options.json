@@ -1,3 +1,9 @@
 {
-  "plugins": ["jsx", "flow"]
+  "plugins": ["jsx", "flow"],
+  "alternatives": {
+    "all": {
+      "allPlugins": true,
+      "excludePlugins": ["estree"]
+    }
+  }
 }

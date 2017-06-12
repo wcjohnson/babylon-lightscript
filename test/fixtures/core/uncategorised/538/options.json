@@ -1,0 +1,9 @@
+{
+  "excludePlugins": ["jsx"],
+  "alternatives": {
+    "withJsx": {
+      "includePlugins": ["jsx"],
+      "throws": "Unexpected token (1:1)"
+    }
+  }
+}

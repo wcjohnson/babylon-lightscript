@@ -1,4 +1,16 @@
 {
   "sourceType": "module",
-  "plugins": ["jsx", "flow"]
+  "plugins": ["jsx", "flow"],
+  "alternatives": {
+    "all": {
+      "allPlugins": true,
+      "excludePlugins": ["estree"],
+      "optionsOverride": "options.lightscript.json",
+      "expectedOverride": "expected.lightscript.json"
+    },
+    "noLsc": {
+      "allPlugins": true,
+      "excludePlugins": ["lightscript", "estree"]
+    }
+  }
 }
