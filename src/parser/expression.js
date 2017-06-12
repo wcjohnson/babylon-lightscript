@@ -436,9 +436,26 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       // Allow safe tilde calls (a~b?(c))
       if (this.eat(tt.question)) node.safe = true;
 
-      this.expect(tt.parenL);
-      node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
-      base = this.finishNode(node, "TildeCallExpression");
+      // Allow bang tilde calls
+      if (this.hasPlugin("bangCall") && this.isBang()) {
+        this.next();
+        node.arguments = this.parseBangCallArguments();
+        this.addExtra(node, "bang", true);
+        return this.finishNode(node, "TildeCallExpression");
+      } else {
+        this.expect(tt.parenL);
+        node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
+        base = this.finishNode(node, "TildeCallExpression");
+      }
+    } else if (
+      !noCalls &&
+      this.hasPlugin("bangCall") &&
+      this.isBang() &&
+      (this.state.lastTokEnd === (this.state.pos - 1))
+    ) {
+      const node = this.startNodeAt(startPos, startLoc);
+      this.next();
+      return this.parseBangCall(node, base);
     } else if (!(this.hasPlugin("lightscript") && this.isNonIndentedBreakFrom(startPos)) && this.eat(tt.bracketL)) {
       const node = this.startNodeAt(startPos, startLoc);
       node.object = base;

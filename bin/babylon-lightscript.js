@@ -10,7 +10,13 @@ if (!filename) {
   process.exit(0);
 }
 
+var plugins = babylon.getAvailablePlugins();
+
+plugins = plugins.filter(function(x) {
+  return x !== "estree";
+});
+
 var file = fs.readFileSync(filename, "utf8");
-var ast  = babylon.parse(file, { plugins: ["lightscript", "jsx", "flow"] });
+var ast  = babylon.parse(file, { plugins: plugins });
 
 console.log(JSON.stringify(ast, null, "  "));
