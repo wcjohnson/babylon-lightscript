@@ -1,3 +1,3 @@
 y = match x:
-  | it?: true
+  | it: true
   | else: throw new Error
