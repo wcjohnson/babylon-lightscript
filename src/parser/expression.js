@@ -439,9 +439,8 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       // Allow bang tilde calls
       if (this.hasPlugin("bangCall") && this.isBang()) {
         this.next();
-        node.arguments = this.parseBangCallArguments();
-        this.addExtra(node, "bang", true);
-        return this.finishNode(node, "TildeCallExpression");
+        const next = this.parseBangCall(node, "TildeCallExpression");
+        if (next) base = next; else return node;
       } else {
         this.expect(tt.parenL);
         node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
@@ -455,7 +454,9 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
     ) {
       const node = this.startNodeAt(startPos, startLoc);
       this.next();
-      return this.parseBangCall(node, base);
+      node.callee = base;
+      const next = this.parseBangCall(node, "CallExpression");
+      if (next) base = next; else return node;
     } else if (!(this.hasPlugin("lightscript") && this.isNonIndentedBreakFrom(startPos)) && this.eat(tt.bracketL)) {
       const node = this.startNodeAt(startPos, startLoc);
       node.object = base;

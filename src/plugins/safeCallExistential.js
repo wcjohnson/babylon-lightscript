@@ -8,12 +8,18 @@ export default function(parser) {
   parser.__safeCallExistentialPluginInstalled = true;
 
   pp.parseSafeCall = function(expr, startPos, startLoc) {
-    this.expect(tt.parenL);
     const node = this.startNodeAt(startPos, startLoc);
     node.callee = expr;
-    node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
     node.safe = true;
-    return this.finishNode(node, "CallExpression");
+
+    if (this.hasPlugin("bangCall") && this.isBang()) {
+      this.next();
+      return this.parseBangCall(node, "CallExpression");
+    } else {
+      this.expect(tt.parenL);
+      node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
+      return this.finishNode(node, "CallExpression");
+    }
   };
 
   pp.parseExistential = function(expr, startPos, startLoc) {
@@ -33,9 +39,12 @@ export default function(parser) {
     // TODO: lint rule for ternaries recommending space after ?
     if (
       !noCalls &&
-      this.match(tt.parenL) &&
+      this.state.pos === (questionPos + 1) &&
       this.hasPlugin("safeCallExpression") &&
-      this.state.pos === (questionPos + 1)
+      (
+        this.match(tt.parenL) ||
+        (this.hasPlugin("bangCall") && this.isBang())
+      )
     ) {
       try {
         return this.parseSafeCall(lhs, startPos, startLoc);
