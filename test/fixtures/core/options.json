@@ -1,13 +1,14 @@
 {
-  "throws": "Unexpected token, expected ; (3:9)",
   "alternatives": {
     "all": {
+      "allPlugins": true,
+      "excludePlugins": ["estree"],
+      "optionsOverride": "options.lightscript.json",
       "expectedOverride": "expected.lightscript.json"
     },
     "noLsc": {
       "allPlugins": true,
       "excludePlugins": ["lightscript", "estree"]
     }
-  },
-  "plugins": ["classProperties"]
+  }
 }

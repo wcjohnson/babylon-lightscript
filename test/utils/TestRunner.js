@@ -4,6 +4,8 @@ const getTopics = require("babel-helper-fixtures").multiple;
 const readFile = require("babel-helper-fixtures").readFile;
 const resolve = require("try-resolve");
 const fs = require("fs");
+const path = require("path");
+const merge = require("lodash/merge");
 
 exports = module.exports = {};
 
@@ -32,7 +34,6 @@ class FilterTests {
 exports.TestRun = class TestRun extends FilterTests {
   constructor(parser, config = {}) {
     super();
-    this.allPlugins = parser.getAvailablePlugins();
     this.parser = parser;
     this.config = config;
     if (!this.config.TestClass) this.config.TestClass = exports.Test;
@@ -62,7 +63,9 @@ class Topic extends FilterTests {
     super();
     this.testRun = testRun;
     this.name = topicName;
-    this.path = testRun.path + "/" + topicName;
+    this.path = path.join(testRun.path, topicName);
+    const loc = resolve(path.join(this.path, "options"));
+    if (loc) this.options = require(loc); else this.options = {};
     this.suites = suites;
     if (this.testRun.onlyConfig) {
       this.only(this.testRun.onlyConfig.suite);
@@ -88,9 +91,18 @@ class Suite extends FilterTests {
     this.testRun = this.topic.testRun;
     this.name = suite.title;
     this.babelSuite = suite;
+    this.options = suite.options || {};
     if (this.testRun.onlyConfig) {
       this.only(this.testRun.onlyConfig.task);
     }
+    this.inheritOptions();
+  }
+
+  inheritOptions() {
+    if (!this.options.runImplicitDefaultAlternative)
+      this.options.runImplicitDefaultAlternative = this.topic.options.runImplicitDefaultAlternative;
+
+    this.options.alternatives = merge(this.options.alternatives || {}, this.topic.options.alternatives);
   }
 
   run() {
@@ -109,15 +121,35 @@ class TestCase {
   constructor(suite, test) {
     this.suite = suite;
     this.babelTest = test;
+    this.options = this.babelTest.options || {};
     this.testRun = this.suite.testRun;
     this.TestClass = this.testRun.config.TestClass;
+    this.inheritOptions();
+  }
+
+  inheritOptions() {
+    if (!this.options.runImplicitDefaultAlternative)
+      this.options.runImplicitDefaultAlternative = this.suite.options.runImplicitDefaultAlternative;
+
+    this.options.alternatives = merge(this.options.alternatives || {}, this.suite.options.alternatives);
   }
 
   run() {
     let nTests = 0;
-    const theTest = new this.TestClass(this);
-    theTest.fromBabelTest(this.babelTest);
-    nTests += theTest.run();
+    if (this.babelTest.options && this.babelTest.options.alternatives) {
+      for (const alternativeName in this.babelTest.options.alternatives) {
+        const theTest = new this.TestClass(this);
+        theTest.fromBabelTest(this.babelTest);
+        theTest.withAlternative(alternativeName, this.babelTest.options.alternatives[alternativeName]);
+        nTests += theTest.run();
+      }
+    }
+
+    if (this.options.runImplicitDefaultAlternative) {
+      const theTest = new this.TestClass(this);
+      theTest.fromBabelTest(this.babelTest);
+      nTests += theTest.run();
+    }
     return nTests;
   }
 }
@@ -144,7 +176,74 @@ exports.Test = class Test {
     this.throws = test.options.throws;
     this.expectedFile = test.expect.loc;
     this.disabled = test.disabled;
-    this.parserOpts = test.options;
+    if (test.options) {
+      this.parserOpts = Object.assign({}, test.options);
+    }
+  }
+
+  withAlternative(altName, alt) {
+    const task = this.babelTest;
+    this.name += ` (${altName})`;
+
+    let plugins;
+
+    if (alt.allPlugins) {
+      plugins = this.testRun.parser.getAvailablePlugins();
+    } else if (this.parserOpts.plugins) {
+      plugins = this.parserOpts.plugins.slice();
+    } else {
+      plugins = [];
+    }
+
+    plugins = this.excludePlugins(plugins, alt.excludePlugins);
+    if (this.babelTest.options && this.babelTest.options.excludePlugins) {
+      plugins = this.excludePlugins(plugins, this.babelTest.options.excludePlugins);
+    }
+    plugins = this.includePlugins(plugins, alt.includePlugins);
+
+    this.parserOpts.plugins = plugins;
+
+    if (alt.expectedSuffix) alt.expectedOverride = `expected${alt.expectedSuffix}.json`;
+    if (alt.expectedOverride) {
+      const loc = resolve(task.actual.loc.replace("actual.js", alt.expectedOverride));
+      if (loc) {
+        delete this.throws;
+        this.expectedFile = loc;
+        this.expectedCode = readFile(loc);
+      }
+    }
+
+    if (alt.throws) {
+      this.throws = alt.throws;
+      delete this.expectedCode;
+    }
+
+    if (alt.optionsOverride) {
+      const loc = resolve(task.actual.loc.replace("actual.js", alt.optionsOverride));
+      if (loc) {
+        const opts = JSON.parse(readFile(loc));
+        this.parserOpts = Object.assign({}, this.parserOpts, opts);
+        if (opts.throws) {
+          this.throws = opts.throws;
+          delete this.expectedCode;
+        }
+      }
+    }
+  }
+
+  includePlugins(plugins, list) {
+    if (!list) return plugins;
+    list.forEach((entry) => {
+      if (plugins.indexOf(entry) < 0) plugins.push(entry);
+    });
+    return plugins;
+  }
+
+  excludePlugins(plugins, list) {
+    if (!list) return plugins;
+    return plugins.filter((entry) => {
+      return list.indexOf(entry) < 0;
+    });
   }
 
   fixup() {
@@ -186,10 +285,6 @@ exports.Test = class Test {
     let ast = null, diff = null;
     opts.locations = true;
     opts.ranges = true;
-
-    if (this.throws && this.expectedCode) {
-      throw new Error("File expected.json exists although options specify throws. Remove expected.json.");
-    }
 
     try {
       ast = parseFunction(this.actualCode, opts);
