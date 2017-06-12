@@ -22,5 +22,6 @@ export default function registerPlugins(plugins) {
     "functionBind",
     "functionSent",
     "dynamicImport",
+    "classConstructorCall",
   ]).forEach((pluginName) => plugins[pluginName] = noncePlugin);
 }

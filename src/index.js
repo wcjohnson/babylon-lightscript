@@ -28,7 +28,7 @@ export function parseExpression(input, options) {
 }
 
 export function getAvailablePlugins() {
-  return Object.keys(plugins);
+  return Object.keys(plugins).slice();
 }
 
 export { tokTypes };
