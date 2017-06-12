@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 52,
+  "end": 51,
   "loc": {
     "start": {
       "line": 1,
@@ -15,7 +15,7 @@
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 52,
+    "end": 51,
     "loc": {
       "start": {
         "line": 1,
@@ -31,7 +31,7 @@
       {
         "type": "VariableDeclaration",
         "start": 0,
-        "end": 52,
+        "end": 51,
         "loc": {
           "start": {
             "line": 1,
@@ -50,7 +50,7 @@
           {
             "type": "VariableDeclarator",
             "start": 0,
-            "end": 52,
+            "end": 51,
             "loc": {
               "start": {
                 "line": 1,
@@ -81,7 +81,7 @@
             "init": {
               "type": "MatchExpression",
               "start": 4,
-              "end": 52,
+              "end": 51,
               "loc": {
                 "start": {
                   "line": 1,
@@ -113,7 +113,7 @@
                 {
                   "type": "MatchCase",
                   "start": 15,
-                  "end": 26,
+                  "end": 25,
                   "loc": {
                     "start": {
                       "line": 2,
@@ -121,13 +121,13 @@
                     },
                     "end": {
                       "line": 2,
-                      "column": 13
+                      "column": 12
                     }
                   },
                   "test": {
-                    "type": "ExistentialExpression",
+                    "type": "Identifier",
                     "start": 17,
-                    "end": 20,
+                    "end": 19,
                     "loc": {
                       "start": {
                         "line": 2,
@@ -135,53 +135,38 @@
                       },
                       "end": {
                         "line": 2,
-                        "column": 7
-                      }
-                    },
-                    "argument": {
-                      "type": "Identifier",
-                      "start": 17,
-                      "end": 19,
-                      "loc": {
-                        "start": {
-                          "line": 2,
-                          "column": 4
-                        },
-                        "end": {
-                          "line": 2,
-                          "column": 6
-                        },
-                        "identifierName": "it"
+                        "column": 6
                       },
-                      "name": "it"
-                    }
+                      "identifierName": "it"
+                    },
+                    "name": "it"
                   },
                   "consequent": {
                     "type": "ExpressionStatement",
-                    "start": 22,
-                    "end": 26,
+                    "start": 21,
+                    "end": 25,
                     "loc": {
                       "start": {
                         "line": 2,
-                        "column": 9
+                        "column": 8
                       },
                       "end": {
                         "line": 2,
-                        "column": 13
+                        "column": 12
                       }
                     },
                     "expression": {
                       "type": "BooleanLiteral",
-                      "start": 22,
-                      "end": 26,
+                      "start": 21,
+                      "end": 25,
                       "loc": {
                         "start": {
                           "line": 2,
-                          "column": 9
+                          "column": 8
                         },
                         "end": {
                           "line": 2,
-                          "column": 13
+                          "column": 12
                         }
                       },
                       "value": true
@@ -190,8 +175,8 @@
                 },
                 {
                   "type": "MatchCase",
-                  "start": 29,
-                  "end": 52,
+                  "start": 28,
+                  "end": 51,
                   "loc": {
                     "start": {
                       "line": 3,
@@ -204,8 +189,8 @@
                   },
                   "test": {
                     "type": "MatchElse",
-                    "start": 31,
-                    "end": 35,
+                    "start": 30,
+                    "end": 34,
                     "loc": {
                       "start": {
                         "line": 3,
@@ -219,8 +204,8 @@
                   },
                   "consequent": {
                     "type": "ThrowStatement",
-                    "start": 37,
-                    "end": 52,
+                    "start": 36,
+                    "end": 51,
                     "loc": {
                       "start": {
                         "line": 3,
@@ -233,8 +218,8 @@
                     },
                     "argument": {
                       "type": "NewExpression",
-                      "start": 43,
-                      "end": 52,
+                      "start": 42,
+                      "end": 51,
                       "loc": {
                         "start": {
                           "line": 3,
@@ -247,8 +232,8 @@
                       },
                       "callee": {
                         "type": "Identifier",
-                        "start": 47,
-                        "end": 52,
+                        "start": 46,
+                        "end": 51,
                         "loc": {
                           "start": {
                             "line": 3,

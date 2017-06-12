@@ -12,4 +12,4 @@ let run = new TestRun(parser);
 run.runTopics(path.join(__dirname, "fixtures"));
 
 // Holdovers from upstream babylon
-// runFixtureTests(path.join(__dirname, "expressions"), parseExpression);
+runFixtureTests(path.join(__dirname, "expressions"), parseExpression);

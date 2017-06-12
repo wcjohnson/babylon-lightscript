@@ -417,12 +417,9 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       }
       base = this.finishNode(node, "SafeMemberExpression");
     } else if (
-      this.hasPlugin("lightscript") &&
+      (this.hasPlugin("safeCallExpression") || this.hasPlugin("existentialExpression")) &&
       this.match(tt.question) &&
-      (
-        this.state.inMatchCaseTest ||
-        this.state.lastTokEnd === (this.state.pos - 1)
-      )
+      (this.state.lastTokEnd === (this.state.pos - 1))
     ) {
       // A `?` immediately following an expr (no whitespace) could be a
       // safecall, ternary, or existential.
