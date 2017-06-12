@@ -425,8 +425,9 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
     ) {
       // A `?` immediately following an expr (no whitespace) could be a
       // safecall, ternary, or existential.
-      const next = this.parseQuestionSubscript(base, startPos, startLoc, noCalls);
-      if (next) base = next; else return base;
+      const [next, canSubscript] = this.parseQuestionSubscript(base, startPos, startLoc, noCalls);
+      if (!next) return base;
+      if (canSubscript) base = next; else return next;
     } else if (this.hasPlugin("lightscript") && !noCalls && this.match(tt.tilde)) {
       this.next();
       const node = this.startNodeAt(startPos, startLoc);

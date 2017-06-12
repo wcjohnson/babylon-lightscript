@@ -14,18 +14,19 @@ export default function(parser) {
 
     if (this.hasPlugin("bangCall") && this.isBang()) {
       this.next();
-      return this.parseBangCall(node, "CallExpression");
+      const canSubscript = this.parseBangCall(node, "CallExpression");
+      if (canSubscript) return [node, true]; else return [node, false];
     } else {
       this.expect(tt.parenL);
       node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
-      return this.finishNode(node, "CallExpression");
+      return [this.finishNode(node, "CallExpression"), true];
     }
   };
 
   pp.parseExistential = function(expr, startPos, startLoc) {
     const node = this.startNodeAt(startPos, startLoc);
     node.argument = expr;
-    return this.finishNode(node, "ExistentialExpression");
+    return [this.finishNode(node, "ExistentialExpression"), false];
   };
 
   pp.parseQuestionSubscript = function(lhs, startPos, startLoc, noCalls) {
@@ -57,7 +58,7 @@ export default function(parser) {
     // If the next token startsExpr, this is a ternary -- unwind recursive descent
     if (this.state.type.startsExpr && this.state.curLine === questionLine) {
       this.state = state;
-      return null;
+      return [null, false];
     }
 
     // Otherwise this is an existential

@@ -2,4 +2,5 @@ import path from "path";
 import { runThrowTestsWithEstree } from "./utils/runFixtureTests";
 import { parse } from "../lib";
 
+// TODO: re-enable using the alternatives system
 runThrowTestsWithEstree(path.join(__dirname, "fixtures"), parse);
