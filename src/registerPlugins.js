@@ -7,14 +7,18 @@ import bangCallPlugin from "./plugins/bangCall";
 
 function noncePlugin() {}
 
-export default function registerPlugins(plugins) {
+export default function registerPlugins(plugins, metadata) {
   plugins.lightscript = lightscriptPlugin;
   plugins.estree = estreePlugin;
   plugins.flow = flowPlugin;
   plugins.jsx = jsxPlugin;
   plugins.safeCallExpression = safeCallExistentialPlugin;
   plugins.existentialExpression = safeCallExistentialPlugin;
+
   plugins.bangCall = bangCallPlugin;
+  metadata.bangCall = {
+    dependencies: ["lightscript"]
+  };
 
   // Plugins with string tags only
   ([

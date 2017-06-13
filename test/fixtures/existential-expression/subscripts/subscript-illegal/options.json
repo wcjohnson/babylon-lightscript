@@ -1,4 +1,4 @@
 {
-  "excludePlugins": ["lightscript"],
+  "excludePlugins": ["lightscript", "bangCall"],
   "throws": "Unexpected token, expected ; (1:2)"
 }

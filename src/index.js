@@ -1,4 +1,4 @@
-import Parser, { plugins } from "./parser";
+import Parser, { plugins, pluginMetadata } from "./parser";
 import "./parser/util";
 import "./parser/statement";
 import "./parser/lval";
@@ -13,7 +13,7 @@ import "./tokenizer/context";
 
 import registerPlugins from "./registerPlugins";
 
-registerPlugins(plugins);
+registerPlugins(plugins, pluginMetadata);
 
 export function parse(input, options) {
   return new Parser(options, input).parse();

@@ -8,7 +8,7 @@
     },
     "noLsc": {
       "allPlugins": true,
-      "excludePlugins": ["lightscript", "estree"]
+      "excludePlugins": ["lightscript", "bangCall", "estree"]
     }
   }
 }
