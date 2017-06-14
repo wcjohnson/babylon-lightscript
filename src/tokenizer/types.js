@@ -39,7 +39,7 @@ export class TokenType {
   }
 }
 
-class KeywordTokenType extends TokenType {
+export class KeywordTokenType extends TokenType {
   constructor(name, options = {}) {
     options.keyword = name;
 

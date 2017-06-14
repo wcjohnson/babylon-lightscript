@@ -9,40 +9,41 @@ import significantWhitespacePlugin from "./plugins/significantWhitespace";
 function noncePlugin() {}
 
 export default function registerPlugins(plugins, metadata) {
-  plugins.estree = estreePlugin;
-  plugins.flow = flowPlugin;
-  plugins.jsx = jsxPlugin;
-  plugins.safeCallExpression = safeCallExistentialPlugin;
-  plugins.existentialExpression = safeCallExistentialPlugin;
+  function registerPlugin(name, plugin, meta) {
+    if (!plugin) plugin = noncePlugin;
+    plugins[name] = plugin;
+    metadata[name] = meta;
+  }
 
-  plugins.significantWhitespace = significantWhitespacePlugin;
+  registerPlugin("doExpressions");
+  registerPlugin("objectRestSpread");
+  registerPlugin("decorators");
+  registerPlugin("classProperties");
+  registerPlugin("exportExtensions");
+  registerPlugin("asyncGenerators");
+  registerPlugin("functionBind");
+  registerPlugin("functionSent");
+  registerPlugin("dynamicImport");
+  registerPlugin("classConstructorCall");
 
-  plugins.lightscript = lightscriptPlugin;
-  metadata.lightscript = {
+  registerPlugin("estree", estreePlugin);
+  registerPlugin("flow", flowPlugin);
+  registerPlugin("jsx", jsxPlugin);
+
+  registerPlugin("significantWhitespace", significantWhitespacePlugin);
+
+  registerPlugin("safeCallExpression", safeCallExistentialPlugin);
+  registerPlugin("existentialExpression", safeCallExistentialPlugin);
+
+  registerPlugin("lightscript", lightscriptPlugin, {
     dependencies: ["significantWhitespace"]
-  };
+  });
 
-  plugins.bangCall = bangCallPlugin;
-  metadata.bangCall = {
+  registerPlugin("bangCall", bangCallPlugin, {
     dependencies: ["significantWhitespace"]
-  };
+  });
 
-  plugins.enforceSubscriptIndentation = noncePlugin;
-  metadata.enforceSubscriptIndentation = {
+  registerPlugin("enforceSubscriptIndentation", noncePlugin, {
     dependencies: ["significantWhitespace"]
-  };
-
-  // Plugins with string tags only
-  ([
-    "doExpressions",
-    "objectRestSpread",
-    "decorators",
-    "classProperties",
-    "exportExtensions",
-    "asyncGenerators",
-    "functionBind",
-    "functionSent",
-    "dynamicImport",
-    "classConstructorCall"
-  ]).forEach((pluginName) => plugins[pluginName] = noncePlugin);
+  });
 }
