@@ -75,15 +75,20 @@ export default class Parser extends Tokenizer {
       return { "*": true };
     }
 
+    // TODO: ugly, rewrite
     const pluginMap = {};
     pluginList = pluginList.slice();
-
-    for (let i = 0; i < pluginList.length; i++) {
-      const name = pluginList[i];
-      if (pluginMetadata[name] && pluginMetadata[name].dependencies) {
-        for (const dep of pluginMetadata[name].dependencies) {
-          if (pluginList.indexOf(dep) < 0) {
-            pluginList.splice(i, 0, dep);
+    let done = false;
+    while (!done) {
+      done = true;
+      for (let i = 0; i < pluginList.length; i++) {
+        const name = pluginList[i];
+        if (pluginMetadata[name] && pluginMetadata[name].dependencies) {
+          for (const dep of pluginMetadata[name].dependencies) {
+            if (pluginList.indexOf(dep) < 0) {
+              pluginList.splice(i, 0, dep);
+              done = false;
+            }
           }
         }
       }

@@ -4,25 +4,32 @@ import flowPlugin from "./plugins/flow";
 import jsxPlugin from "./plugins/jsx";
 import safeCallExistentialPlugin from "./plugins/safeCallExistential";
 import bangCallPlugin from "./plugins/bangCall";
+import significantWhitespacePlugin from "./plugins/significantWhitespace";
 
 function noncePlugin() {}
 
 export default function registerPlugins(plugins, metadata) {
-  plugins.lightscript = lightscriptPlugin;
   plugins.estree = estreePlugin;
   plugins.flow = flowPlugin;
   plugins.jsx = jsxPlugin;
   plugins.safeCallExpression = safeCallExistentialPlugin;
   plugins.existentialExpression = safeCallExistentialPlugin;
 
+  plugins.significantWhitespace = significantWhitespacePlugin;
+
+  plugins.lightscript = lightscriptPlugin;
+  metadata.lightscript = {
+    dependencies: ["significantWhitespace"]
+  };
+
   plugins.bangCall = bangCallPlugin;
   metadata.bangCall = {
-    dependencies: ["lightscript"]
+    dependencies: ["significantWhitespace"]
   };
 
   plugins.enforceSubscriptIndentation = noncePlugin;
   metadata.enforceSubscriptIndentation = {
-    dependencies: ["lightscript"]
+    dependencies: ["significantWhitespace"]
   };
 
   // Plugins with string tags only
@@ -36,6 +43,6 @@ export default function registerPlugins(plugins, metadata) {
     "functionBind",
     "functionSent",
     "dynamicImport",
-    "classConstructorCall",
+    "classConstructorCall"
   ]).forEach((pluginName) => plugins[pluginName] = noncePlugin);
 }

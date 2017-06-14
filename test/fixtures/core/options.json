@@ -8,7 +8,7 @@
     },
     "noLsc": {
       "allPlugins": true,
-      "excludePlugins": ["lightscript", "bangCall", "enforceSubscriptIndentation", "estree"]
+      "excludePlugins": ["lightscript", "bangCall", "enforceSubscriptIndentation", "significantWhitespace", "estree"]
     }
   }
 }

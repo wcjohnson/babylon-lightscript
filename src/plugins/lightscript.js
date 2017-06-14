@@ -176,20 +176,7 @@ pp.expectCommaOrLineBreak = function (loc = null) {
   if (!(this.eat(tt.comma) || this.isLineBreak())) this.unexpected(loc, tt.comma);
 };
 
-// lightscript only allows plain space (ascii-32), \r\n, and \n.
-// note that the space could appear within a string.
-
-pp.isWhitespaceAt = function (pos) {
-  const ch = this.state.input.charCodeAt(pos);
-  return (ch === 32 || ch === 13 || ch === 10);
-};
-
-pp.isNextCharWhitespace = function () {
-  return this.isWhitespaceAt(this.state.end);
-};
-
 // Arguably one of the hackiest parts of LightScript so far.
-
 pp.seemsLikeStatementStart = function () {
   const lastTok = this.state.tokens[this.state.tokens.length - 1];
   if (lastTok && lastTok.type === tt.semi) return true;
@@ -197,53 +184,6 @@ pp.seemsLikeStatementStart = function () {
 
   // This is not accurate; could easily be a continuation of a previous expression.
   if (this.isLineBreak()) return true;
-};
-
-pp.isFollowedByLineBreak = function () {
-  const end = this.state.input.length;
-
-  let pos = this.state.pos;
-  while (pos < end) {
-    const code = this.state.input.charCodeAt(pos);
-    if (code === 10) {
-      return true;
-    } else if (code === 32 || code === 13) {
-      ++pos;
-      continue;
-    } else {
-      return false;
-    }
-  }
-};
-
-// detect whether we're on a (non-indented) newline
-// relative to another position, eg;
-// x y -> false
-// x\ny -> true
-// x\n  y -> false
-
-pp.isNonIndentedBreakFrom = function (pos) {
-  const indentLevel = this.indentLevelAt(pos);
-  return this.isLineBreak() && this.state.indentLevel <= indentLevel;
-};
-
-// walk backwards til newline or start-of-file.
-// if two consecutive spaces are found together, increment indents.
-// if non-space found, reset indentation.
-
-pp.indentLevelAt = function (pos) {
-  let indents = 0;
-  while (pos > 0 && this.state.input[pos] !== "\n") {
-    if (this.state.input[pos--] === " ") {
-      if (this.state.input[pos] === " ") {
-        --pos;
-        ++indents;
-      }
-    } else {
-      indents = 0;
-    }
-  }
-  return indents;
 };
 
 pp.parseArrowType = function (node) {
@@ -369,20 +309,7 @@ pp.parseNamedArrowFromCallExpression = function (node, call) {
   return this.finishNode(node, isMember ? "NamedArrowMemberExpression" : "NamedArrowExpression");
 };
 
-pp.pushBlockState = function (blockType, indentLevel) {
-  this.state.blockStack.push({ blockType, indentLevel });
-};
-
-pp.matchBlockState = function(blockType, indentLevel) {
-  return this.state.blockStack.some( (x) => x.blockType === blockType && x.indentLevel === indentLevel );
-};
-
-pp.popBlockState = function() {
-  this.state.blockStack.pop();
-};
-
 // c/p parseIfStatement
-
 pp.parseIf = function (node, isExpression, requireColon = null) {
   const indentLevel = this.state.indentLevel;
   this.next();
