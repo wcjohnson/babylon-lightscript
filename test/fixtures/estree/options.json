@@ -3,7 +3,7 @@
     "all": {
       "allPlugins": true,
       "optionsOverride": "options.lightscript.json",
-      "expectedOverride": "expected.lightscript.json"
+      "expected": "expected.lightscript.json"
     }
   }
 }

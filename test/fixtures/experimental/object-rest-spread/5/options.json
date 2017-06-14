@@ -1,7 +1,7 @@
 {
   "alternatives": {
     "all": {
-      "expectedOverride": "expected.lightscript.json"
+      "expected": "expected.lightscript.json"
     },
     "noLsc": {
       "allPlugins": true,

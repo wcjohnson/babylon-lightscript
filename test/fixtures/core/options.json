@@ -4,7 +4,7 @@
       "allPlugins": true,
       "excludePlugins": ["estree"],
       "optionsOverride": "options.lightscript.json",
-      "expectedOverride": "expected.lightscript.json"
+      "expected": "expected.lightscript.json"
     },
     "noLsc": {
       "allPlugins": true,

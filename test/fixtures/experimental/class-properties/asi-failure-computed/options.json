@@ -2,7 +2,7 @@
   "throws": "Unexpected token, expected ; (3:9)",
   "alternatives": {
     "all": {
-      "expectedOverride": "expected.lightscript.json"
+      "expected": "expected.lightscript.json"
     },
     "noLsc": {
       "allPlugins": true,

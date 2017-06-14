@@ -203,12 +203,11 @@ exports.Test = class Test {
 
     this.parserOpts.plugins = plugins;
 
-    if (alt.expectedSuffix) alt.expectedOverride = `expected${alt.expectedSuffix}.json`;
-    if (alt.expectedOverride) {
-      const loc = resolve(task.actual.loc.replace("actual.js", alt.expectedOverride));
+    if (alt.expected) {
+      this.expectedFile = task.actual.loc.replace("actual.js", alt.expected);
+      const loc = resolve(this.expectedFile);
       if (loc) {
         delete this.throws;
-        this.expectedFile = loc;
         this.expectedCode = readFile(loc);
       }
     }
