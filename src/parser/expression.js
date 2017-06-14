@@ -375,6 +375,14 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       node.callee = this.parseNoCallExpr();
       return this.parseSubscripts(this.finishNode(node, "BindExpression"), startPos, startLoc, noCalls);
     } else if (this.match(tt.dot)) {
+      // require indentation
+      if (this.hasPlugin("enforceSubscriptIndentation") && this.isNonIndentedBreakFrom(startPos)) {
+        if (this.lookahead().type === tt.num) {
+          this.unexpected(null, "Either indent for array access or use a leading zero for a decimal.");
+        }
+        this.unexpected(null, "Indentation required.");
+      }
+
       // catch malformed decimals (but allow `0.0.toString()`, which is actually valid)
       if (this.hasPlugin("lightscript") && base.type === "NumericLiteral") {
         if (!(base.extra && base.extra.raw && base.extra.raw.match(/\./))) {
@@ -396,6 +404,9 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       }
       base = this.finishNode(node, "MemberExpression");
     } else if (this.hasPlugin("lightscript") && this.match(tt.elvis)) {
+      if (this.hasPlugin("enforceSubscriptIndentation") && this.isNonIndentedBreakFrom(startPos)) {
+        this.unexpected(null, "Indentation required.");
+      }
       // `x?.y`
       const node = this.startNodeAt(startPos, startLoc);
       const op = this.state.value;
@@ -429,6 +440,9 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       if (!next) return base;
       if (canSubscript) base = next; else return next;
     } else if (this.hasPlugin("lightscript") && !noCalls && this.match(tt.tilde)) {
+      if (this.hasPlugin("enforceSubscriptIndentation") && this.isNonIndentedBreakFrom(startPos)) {
+        this.unexpected(null, "Indentation required.");
+      }
       this.next();
       const node = this.startNodeAt(startPos, startLoc);
       node.left = base;

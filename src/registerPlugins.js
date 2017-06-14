@@ -20,6 +20,11 @@ export default function registerPlugins(plugins, metadata) {
     dependencies: ["lightscript"]
   };
 
+  plugins.enforceSubscriptIndentation = noncePlugin;
+  metadata.enforceSubscriptIndentation = {
+    dependencies: ["lightscript"]
+  };
+
   // Plugins with string tags only
   ([
     "doExpressions",
