@@ -13,7 +13,6 @@ export default function(parser) {
     node.safe = true;
 
     if (this.hasPlugin("bangCall") && this.isBang()) {
-      this.next();
       const canSubscript = this.parseBangCall(node, "CallExpression");
       if (canSubscript) return [node, true]; else return [node, false];
     } else {

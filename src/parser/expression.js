@@ -455,7 +455,6 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
 
       // Allow bang tilde calls
       if (this.hasPlugin("bangCall") && this.isBang()) {
-        this.next();
         const next = this.parseBangCall(node, "TildeCallExpression");
         if (next) base = next; else return node;
       } else {
@@ -470,7 +469,6 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       (this.state.lastTokEnd === (this.state.pos - 1))
     ) {
       const node = this.startNodeAt(startPos, startLoc);
-      this.next();
       node.callee = base;
       const next = this.parseBangCall(node, "CallExpression");
       if (next) base = next; else return node;
