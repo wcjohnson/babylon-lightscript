@@ -136,11 +136,13 @@ export function match_v3(parser) {
 }
 
 // v4 of the match syntax
-// MatchStatement = match x:\n\t| MatchCase[\n\t| MatchCase ...]
-// MatchCase = | [if Expr:] [MatchAtom, MatchAtom, ...] [with|as MatchBinding] [if Expr]: Block
-// MatchElse = | else [as MatchBinding]: Block
+// MatchStatement = `match` Expr `:` `\n`MatchCase [`\n`MatchCase]...
+// MatchCase = `|` ` ` MatchTest | MatchElse
+// MatchTest = [`if` Expr:] [MatchAtom, MatchAtom, ...] [`with`|`as` MatchBinding] [`if` Expr]: Block
+// MatchElse = | `else` [`as` MatchBinding]: Block
 // MatchBinding = ArrayPattern|ObjectPattern
 // MatchAtom = ExprOps
+// (Most non-logical operations and strange expr types are illegal in MatchAtoms)
 export function match_v4(parser) {
   if (parser.__matchPluginInstalled) {
     throw new Error("cannot install multiple `match` plugins");
@@ -266,6 +268,7 @@ export function match_v4(parser) {
   pp.parseMatchCaseOuterGuard = function(node) {
     if (!this.eat(tt._if)) return;
     node.outerGuard = this.parseParenExpression();
+    this.eat(tt.colon);
   };
 
   pp.parseMatchCaseInnerGuard = function(node) {
