@@ -6,6 +6,8 @@ import safeCallExistentialPlugin from "./plugins/safeCallExistential";
 import bangCallPlugin from "./plugins/bangCall";
 import significantWhitespacePlugin from "./plugins/significantWhitespace";
 
+import { matchCoreSyntax, match_v3 } from "./plugins/match";
+
 function noncePlugin() {}
 
 export default function registerPlugins(plugins, metadata) {
@@ -45,5 +47,16 @@ export default function registerPlugins(plugins, metadata) {
 
   registerPlugin("enforceSubscriptIndentation", noncePlugin, {
     dependencies: ["significantWhitespace"]
+  });
+
+  // TODO: When match syntax is wrapped up, only one plugin named "match"
+  // will be exposed.
+  registerPlugin("matchCoreSyntax", matchCoreSyntax, {
+    private: true
+  });
+  registerPlugin("match_v3", match_v3, {
+    // XXX: dependency on lsc for bitwise operators/ambiguities -- should be
+    // possible to factor that out and completely separate match
+    dependencies: ["lightscript", "matchCoreSyntax"]
   });
 }

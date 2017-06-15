@@ -291,13 +291,7 @@ pp.parseExprOp = function(left, leftStartPos, leftStartLoc, minPrec, noIn) {
 // Parse unary operators, both prefix and postfix.
 
 pp.parseMaybeUnary = function (refShorthandDefaultPos) {
-  const matchCaseBinaryPlusMin = this.hasPlugin("lightscript") &&
-    this.state.inMatchCaseTest &&
-    this.match(tt.plusMin) &&
-    this.state.tokens[this.state.tokens.length - 1].value !== "!" &&
-    this.isNextCharWhitespace();
-
-  if (this.state.type.prefix && !matchCaseBinaryPlusMin) {
+  if (this.state.type.prefix) {
     if (this.hasPlugin("lightscript") && this.match(tt.plusMin)) {
       if (this.isNextCharWhitespace()) this.unexpected(null, "Unary +/- cannot be followed by a space in lightscript.");
     }
@@ -757,7 +751,7 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       }
 
     case tt._match:
-      if (this.hasPlugin("lightscript")) {
+      if (this.hasPlugin("matchCoreSyntax")) {
         node = this.startNode();
         return this.parseMatchExpression(node);
       }
@@ -1197,7 +1191,7 @@ pp.parsePropertyName = function (prop) {
 // Initialize empty function node.
 
 pp.initFunction = function (node, isAsync) {
-  if (this.hasPlugin("lightscript") && this.state.inMatchCaseTest) {
+  if (this.hasPlugin("matchCoreSyntax") && this.state.inMatchCaseTest) {
     this.unexpected(node.start, "Cannot match on functions.");
   }
   node.id = null;

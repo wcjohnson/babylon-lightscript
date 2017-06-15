@@ -435,7 +435,7 @@ export default function(instance) {
       if (this.state.inPropertyName) return inner.call(this, code);
 
       // don't allow jsx inside match case tests
-      if (this.hasPlugin("lightscript") && this.state.inMatchCaseTest) {
+      if (this.hasPlugin("matchCoreSyntax") && this.state.inMatchCaseTest) {
         return inner.call(this, code);
       }
 

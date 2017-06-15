@@ -1,0 +1,7 @@
+{
+  "alternatives": {
+    "noLsc": {
+      "excludePlugins": ["bangCall", "enforceSubscriptIndentation", "significantWhitespace"]
+    }
+  }
+}

@@ -28,7 +28,13 @@ export function parseExpression(input, options) {
 }
 
 export function getAvailablePlugins() {
-  return Object.keys(plugins).slice();
+  const result = [];
+  for (const pluginKey of Object.keys(plugins)) {
+    if (!(pluginMetadata[pluginKey] && pluginMetadata[pluginKey].private)) {
+      result.push(pluginKey);
+    }
+  }
+  return result;
 }
 
 export { tokTypes };

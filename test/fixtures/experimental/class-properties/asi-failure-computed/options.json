@@ -6,7 +6,7 @@
     },
     "noLsc": {
       "allPlugins": true,
-      "excludePlugins": ["lightscript", "bangCall", "enforceSubscriptIndentation","estree"]
+      "excludePlugins": ["lightscript", "match_v3","estree"]
     }
   },
   "plugins": ["classProperties"]

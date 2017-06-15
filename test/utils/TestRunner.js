@@ -5,9 +5,14 @@ const readFile = require("babel-helper-fixtures").readFile;
 const resolve = require("try-resolve");
 const fs = require("fs");
 const path = require("path");
-const merge = require("lodash/merge");
+const mergeWith = require("lodash/mergeWith");
+const uniq = require("lodash/uniq");
 
 exports = module.exports = {};
+
+function concatArrays(objValue, srcValue) {
+  if (Array.isArray(objValue)) return uniq(objValue.concat(srcValue));
+}
 
 class FilterTests {
   exclude(name) {
@@ -102,7 +107,7 @@ class Suite extends FilterTests {
     if (!this.options.runImplicitDefaultAlternative)
       this.options.runImplicitDefaultAlternative = this.topic.options.runImplicitDefaultAlternative;
 
-    this.options.alternatives = merge(this.options.alternatives || {}, this.topic.options.alternatives);
+    this.options.alternatives = mergeWith(this.options.alternatives || {}, this.topic.options.alternatives, concatArrays);
   }
 
   run() {
@@ -131,7 +136,7 @@ class TestCase {
     if (!this.options.runImplicitDefaultAlternative)
       this.options.runImplicitDefaultAlternative = this.suite.options.runImplicitDefaultAlternative;
 
-    this.options.alternatives = merge(this.options.alternatives || {}, this.suite.options.alternatives);
+    this.options.alternatives = mergeWith(this.options.alternatives || {}, this.suite.options.alternatives, concatArrays);
   }
 
   run() {
@@ -296,6 +301,8 @@ exports.Test = class Test {
           throw err;
         }
       }
+
+      err.message = err.message + "\n\nOptions:\n" + JSON.stringify(opts, null, 2);
 
       throw err;
     }
