@@ -280,17 +280,13 @@ export function match_v4(parser) {
     if (this.match(tt._if) || this.match(tt._with) || this.isContextual("as")) return;
 
     const atoms = [];
+    this.state.inMatchAtom = true;
     while (true) {
-      atoms.push(this.parseMatchCaseAtom());
+      atoms.push(this.parseExprOps());
       if (!this.eat(tt.comma)) break;
     }
+    this.state.inMatchAtom = false;
 
     node.atoms = atoms;
-  };
-
-  pp.parseMatchCaseAtom = function() {
-    this.state.inMatchAtom = true;
-    return this.parseExprOps();
-    this.state.inMatchAtom = false;
   };
 }
