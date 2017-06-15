@@ -832,7 +832,7 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       if (this.state.inMatchAtom && this.hasPlugin("lightscript")) {
         // Predicate
         node = this.startNodeAt(this.state.lastTokEnd, this.state.lastTokEndLoc);
-        return this.finishNodeAt(node, "PlaceholderExpression", this.state.start, this.state.startLoc);
+        return this.finishNodeAt(node, "MatchPlaceholderExpression", this.state.start, this.state.startLoc);
       }
 
     default:
