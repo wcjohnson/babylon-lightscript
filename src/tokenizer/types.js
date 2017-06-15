@@ -127,7 +127,6 @@ export const keywords = {
   "or": types.logicalOR,
   "and": types.logicalAND,
   "not": new KeywordTokenType("not", { beforeExpr, prefix, startsExpr }),
-  "match": new KeywordTokenType("match", { beforeExpr, startsExpr }),
 
   "break": new KeywordTokenType("break"),
   "case": new KeywordTokenType("case", { beforeExpr }),
