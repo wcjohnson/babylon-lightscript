@@ -58,7 +58,6 @@ export default function(parser) {
 
   pp.parseCaseComprehension = function() {
     const node = this.startNode();
-    this.next();
     const conditional = this.startNode();
     node.conditional = this.parseIf(conditional, false);
     return this.finishNode(node, "CaseComprehension");
