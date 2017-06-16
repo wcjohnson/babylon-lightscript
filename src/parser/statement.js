@@ -1179,7 +1179,7 @@ pp.parseImport = function (node) {
     node.source = this.parseExprAtom();
 
     // import 'foo': a, { b, c, d as e }
-    if (this.hasPlugin("lightscript") && this.eat(tt.colon)) {
+    if (this.hasPlugin("flippedImports") && this.eat(tt.colon)) {
       this.parseImportSpecifiers(node);
     }
   } else {

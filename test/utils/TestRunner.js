@@ -194,6 +194,8 @@ exports.Test = class Test {
 
     if (alt.allPlugins) {
       plugins = this.testRun.parser.getAvailablePlugins();
+    } else if (alt.plugins) {
+      plugins = alt.plugins.slice();
     } else if (this.parserOpts.plugins) {
       plugins = this.parserOpts.plugins.slice();
     } else {
@@ -318,7 +320,7 @@ exports.Test = class Test {
       diff = misMatch(JSON.parse(this.expectedCode), ast);
       if (diff) {
         //save(test, ast);
-        throw new Error(diff);
+        throw new Error(diff + "\n\nOptions:\n" + JSON.stringify(opts, null, 2));
       }
     }
   }

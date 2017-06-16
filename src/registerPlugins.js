@@ -28,10 +28,13 @@ export default function registerPlugins(plugins, metadata) {
   registerPlugin("dynamicImport");
   registerPlugin("classConstructorCall");
 
-  registerPlugin("estree", estreePlugin);
+  registerPlugin("estree", estreePlugin, {
+    private: true // ESTree plugin must be explicitly specified
+  });
   registerPlugin("flow", flowPlugin);
   registerPlugin("jsx", jsxPlugin);
 
+  registerPlugin("flippedImports");
   registerPlugin("significantWhitespace", significantWhitespacePlugin);
 
   registerPlugin("safeCallExpression", safeCallExistentialPlugin);

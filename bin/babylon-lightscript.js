@@ -17,6 +17,6 @@ plugins = plugins.filter(function(x) {
 });
 
 var file = fs.readFileSync(filename, "utf8");
-var ast  = babylon.parse(file, { plugins: plugins });
+var ast  = babylon.parse(file, { plugins: plugins, sourceType: "module" });
 
 console.log(JSON.stringify(ast, null, "  "));

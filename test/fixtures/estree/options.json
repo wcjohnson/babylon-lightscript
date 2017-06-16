@@ -2,6 +2,7 @@
   "alternatives": {
     "all": {
       "allPlugins": true,
+      "includePlugins": ["estree"],
       "optionsOverride": "options.lightscript.json",
       "expected": "expected.lightscript.json"
     }
