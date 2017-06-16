@@ -5,7 +5,7 @@
     },
     "noLsc": {
       "allPlugins": true,
-      "excludePlugins": ["lightscript", "match_v3","estree"]
+      "excludePlugins": ["lightscript", "match_v3", "enhancedComprehension"]
     }
   }
 }

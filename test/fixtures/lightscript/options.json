@@ -3,7 +3,7 @@
   "alternatives": {
     "all": {
       "allPlugins": true,
-      "excludePlugins": ["estree", "existentialExpression", "safeCallExpression"]
+      "excludePlugins": ["existentialExpression", "safeCallExpression", "enhancedComprehension"]
     }
   }
 }
