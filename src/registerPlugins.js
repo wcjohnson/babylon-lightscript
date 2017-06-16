@@ -6,7 +6,7 @@ import safeCallExistentialPlugin from "./plugins/safeCallExistential";
 import bangCallPlugin from "./plugins/bangCall";
 import significantWhitespacePlugin from "./plugins/significantWhitespace";
 
-import { matchCoreSyntax, match_v3 } from "./plugins/match";
+import { matchCoreSyntax, match_v3, match_v4 } from "./plugins/match";
 
 function noncePlugin() {}
 
@@ -58,5 +58,11 @@ export default function registerPlugins(plugins, metadata) {
     // XXX: dependency on lsc for bitwise operators/ambiguities -- should be
     // possible to factor that out and completely separate match
     dependencies: ["lightscript", "matchCoreSyntax"]
+  });
+  registerPlugin("match_v4", match_v4, {
+    // XXX: dependency on lsc for bitwise operators/ambiguities -- should be
+    // possible to factor that out and completely separate match
+    dependencies: ["lightscript", "matchCoreSyntax"],
+    private: true
   });
 }

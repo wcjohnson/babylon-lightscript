@@ -275,6 +275,9 @@ pp.parseExprOp = function(left, leftStartPos, leftStartLoc, minPrec, noIn) {
       }
 
       const op = this.state.type;
+      if ( this.state.inMatchAtom && (op !== tt.logicalOR && op !== tt.logicalAND)) {
+        this.unexpected(null, "Illegal operator in match atom.");
+      }
       this.next();
 
       const startPos = this.state.start;
@@ -303,6 +306,10 @@ pp.parseMaybeUnary = function (refShorthandDefaultPos) {
     // `not` -> `!` etc.
     if (this.hasPlugin("lightscript")) this.rewriteOperator(node);
 
+    if (this.state.inMatchAtom && node.operator !== "!") {
+      this.unexpected(null, "Illegal operator in match atom");
+    }
+
     node.prefix = true;
     this.next();
 
@@ -328,6 +335,11 @@ pp.parseMaybeUnary = function (refShorthandDefaultPos) {
   const startLoc = this.state.startLoc;
   let expr = this.parseExprSubscripts(refShorthandDefaultPos);
   if (refShorthandDefaultPos && refShorthandDefaultPos.start) return expr;
+
+  if (this.state.inMatchAtom && this.state.type.postfix) {
+    this.unexpected(null, "Illegal operator in match atom.");
+  }
+
   while (this.state.type.postfix && !this.canInsertSemicolon()) {
     const node = this.startNodeAt(startPos, startLoc);
     node.operator = this.state.value;
@@ -620,6 +632,9 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
 
     case tt._import:
       if (!this.hasPlugin("dynamicImport")) this.unexpected();
+      if (this.state.inMatchAtom) {
+        this.unexpected(null, "Illegal expression in match atom.");
+      }
 
       node = this.startNode();
       this.next();
@@ -634,6 +649,9 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       return this.finishNode(node, "ThisExpression");
 
     case tt._yield:
+      if (this.state.inMatchAtom) {
+        this.unexpected(null, "Illegal expression in match atom.");
+      }
       if (this.state.inGenerator) this.unexpected();
 
     case tt.name:
@@ -664,6 +682,9 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
 
     case tt._do:
       if (this.hasPlugin("doExpressions")) {
+        if (this.state.inMatchAtom) {
+          this.unexpected(null, "Illegal expression in match atom.");
+        }
         const node = this.startNode();
         this.next();
         const oldInFunction = this.state.inFunction;
@@ -704,6 +725,9 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       return this.parseParenAndDistinguishExpression(null, null, canBeArrow);
 
     case tt.bracketL:
+      if (this.state.inMatchAtom) {
+        this.unexpected(null, "Illegal expression in match atom.");
+      }
       node = this.startNode();
       this.next();
       if (this.hasPlugin("lightscript") && this.match(tt._for)) {
@@ -714,20 +738,35 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       return this.finishNode(node, "ArrayExpression");
 
     case tt.braceL:
+      if (this.state.inMatchAtom) {
+        this.unexpected(null, "Illegal expression in match atom.");
+      }
       return this.parseObj(false, refShorthandDefaultPos);
 
     case tt._function:
+      if (this.state.inMatchAtom) {
+        this.unexpected(null, "Illegal expression in match atom.");
+      }
       return this.parseFunctionExpression();
 
     case tt.at:
+      if (this.state.inMatchAtom) {
+        this.unexpected(null, "Illegal expression in match atom.");
+      }
       this.parseDecorators();
 
     case tt._class:
+      if (this.state.inMatchAtom) {
+        this.unexpected(null, "Illegal expression in match atom.");
+      }
       node = this.startNode();
       this.takeDecorators(node);
       return this.parseClass(node, false);
 
     case tt._new:
+      if (this.state.inMatchAtom) {
+        this.unexpected(null, "Illegal expression in match atom.");
+      }
       return this.parseNew();
 
     case tt.backQuote:
@@ -746,6 +785,9 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
 
     case tt._if:
       if (this.hasPlugin("lightscript")) {
+        if (this.state.inMatchAtom) {
+          this.unexpected(null, "Illegal expression in match atom.");
+        }
         node = this.startNode();
         return this.parseIfExpression(node);
       }
@@ -758,12 +800,18 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
 
     case tt.arrow:
       if (this.hasPlugin("lightscript")) {
+        if (this.state.inMatchAtom) {
+          this.unexpected(null, "Illegal expression in match atom.");
+        }
         node = this.startNode();
         return this.parseArrowExpression(node, []);
       }
 
     case tt.awaitArrow:
       if (this.hasPlugin("lightscript")) {
+        if (this.state.inMatchAtom) {
+          this.unexpected(null, "Illegal expression in match atom.");
+        }
         node = this.startNode();
         const isSafe = this.state.value === "<!-";
         this.next();
@@ -778,6 +826,13 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
     case tt.dot:
       if (this.hasPlugin("lightscript") && this.lookahead().type === tt.num) {
         this.unexpected(null, "Decimal numbers must be prefixed with a `0` in LightScript (eg; `0.1`).");
+      }
+
+    case tt.tilde:
+      if (this.state.inMatchAtom && this.hasPlugin("lightscript")) {
+        // Predicate
+        node = this.startNodeAt(this.state.lastTokEnd, this.state.lastTokEndLoc);
+        return this.finishNodeAt(node, "MatchPlaceholderExpression", this.state.start, this.state.startLoc);
       }
 
     default:

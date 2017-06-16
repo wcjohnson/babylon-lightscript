@@ -1,0 +1,443 @@
+{
+  "type": "File",
+  "start": 0,
+  "end": 104,
+  "loc": {
+    "start": {
+      "line": 1,
+      "column": 0
+    },
+    "end": {
+      "line": 2,
+      "column": 95
+    }
+  },
+  "program": {
+    "type": "Program",
+    "start": 0,
+    "end": 104,
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 0
+      },
+      "end": {
+        "line": 2,
+        "column": 95
+      }
+    },
+    "sourceType": "script",
+    "body": [
+      {
+        "type": "MatchStatement",
+        "start": 0,
+        "end": 104,
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 95
+          }
+        },
+        "discriminant": {
+          "type": "Identifier",
+          "start": 6,
+          "end": 7,
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 6
+            },
+            "end": {
+              "line": 1,
+              "column": 7
+            },
+            "identifierName": "x"
+          },
+          "name": "x"
+        },
+        "cases": [
+          {
+            "type": "MatchCase",
+            "start": 11,
+            "end": 104,
+            "loc": {
+              "start": {
+                "line": 2,
+                "column": 2
+              },
+              "end": {
+                "line": 2,
+                "column": 95
+              }
+            },
+            "outerGuard": {
+              "type": "Identifier",
+              "start": 16,
+              "end": 23,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 7
+                },
+                "end": {
+                  "line": 2,
+                  "column": 14
+                },
+                "identifierName": "preFlag"
+              },
+              "name": "preFlag"
+            },
+            "atoms": [
+              {
+                "type": "LogicalExpression",
+                "start": 25,
+                "end": 51,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 16
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 42
+                  }
+                },
+                "left": {
+                  "type": "TildeCallExpression",
+                  "start": 25,
+                  "end": 36,
+                  "loc": {
+                    "start": {
+                      "line": 2,
+                      "column": 16
+                    },
+                    "end": {
+                      "line": 2,
+                      "column": 27
+                    }
+                  },
+                  "left": {
+                    "type": "MatchPlaceholderExpression",
+                    "start": 24,
+                    "end": 25,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 15
+                      },
+                      "end": {
+                        "line": 2,
+                        "column": 16
+                      }
+                    }
+                  },
+                  "right": {
+                    "type": "Identifier",
+                    "start": 26,
+                    "end": 34,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 17
+                      },
+                      "end": {
+                        "line": 2,
+                        "column": 25
+                      },
+                      "identifierName": "isWidget"
+                    },
+                    "name": "isWidget"
+                  },
+                  "arguments": []
+                },
+                "operator": "&&",
+                "right": {
+                  "type": "TildeCallExpression",
+                  "start": 41,
+                  "end": 51,
+                  "loc": {
+                    "start": {
+                      "line": 2,
+                      "column": 32
+                    },
+                    "end": {
+                      "line": 2,
+                      "column": 42
+                    }
+                  },
+                  "left": {
+                    "type": "MatchPlaceholderExpression",
+                    "start": 40,
+                    "end": 41,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 31
+                      },
+                      "end": {
+                        "line": 2,
+                        "column": 32
+                      }
+                    }
+                  },
+                  "right": {
+                    "type": "Identifier",
+                    "start": 42,
+                    "end": 49,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 33
+                      },
+                      "end": {
+                        "line": 2,
+                        "column": 40
+                      },
+                      "identifierName": "isCheap"
+                    },
+                    "name": "isCheap"
+                  },
+                  "arguments": []
+                }
+              },
+              {
+                "type": "UnaryExpression",
+                "start": 53,
+                "end": 67,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 44
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 58
+                  }
+                },
+                "operator": "!",
+                "prefix": true,
+                "argument": {
+                  "type": "TildeCallExpression",
+                  "start": 57,
+                  "end": 67,
+                  "loc": {
+                    "start": {
+                      "line": 2,
+                      "column": 48
+                    },
+                    "end": {
+                      "line": 2,
+                      "column": 58
+                    }
+                  },
+                  "left": {
+                    "type": "MatchPlaceholderExpression",
+                    "start": 56,
+                    "end": 57,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 47
+                      },
+                      "end": {
+                        "line": 2,
+                        "column": 48
+                      }
+                    }
+                  },
+                  "right": {
+                    "type": "Identifier",
+                    "start": 58,
+                    "end": 65,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 49
+                      },
+                      "end": {
+                        "line": 2,
+                        "column": 56
+                      },
+                      "identifierName": "isShirt"
+                    },
+                    "name": "isShirt"
+                  },
+                  "arguments": []
+                },
+                "extra": {
+                  "parenthesizedArgument": false
+                }
+              }
+            ],
+            "binding": {
+              "type": "ObjectPattern",
+              "start": 73,
+              "end": 82,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 64
+                },
+                "end": {
+                  "line": 2,
+                  "column": 73
+                }
+              },
+              "properties": [
+                {
+                  "type": "ObjectProperty",
+                  "start": 75,
+                  "end": 80,
+                  "loc": {
+                    "start": {
+                      "line": 2,
+                      "column": 66
+                    },
+                    "end": {
+                      "line": 2,
+                      "column": 71
+                    }
+                  },
+                  "method": false,
+                  "shorthand": true,
+                  "computed": false,
+                  "key": {
+                    "type": "Identifier",
+                    "start": 75,
+                    "end": 80,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 66
+                      },
+                      "end": {
+                        "line": 2,
+                        "column": 71
+                      },
+                      "identifierName": "price"
+                    },
+                    "name": "price"
+                  },
+                  "value": {
+                    "type": "Identifier",
+                    "start": 75,
+                    "end": 80,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 66
+                      },
+                      "end": {
+                        "line": 2,
+                        "column": 71
+                      },
+                      "identifierName": "price"
+                    },
+                    "name": "price"
+                  },
+                  "extra": {
+                    "shorthand": true
+                  }
+                }
+              ]
+            },
+            "assertive": true,
+            "innerGuard": {
+              "type": "BinaryExpression",
+              "start": 86,
+              "end": 97,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 77
+                },
+                "end": {
+                  "line": 2,
+                  "column": 88
+                }
+              },
+              "left": {
+                "type": "Identifier",
+                "start": 86,
+                "end": 91,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 77
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 82
+                  },
+                  "identifierName": "price"
+                },
+                "name": "price"
+              },
+              "operator": ">",
+              "right": {
+                "type": "NumericLiteral",
+                "start": 94,
+                "end": 97,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 85
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 88
+                  }
+                },
+                "extra": {
+                  "rawValue": 2,
+                  "raw": "2.0"
+                },
+                "value": 2
+              }
+            },
+            "consequent": {
+              "type": "ExpressionStatement",
+              "start": 99,
+              "end": 104,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 90
+                },
+                "end": {
+                  "line": 2,
+                  "column": 95
+                }
+              },
+              "expression": {
+                "type": "StringLiteral",
+                "start": 99,
+                "end": 104,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 90
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 95
+                  }
+                },
+                "extra": {
+                  "rawValue": "yup",
+                  "raw": "\"yup\""
+                },
+                "value": "yup"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "directives": []
+  }
+}
