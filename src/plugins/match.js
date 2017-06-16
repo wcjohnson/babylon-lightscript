@@ -138,7 +138,7 @@ export function match_v3(parser) {
 // v4 of the match syntax
 // MatchStatement = `match` Expr `:` `\n`MatchCase [`\n`MatchCase]...
 // MatchCase = `|` ` ` MatchTest | MatchElse
-// MatchTest = [`if` Expr:] [MatchAtom, MatchAtom, ...] [`with`|`as` MatchBinding] [`if` Expr]: Block
+// MatchTest = [`if` Expr [`when`]] [MatchAtom, MatchAtom, ...] [`with`|`as` MatchBinding] [`if` Expr]: Block
 // MatchElse = | `else` [`as` MatchBinding]: Block
 // MatchBinding = ArrayPattern|ObjectPattern
 // MatchAtom = ExprOps
@@ -238,10 +238,11 @@ export function match_v4(parser) {
       node.outerGuard = this.finishNode(elseNode, "MatchElse");
       this.parseMatchCaseBinding(node, true);
     } else {
-      this.parseMatchCaseOuterGuard(node);
-      this.parseMatchCaseAtoms(node);
-      this.parseMatchCaseBinding(node);
-      this.parseMatchCaseInnerGuard(node);
+      if (this.parseMatchCaseOuterGuard(node)) {
+        this.parseMatchCaseAtoms(node);
+        this.parseMatchCaseBinding(node);
+        this.parseMatchCaseInnerGuard(node);
+      }
     }
 
     this.state.inMatchCaseTest = false;
@@ -266,9 +267,14 @@ export function match_v4(parser) {
   };
 
   pp.parseMatchCaseOuterGuard = function(node) {
-    if (!this.eat(tt._if)) return;
-    node.outerGuard = this.parseParenExpression();
-    this.eat(tt.colon);
+    if (!this.eat(tt._if)) return true;
+    node.outerGuard = this.parseExpression();
+    if (this.match(tt.colon)) {
+      return false;
+    } else {
+      this.eatContextual("when");
+      return true;
+    }
   };
 
   pp.parseMatchCaseInnerGuard = function(node) {
