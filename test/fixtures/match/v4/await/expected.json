@@ -153,23 +153,25 @@
                           "column": 10
                         }
                       },
-                      "test": {
-                        "type": "Identifier",
-                        "start": 28,
-                        "end": 29,
-                        "loc": {
-                          "start": {
-                            "line": 3,
-                            "column": 6
+                      "atoms": [
+                        {
+                          "type": "Identifier",
+                          "start": 28,
+                          "end": 29,
+                          "loc": {
+                            "start": {
+                              "line": 3,
+                              "column": 6
+                            },
+                            "end": {
+                              "line": 3,
+                              "column": 7
+                            },
+                            "identifierName": "a"
                           },
-                          "end": {
-                            "line": 3,
-                            "column": 7
-                          },
-                          "identifierName": "a"
-                        },
-                        "name": "a"
-                      },
+                          "name": "a"
+                        }
+                      ],
                       "consequent": {
                         "type": "ExpressionStatement",
                         "start": 31,
@@ -220,23 +222,25 @@
                           "column": 15
                         }
                       },
-                      "test": {
-                        "type": "Identifier",
-                        "start": 39,
-                        "end": 40,
-                        "loc": {
-                          "start": {
-                            "line": 4,
-                            "column": 6
+                      "atoms": [
+                        {
+                          "type": "Identifier",
+                          "start": 39,
+                          "end": 40,
+                          "loc": {
+                            "start": {
+                              "line": 4,
+                              "column": 6
+                            },
+                            "end": {
+                              "line": 4,
+                              "column": 7
+                            },
+                            "identifierName": "b"
                           },
-                          "end": {
-                            "line": 4,
-                            "column": 7
-                          },
-                          "identifierName": "b"
-                        },
-                        "name": "b"
-                      },
+                          "name": "b"
+                        }
+                      ],
                       "consequent": {
                         "type": "ExpressionStatement",
                         "start": 42,
@@ -315,23 +319,25 @@
                           "column": 12
                         }
                       },
-                      "test": {
-                        "type": "Identifier",
-                        "start": 55,
-                        "end": 56,
-                        "loc": {
-                          "start": {
-                            "line": 5,
-                            "column": 6
+                      "atoms": [
+                        {
+                          "type": "Identifier",
+                          "start": 55,
+                          "end": 56,
+                          "loc": {
+                            "start": {
+                              "line": 5,
+                              "column": 6
+                            },
+                            "end": {
+                              "line": 5,
+                              "column": 7
+                            },
+                            "identifierName": "c"
                           },
-                          "end": {
-                            "line": 5,
-                            "column": 7
-                          },
-                          "identifierName": "c"
-                        },
-                        "name": "c"
-                      },
+                          "name": "c"
+                        }
+                      ],
                       "consequent": {
                         "type": "BlockStatement",
                         "start": 56,

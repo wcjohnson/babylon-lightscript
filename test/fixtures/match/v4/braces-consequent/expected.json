@@ -124,23 +124,25 @@
                       "column": 13
                     }
                   },
-                  "test": {
-                    "type": "Identifier",
-                    "start": 17,
-                    "end": 18,
-                    "loc": {
-                      "start": {
-                        "line": 2,
-                        "column": 4
+                  "atoms": [
+                    {
+                      "type": "Identifier",
+                      "start": 17,
+                      "end": 18,
+                      "loc": {
+                        "start": {
+                          "line": 2,
+                          "column": 4
+                        },
+                        "end": {
+                          "line": 2,
+                          "column": 5
+                        },
+                        "identifierName": "y"
                       },
-                      "end": {
-                        "line": 2,
-                        "column": 5
-                      },
-                      "identifierName": "y"
-                    },
-                    "name": "y"
-                  },
+                      "name": "y"
+                    }
+                  ],
                   "consequent": {
                     "type": "BlockStatement",
                     "start": 19,
@@ -212,23 +214,25 @@
                       "column": 3
                     }
                   },
-                  "test": {
-                    "type": "Identifier",
-                    "start": 31,
-                    "end": 32,
-                    "loc": {
-                      "start": {
-                        "line": 3,
-                        "column": 4
+                  "atoms": [
+                    {
+                      "type": "Identifier",
+                      "start": 31,
+                      "end": 32,
+                      "loc": {
+                        "start": {
+                          "line": 3,
+                          "column": 4
+                        },
+                        "end": {
+                          "line": 3,
+                          "column": 5
+                        },
+                        "identifierName": "z"
                       },
-                      "end": {
-                        "line": 3,
-                        "column": 5
-                      },
-                      "identifierName": "z"
-                    },
-                    "name": "z"
-                  },
+                      "name": "z"
+                    }
+                  ],
                   "consequent": {
                     "type": "BlockStatement",
                     "start": 33,
@@ -300,23 +304,25 @@
                       "column": 3
                     }
                   },
-                  "test": {
-                    "type": "Identifier",
-                    "start": 51,
-                    "end": 52,
-                    "loc": {
-                      "start": {
-                        "line": 6,
-                        "column": 4
+                  "atoms": [
+                    {
+                      "type": "Identifier",
+                      "start": 51,
+                      "end": 52,
+                      "loc": {
+                        "start": {
+                          "line": 6,
+                          "column": 4
+                        },
+                        "end": {
+                          "line": 6,
+                          "column": 5
+                        },
+                        "identifierName": "a"
                       },
-                      "end": {
-                        "line": 6,
-                        "column": 5
-                      },
-                      "identifierName": "a"
-                    },
-                    "name": "a"
-                  },
+                      "name": "a"
+                    }
+                  ],
                   "binding": {
                     "type": "ObjectPattern",
                     "start": 58,
@@ -389,6 +395,7 @@
                       }
                     ]
                   },
+                  "assertive": true,
                   "consequent": {
                     "type": "BlockStatement",
                     "start": 64,
@@ -489,27 +496,29 @@
                       "column": 3
                     }
                   },
-                  "test": {
-                    "type": "Identifier",
-                    "start": 87,
-                    "end": 88,
-                    "loc": {
-                      "start": {
-                        "line": 10,
-                        "column": 5
+                  "atoms": [
+                    {
+                      "type": "Identifier",
+                      "start": 87,
+                      "end": 88,
+                      "loc": {
+                        "start": {
+                          "line": 10,
+                          "column": 5
+                        },
+                        "end": {
+                          "line": 10,
+                          "column": 6
+                        },
+                        "identifierName": "c"
                       },
-                      "end": {
-                        "line": 10,
-                        "column": 6
-                      },
-                      "identifierName": "c"
-                    },
-                    "name": "c",
-                    "extra": {
-                      "parenthesized": true,
-                      "parenStart": 86
+                      "name": "c",
+                      "extra": {
+                        "parenthesized": true,
+                        "parenStart": 86
+                      }
                     }
-                  },
+                  ],
                   "consequent": {
                     "type": "BlockStatement",
                     "start": 90,

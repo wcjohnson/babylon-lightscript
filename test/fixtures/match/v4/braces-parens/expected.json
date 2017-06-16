@@ -125,26 +125,28 @@
                       "column": 13
                     }
                   },
-                  "test": {
-                    "type": "NumericLiteral",
-                    "start": 18,
-                    "end": 19,
-                    "loc": {
-                      "start": {
-                        "line": 2,
-                        "column": 2
+                  "atoms": [
+                    {
+                      "type": "NumericLiteral",
+                      "start": 18,
+                      "end": 19,
+                      "loc": {
+                        "start": {
+                          "line": 2,
+                          "column": 2
+                        },
+                        "end": {
+                          "line": 2,
+                          "column": 3
+                        }
                       },
-                      "end": {
-                        "line": 2,
-                        "column": 3
-                      }
-                    },
-                    "extra": {
-                      "rawValue": 2,
-                      "raw": "2"
-                    },
-                    "value": 2
-                  },
+                      "extra": {
+                        "rawValue": 2,
+                        "raw": "2"
+                      },
+                      "value": 2
+                    }
+                  ],
                   "consequent": {
                     "type": "ExpressionStatement",
                     "start": 21,
@@ -195,7 +197,7 @@
                       "column": 26
                     }
                   },
-                  "test": {
+                  "outerGuard": {
                     "type": "MatchElse",
                     "start": 32,
                     "end": 36,
