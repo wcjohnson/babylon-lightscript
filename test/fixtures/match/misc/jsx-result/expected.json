@@ -74,23 +74,25 @@
                 "column": 14
               }
             },
-            "test": {
-              "type": "Identifier",
-              "start": 13,
-              "end": 14,
-              "loc": {
-                "start": {
-                  "line": 2,
-                  "column": 4
+            "atoms": [
+              {
+                "type": "Identifier",
+                "start": 13,
+                "end": 14,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 4
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 5
+                  },
+                  "identifierName": "y"
                 },
-                "end": {
-                  "line": 2,
-                  "column": 5
-                },
-                "identifierName": "y"
-              },
-              "name": "y"
-            },
+                "name": "y"
+              }
+            ],
             "consequent": {
               "type": "ExpressionStatement",
               "start": 16,

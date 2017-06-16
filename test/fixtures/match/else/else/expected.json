@@ -74,23 +74,25 @@
                 "column": 8
               }
             },
-            "test": {
-              "type": "Identifier",
-              "start": 13,
-              "end": 14,
-              "loc": {
-                "start": {
-                  "line": 2,
-                  "column": 4
+            "atoms": [
+              {
+                "type": "Identifier",
+                "start": 13,
+                "end": 14,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 4
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 5
+                  },
+                  "identifierName": "a"
                 },
-                "end": {
-                  "line": 2,
-                  "column": 5
-                },
-                "identifierName": "a"
-              },
-              "name": "a"
-            },
+                "name": "a"
+              }
+            ],
             "consequent": {
               "type": "ExpressionStatement",
               "start": 16,
@@ -138,7 +140,7 @@
                 "column": 11
               }
             },
-            "test": {
+            "outerGuard": {
               "type": "MatchElse",
               "start": 22,
               "end": 26,

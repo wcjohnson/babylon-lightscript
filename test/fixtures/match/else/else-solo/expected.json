@@ -74,7 +74,7 @@
                 "column": 28
               }
             },
-            "test": {
+            "outerGuard": {
               "type": "MatchElse",
               "start": 13,
               "end": 17,

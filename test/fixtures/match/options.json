@@ -2,7 +2,8 @@
   "alternatives": {
     "default": {
       "allPlugins": true,
-      "excludePlugins": ["estree"]
+      "includePlugins": ["match_v4"],
+      "excludePlugins": ["match_v3"]
     }
   }
 }
