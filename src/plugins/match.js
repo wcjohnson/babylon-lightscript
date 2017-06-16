@@ -186,7 +186,7 @@ export function match_v4(parser) {
       }
 
       const matchCase = this.parseMatchCase(isExpression);
-      if (matchCase.test && matchCase.test.type === "MatchElse") {
+      if (matchCase.outerGuard && matchCase.outerGuard.type === "MatchElse") {
         hasUsedElse = true;
       }
       node.cases.push(matchCase);
