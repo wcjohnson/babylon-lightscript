@@ -272,7 +272,9 @@ export function match_v4(parser) {
     if (this.match(tt.colon)) {
       return false;
     } else {
+      this.state.allowRegexMatchAtomHere = true;
       this.eatContextual("when");
+      this.state.allowRegexMatchAtomHere = false;
       return true;
     }
   };

@@ -290,14 +290,19 @@ export default class Tokenizer {
   }
 
   readToken_slash() { // '/'
-    const looksLikeRegex = this.hasPlugin("lightscript") &&
-      this.isLineBreak() &&
-      !this.isWhitespaceAt(this.state.pos + 1) &&
-      // if parsing jsx, allow `/>` etc.
-      (!this.hasPlugin("jsx") || (
-        this.curContext() !== ct.j_oTag &&
-        this.curContext() !== ct.j_cTag
-      ));
+    const looksLikeRegex =
+      (this.hasPlugin("lightscript") &&
+        this.isLineBreak() &&
+        !this.isWhitespaceAt(this.state.pos + 1) &&
+        // if parsing jsx, allow `/>` etc.
+        (!this.hasPlugin("jsx") || (
+          this.curContext() !== ct.j_oTag &&
+          this.curContext() !== ct.j_cTag
+        ))
+      ) || (
+        // match: allow regex atoms after outerGuards
+        this.state.allowRegexMatchAtomHere
+      );
 
     if (this.state.exprAllowed || looksLikeRegex) {
       ++this.state.pos;
