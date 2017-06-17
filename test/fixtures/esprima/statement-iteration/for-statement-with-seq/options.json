@@ -8,7 +8,7 @@
     },
     "noSeqExprParens": {
       "allPlugins": true,
-      "excludePlugins": ["seqExprRequiresParen"]
+      "excludePlugins": ["seqExprRequiresParen", "enhancedComprehension"]
     }
   }
 }

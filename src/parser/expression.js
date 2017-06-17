@@ -728,6 +728,9 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       if (this.state.inMatchAtom) {
         this.unexpected(null, "Illegal expression in match atom.");
       }
+      if (this.hasPlugin("enhancedComprehension")) {
+        return this.parseComprehensionArray(refShorthandDefaultPos);
+      }
       node = this.startNode();
       this.next();
       if (this.hasPlugin("lightscript") && this.match(tt._for)) {
@@ -1033,13 +1036,18 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
   let decorators = [];
   const propHash = Object.create(null);
   let first = true;
+  let hasComprehension = false;
   const node = this.startNode();
 
   node.properties = [];
   this.next();
 
   // `for` keyword begins an object comprehension.
-  if (this.hasPlugin("lightscript") && this.match(tt._for)) {
+  if (
+    this.hasPlugin("lightscript") &&
+    !this.hasPlugin("enhancedComprehension") &&
+    this.match(tt._for)
+  ) {
     // ...however, `{ for: x }` is a legal JS object.
     if (this.lookahead().type !== tt.colon) {
       return this.parseObjectComprehension(node);
@@ -1058,6 +1066,20 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
         this.expect(tt.comma);
       }
       if (this.eat(tt.braceR)) break;
+    }
+
+    if (
+      this.hasPlugin("enhancedComprehension") &&
+      (this.match(tt._for) || this.match(tt._case))
+    ) {
+      if (isPattern) {
+        this.unexpected(null, "Comprehensions are illegal in patterns.");
+      }
+      if (this.lookahead().type !== tt.colon) {
+        node.properties.push(this.parseSomeComprehension());
+        hasComprehension = true;
+        continue;
+      }
     }
 
     while (this.match(tt.at)) {
@@ -1140,7 +1162,7 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
     this.raise(this.state.start, "You have trailing decorators with no property");
   }
 
-  return this.finishNode(node, isPattern ? "ObjectPattern" : "ObjectExpression");
+  return this.finishNode(node, hasComprehension ? "ObjectComprehension" : (isPattern ? "ObjectPattern" : "ObjectExpression"));
 };
 
 pp.isGetterOrSetterMethod = function (prop, isPattern) {
