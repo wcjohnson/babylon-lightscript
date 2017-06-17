@@ -357,7 +357,7 @@
                 {
                   "type": "CaseComprehension",
                   "start": 56,
-                  "end": 69,
+                  "end": 65,
                   "loc": {
                     "start": {
                       "line": 6,
@@ -365,13 +365,13 @@
                     },
                     "end": {
                       "line": 6,
-                      "column": 19
+                      "column": 15
                     }
                   },
                   "conditional": {
                     "type": "IfStatement",
                     "start": 56,
-                    "end": 69,
+                    "end": 65,
                     "loc": {
                       "start": {
                         "line": 6,
@@ -379,7 +379,7 @@
                       },
                       "end": {
                         "line": 6,
-                        "column": 19
+                        "column": 15
                       }
                     },
                     "test": {
@@ -405,7 +405,7 @@
                     "consequent": {
                       "type": "ExpressionStatement",
                       "start": 64,
-                      "end": 69,
+                      "end": 65,
                       "loc": {
                         "start": {
                           "line": 6,
@@ -413,13 +413,13 @@
                         },
                         "end": {
                           "line": 6,
-                          "column": 19
+                          "column": 15
                         }
                       },
                       "expression": {
-                        "type": "SequenceExpression",
+                        "type": "NumericLiteral",
                         "start": 64,
-                        "end": 69,
+                        "end": 65,
                         "loc": {
                           "start": {
                             "line": 6,
@@ -427,55 +427,38 @@
                           },
                           "end": {
                             "line": 6,
-                            "column": 19
+                            "column": 15
                           }
                         },
-                        "expressions": [
-                          {
-                            "type": "NumericLiteral",
-                            "start": 64,
-                            "end": 65,
-                            "loc": {
-                              "start": {
-                                "line": 6,
-                                "column": 14
-                              },
-                              "end": {
-                                "line": 6,
-                                "column": 15
-                              }
-                            },
-                            "extra": {
-                              "rawValue": 9,
-                              "raw": "9"
-                            },
-                            "value": 9
-                          },
-                          {
-                            "type": "NumericLiteral",
-                            "start": 67,
-                            "end": 69,
-                            "loc": {
-                              "start": {
-                                "line": 6,
-                                "column": 17
-                              },
-                              "end": {
-                                "line": 6,
-                                "column": 19
-                              }
-                            },
-                            "extra": {
-                              "rawValue": 10,
-                              "raw": "10"
-                            },
-                            "value": 10
-                          }
-                        ]
+                        "extra": {
+                          "rawValue": 9,
+                          "raw": "9"
+                        },
+                        "value": 9
                       }
                     },
                     "alternate": null
                   }
+                },
+                {
+                  "type": "NumericLiteral",
+                  "start": 67,
+                  "end": 69,
+                  "loc": {
+                    "start": {
+                      "line": 6,
+                      "column": 17
+                    },
+                    "end": {
+                      "line": 6,
+                      "column": 19
+                    }
+                  },
+                  "extra": {
+                    "rawValue": 10,
+                    "raw": "10"
+                  },
+                  "value": 10
                 }
               ]
             }

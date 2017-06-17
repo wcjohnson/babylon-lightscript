@@ -1,6 +1,6 @@
 {
   "alternatives": {
-    "all": {
+    "default": {
       "allPlugins": true
     }
   }

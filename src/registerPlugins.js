@@ -72,6 +72,9 @@ export default function registerPlugins(plugins, metadata) {
   });
 
   registerPlugin("enhancedComprehension", enhancedComprehensionPlugin, {
-    dependencies: ["lightscript"] // needed for `parseIf`
+    dependencies: [
+      "lightscript", // needed for `parseIf`
+      "seqExprRequiresParen"
+    ]
   });
 }
