@@ -2,13 +2,12 @@
   "alternatives": {
     "all": {
       "allPlugins": true,
-      "excludePlugins": ["estree"],
       "optionsOverride": "options.lightscript.json",
       "expected": "expected.lightscript.json"
     },
     "noLsc": {
       "allPlugins": true,
-      "excludePlugins": ["lightscript", "match_v3", "enhancedComprehension"]
+      "excludePlugins": ["lightscript", "match", "enhancedComprehension"]
     }
   }
 }

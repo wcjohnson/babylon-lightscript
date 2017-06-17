@@ -74,24 +74,11 @@
                 "column": 13
               }
             },
-            "test": {
-              "type": "ExistentialExpression",
-              "start": 13,
-              "end": 16,
-              "loc": {
-                "start": {
-                  "line": 2,
-                  "column": 4
-                },
-                "end": {
-                  "line": 2,
-                  "column": 7
-                }
-              },
-              "argument": {
-                "type": "Identifier",
+            "atoms": [
+              {
+                "type": "ExistentialExpression",
                 "start": 13,
-                "end": 15,
+                "end": 16,
                 "loc": {
                   "start": {
                     "line": 2,
@@ -99,13 +86,28 @@
                   },
                   "end": {
                     "line": 2,
-                    "column": 6
-                  },
-                  "identifierName": "it"
+                    "column": 7
+                  }
                 },
-                "name": "it"
+                "argument": {
+                  "type": "Identifier",
+                  "start": 13,
+                  "end": 15,
+                  "loc": {
+                    "start": {
+                      "line": 2,
+                      "column": 4
+                    },
+                    "end": {
+                      "line": 2,
+                      "column": 6
+                    },
+                    "identifierName": "it"
+                  },
+                  "name": "it"
+                }
               }
-            },
+            ],
             "consequent": {
               "type": "ExpressionStatement",
               "start": 18,

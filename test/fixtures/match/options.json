@@ -1,9 +1,7 @@
 {
   "alternatives": {
     "default": {
-      "allPlugins": true,
-      "includePlugins": ["match_v4"],
-      "excludePlugins": ["match_v3"]
+      "allPlugins": true
     }
   }
 }

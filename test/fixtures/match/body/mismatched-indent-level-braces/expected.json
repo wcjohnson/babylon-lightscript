@@ -1,29 +1,29 @@
 {
   "type": "File",
   "start": 0,
-  "end": 24,
+  "end": 45,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 2,
-      "column": 15
+      "line": 4,
+      "column": 1
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 24,
+    "end": 45,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 2,
-        "column": 15
+        "line": 4,
+        "column": 1
       }
     },
     "sourceType": "script",
@@ -31,15 +31,15 @@
       {
         "type": "MatchStatement",
         "start": 0,
-        "end": 24,
+        "end": 45,
         "loc": {
           "start": {
             "line": 1,
             "column": 0
           },
           "end": {
-            "line": 2,
-            "column": 15
+            "line": 4,
+            "column": 1
           }
         },
         "discriminant": {
@@ -62,7 +62,7 @@
         "cases": [
           {
             "type": "MatchCase",
-            "start": 11,
+            "start": 12,
             "end": 24,
             "loc": {
               "start": {
@@ -71,13 +71,13 @@
               },
               "end": {
                 "line": 2,
-                "column": 15
+                "column": 14
               }
             },
             "atoms": [
               {
-                "type": "CallExpression",
-                "start": 13,
+                "type": "BooleanLiteral",
+                "start": 14,
                 "end": 18,
                 "loc": {
                   "start": {
@@ -86,28 +86,10 @@
                   },
                   "end": {
                     "line": 2,
-                    "column": 9
+                    "column": 8
                   }
                 },
-                "callee": {
-                  "type": "Identifier",
-                  "start": 13,
-                  "end": 15,
-                  "loc": {
-                    "start": {
-                      "line": 2,
-                      "column": 4
-                    },
-                    "end": {
-                      "line": 2,
-                      "column": 6
-                    },
-                    "identifierName": "it"
-                  },
-                  "name": "it"
-                },
-                "safe": true,
-                "arguments": []
+                "value": true
               }
             ],
             "consequent": {
@@ -117,11 +99,11 @@
               "loc": {
                 "start": {
                   "line": 2,
-                  "column": 11
+                  "column": 10
                 },
                 "end": {
                   "line": 2,
-                  "column": 15
+                  "column": 14
                 }
               },
               "expression": {
@@ -131,14 +113,78 @@
                 "loc": {
                   "start": {
                     "line": 2,
-                    "column": 11
+                    "column": 10
                   },
                   "end": {
                     "line": 2,
-                    "column": 15
+                    "column": 14
                   }
                 },
                 "value": true
+              }
+            }
+          },
+          {
+            "type": "MatchCase",
+            "start": 29,
+            "end": 43,
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 4
+              },
+              "end": {
+                "line": 3,
+                "column": 18
+              }
+            },
+            "atoms": [
+              {
+                "type": "BooleanLiteral",
+                "start": 31,
+                "end": 36,
+                "loc": {
+                  "start": {
+                    "line": 3,
+                    "column": 6
+                  },
+                  "end": {
+                    "line": 3,
+                    "column": 11
+                  }
+                },
+                "value": false
+              }
+            ],
+            "consequent": {
+              "type": "ExpressionStatement",
+              "start": 38,
+              "end": 43,
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 13
+                },
+                "end": {
+                  "line": 3,
+                  "column": 18
+                }
+              },
+              "expression": {
+                "type": "BooleanLiteral",
+                "start": 38,
+                "end": 43,
+                "loc": {
+                  "start": {
+                    "line": 3,
+                    "column": 13
+                  },
+                  "end": {
+                    "line": 3,
+                    "column": 18
+                  }
+                },
+                "value": false
               }
             }
           }

@@ -925,6 +925,12 @@ export default function (instance) {
       // only do the expensive clone if there is a question mark
       // and if we come from inside parens
       if (refNeedsArrowPos && this.match(tt.question)) {
+
+        // Flow types are illegal in match atoms.
+        if (this.state.inMatchAtom) {
+          this.unexpected(null, "Illegal expression in match atom.");
+        }
+
         const state = this.state.clone();
         try {
           return inner.call(this, expr, noIn, startPos, startLoc);

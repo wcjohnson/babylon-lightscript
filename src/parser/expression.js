@@ -207,6 +207,10 @@ pp.parseMaybeConditional = function (noIn, refShorthandDefaultPos, refNeedsArrow
 
 pp.parseConditional = function (expr, noIn, startPos, startLoc) {
   if (this.eat(tt.question)) {
+    if (this.state.inMatchAtom) {
+      this.unexpected(null, "Illegal expression in match atom.");
+    }
+
     const node = this.startNodeAt(startPos, startLoc);
     node.test = expr;
     node.consequent = this.parseMaybeAssign();
@@ -306,7 +310,10 @@ pp.parseMaybeUnary = function (refShorthandDefaultPos) {
     // `not` -> `!` etc.
     if (this.hasPlugin("lightscript")) this.rewriteOperator(node);
 
-    if (this.state.inMatchAtom && node.operator !== "!") {
+    if (
+      this.state.inMatchAtom &&
+      !(node.operator === "!" || node.operator === "+" || node.operator === "-")
+    ) {
       this.unexpected(null, "Illegal operator in match atom");
     }
 

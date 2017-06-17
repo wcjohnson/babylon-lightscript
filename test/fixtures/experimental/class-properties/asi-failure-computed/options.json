@@ -6,7 +6,7 @@
     },
     "noLsc": {
       "allPlugins": true,
-      "excludePlugins": ["lightscript", "match_v3", "enhancedComprehension"]
+      "excludePlugins": ["lightscript", "match", "enhancedComprehension"]
     }
   },
   "plugins": ["classProperties"]
