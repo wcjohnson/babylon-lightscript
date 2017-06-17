@@ -76,7 +76,8 @@ pp.canInsertSemicolon = function () {
       // Technically it is legal to insert a ; after a ;.
       // Allows -> throw new Error; f()
       this.state.tokens[this.state.tokens.length - 1].type === tt.semi
-    ));
+    )) ||
+    (this.hasPlugin("seqExprRequiresParen") && this.match(tt.comma));
 };
 
 // TODO

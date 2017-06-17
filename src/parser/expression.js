@@ -71,7 +71,7 @@ pp.parseExpression = function (noIn, refShorthandDefaultPos) {
   const startPos = this.state.start;
   const startLoc = this.state.startLoc;
   const expr = this.parseMaybeAssign(noIn, refShorthandDefaultPos);
-  if (this.match(tt.comma)) {
+  if (this.match(tt.comma) && !this.hasPlugin("seqExprRequiresParen")) {
     const node = this.startNodeAt(startPos, startLoc);
     node.expressions = [expr];
     while (this.eat(tt.comma)) {

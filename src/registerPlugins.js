@@ -36,6 +36,7 @@ export default function registerPlugins(plugins, metadata) {
   registerPlugin("jsx", jsxPlugin);
 
   registerPlugin("flippedImports");
+  registerPlugin("seqExprRequiresParen");
   registerPlugin("significantWhitespace", significantWhitespacePlugin);
 
   registerPlugin("safeCallExpression", safeCallExistentialPlugin);
