@@ -507,6 +507,11 @@ export default function (instance) {
           // fall-through, will re-raise if it's an error below
         }
 
+        // Could have been an un-parenthesized SeqExpr
+        if (this.hasPlugin("seqExprRequiresParen") && this.match(tt.comma)) {
+          this.unexpected();
+        }
+
         // otherwise, try traditional parseParenExpression
         this.state = state;
         return inner.apply(this, arguments);
