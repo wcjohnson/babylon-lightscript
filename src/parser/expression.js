@@ -1022,6 +1022,9 @@ pp.parseTemplateElement = function () {
 };
 
 pp.parseTemplate = function () {
+  const wasInMatchAtom = this.state.inMatchAtom;
+  this.state.inMatchAtom = false;
+
   const node = this.startNode();
   this.next();
   node.expressions = [];
@@ -1034,6 +1037,9 @@ pp.parseTemplate = function () {
     node.quasis.push(curElt = this.parseTemplateElement());
   }
   this.next();
+
+  this.state.inMatchAtom = wasInMatchAtom;
+
   return this.finishNode(node, "TemplateLiteral");
 };
 

@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 52,
+  "end": 63,
   "loc": {
     "start": {
       "line": 1,
@@ -9,13 +9,13 @@
     },
     "end": {
       "line": 3,
-      "column": 25
+      "column": 36
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 52,
+    "end": 63,
     "loc": {
       "start": {
         "line": 1,
@@ -23,7 +23,7 @@
       },
       "end": {
         "line": 3,
-        "column": 25
+        "column": 36
       }
     },
     "sourceType": "script",
@@ -31,7 +31,7 @@
       {
         "type": "MatchStatement",
         "start": 0,
-        "end": 52,
+        "end": 63,
         "loc": {
           "start": {
             "line": 1,
@@ -39,7 +39,7 @@
           },
           "end": {
             "line": 3,
-            "column": 25
+            "column": 36
           }
         },
         "discriminant": {
@@ -153,7 +153,7 @@
           {
             "type": "MatchCase",
             "start": 29,
-            "end": 52,
+            "end": 63,
             "loc": {
               "start": {
                 "line": 3,
@@ -161,14 +161,14 @@
               },
               "end": {
                 "line": 3,
-                "column": 25
+                "column": 36
               }
             },
             "atoms": [
               {
                 "type": "TemplateLiteral",
                 "start": 31,
-                "end": 37,
+                "end": 45,
                 "loc": {
                   "start": {
                     "line": 3,
@@ -176,7 +176,7 @@
                   },
                   "end": {
                     "line": 3,
-                    "column": 10
+                    "column": 18
                   }
                 },
                 "expressions": [
@@ -196,6 +196,56 @@
                       "identifierName": "b"
                     },
                     "name": "b"
+                  },
+                  {
+                    "type": "BinaryExpression",
+                    "start": 40,
+                    "end": 43,
+                    "loc": {
+                      "start": {
+                        "line": 3,
+                        "column": 13
+                      },
+                      "end": {
+                        "line": 3,
+                        "column": 16
+                      }
+                    },
+                    "left": {
+                      "type": "Identifier",
+                      "start": 40,
+                      "end": 41,
+                      "loc": {
+                        "start": {
+                          "line": 3,
+                          "column": 13
+                        },
+                        "end": {
+                          "line": 3,
+                          "column": 14
+                        },
+                        "identifierName": "c"
+                      },
+                      "name": "c"
+                    },
+                    "operator": "+",
+                    "right": {
+                      "type": "Identifier",
+                      "start": 42,
+                      "end": 43,
+                      "loc": {
+                        "start": {
+                          "line": 3,
+                          "column": 15
+                        },
+                        "end": {
+                          "line": 3,
+                          "column": 16
+                        },
+                        "identifierName": "d"
+                      },
+                      "name": "d"
+                    }
                   }
                 ],
                 "quasis": [
@@ -222,7 +272,7 @@
                   {
                     "type": "TemplateElement",
                     "start": 36,
-                    "end": 36,
+                    "end": 38,
                     "loc": {
                       "start": {
                         "line": 3,
@@ -230,7 +280,27 @@
                       },
                       "end": {
                         "line": 3,
-                        "column": 9
+                        "column": 11
+                      }
+                    },
+                    "value": {
+                      "raw": ", ",
+                      "cooked": ", "
+                    },
+                    "tail": false
+                  },
+                  {
+                    "type": "TemplateElement",
+                    "start": 44,
+                    "end": 44,
+                    "loc": {
+                      "start": {
+                        "line": 3,
+                        "column": 17
+                      },
+                      "end": {
+                        "line": 3,
+                        "column": 17
                       }
                     },
                     "value": {
@@ -244,37 +314,37 @@
             ],
             "consequent": {
               "type": "ExpressionStatement",
-              "start": 39,
-              "end": 52,
+              "start": 47,
+              "end": 63,
               "loc": {
                 "start": {
                   "line": 3,
-                  "column": 12
+                  "column": 20
                 },
                 "end": {
                   "line": 3,
-                  "column": 25
+                  "column": 36
                 }
               },
               "expression": {
                 "type": "StringLiteral",
-                "start": 39,
-                "end": 52,
+                "start": 47,
+                "end": 63,
                 "loc": {
                   "start": {
                     "line": 3,
-                    "column": 12
+                    "column": 20
                   },
                   "end": {
                     "line": 3,
-                    "column": 25
+                    "column": 36
                   }
                 },
                 "extra": {
-                  "rawValue": "is str of b",
-                  "raw": "'is str of b'"
+                  "rawValue": "is complicated",
+                  "raw": "'is complicated'"
                 },
-                "value": "is str of b"
+                "value": "is complicated"
               }
             }
           }
