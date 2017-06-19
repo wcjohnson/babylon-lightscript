@@ -46,7 +46,7 @@ export default function registerPlugins(plugins, metadata) {
   });
 
   registerPlugin("bangCall", bangCallPlugin, {
-    dependencies: ["significantWhitespace"]
+    dependencies: ["significantWhitespace", "seqExprRequiresParen"]
   });
 
   registerPlugin("enforceSubscriptIndentation", noncePlugin, {

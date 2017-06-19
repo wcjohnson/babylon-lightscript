@@ -15,7 +15,7 @@ export default function(parser) {
   pp.parseBangCall = function(node, nodeType) {
     node.arguments = [];
     this.addExtra(node, "bang", true);
-    const bangIndentLevel = this.state.indentLevel;
+    const bangIndentLevel = this.state.indentLevel, bangLine = this.state.curLine;
     let argIndentLevel = null;
 
     this.next();
@@ -31,27 +31,43 @@ export default function(parser) {
       this.unexpected(null, "Whitespace required between `!` and first argument.");
     }
 
+    // Read args
+    let first = true;
     const oldBangIndentLevel = this.state.bangIndentLevel;
     this.state.bangIndentLevel = bangIndentLevel;
 
     while (true) {
-      if (this.isLineBreak()) {
-        // Enforce matching indentation for args on different lines from the `!`
-        if (argIndentLevel === null)
-          argIndentLevel = this.state.indentLevel;
-        else if (this.state.indentLevel !== argIndentLevel)
-          break;
+      // First argument on a different line from the `!` establishes indent level
+      if (this.state.curLine !== bangLine && argIndentLevel === null) {
+        argIndentLevel = this.state.indentLevel;
       }
 
-      node.arguments.push(this.parseExprListItem(false));
+      // Comma-separated arg and first arg skip ASI/whitespace checks
+      if (first || this.eat(tt.comma)) {
+        node.arguments.push(this.parseExprListItem(false));
+        first = false;
+      } else {
+        // ASI: unwind if not at proper indent level
+        if (this.isLineBreak()) {
+          if (
+            this.state.indentLevel <= bangIndentLevel ||
+            (argIndentLevel !== null && this.state.indentLevel !== argIndentLevel)
+          ) {
+            break;
+          }
+        }
+
+        node.arguments.push(this.parseExprListItem(false));
+      }
 
       if (this.isLineBreak()) {
-        if (this.match(tt.comma))
+        if (this.match(tt.comma)) {
           this.unexpected(null, "Comma must be on the same line as the preceding argument when using `!`");
+        }
 
         if (!this.state.type.startsExpr) break;
       } else {
-        if (!this.eat(tt.comma)) break;
+        if (!this.match(tt.comma)) break;
       }
     }
 
