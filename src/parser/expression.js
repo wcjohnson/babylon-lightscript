@@ -520,7 +520,7 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
           try {
             return this.parseNamedArrowFromCallExpression(this.startNodeAt(startPos, startLoc), node);
           } catch (err) {
-            if (this.match(tt.arrow)) throw err;
+            if (this.match(tt.arrow) || err._errorWasInFunctionBody) throw err;
             this.state = state;
           }
         } else {

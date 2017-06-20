@@ -303,7 +303,12 @@ pp.parseNamedArrowFromCallExpression = function (node, call) {
 
   this.check(tt.arrow);
   this.parseArrowType(node);
-  this.parseArrowFunctionBody(node);
+  try {
+    this.parseArrowFunctionBody(node);
+  } catch (err) {
+    err._errorWasInFunctionBody = true;
+    throw err;
+  }
 
   // may be later rewritten as "NamedArrowDeclaration" in parseStatement
   return this.finishNode(node, isMember ? "NamedArrowMemberExpression" : "NamedArrowExpression");
