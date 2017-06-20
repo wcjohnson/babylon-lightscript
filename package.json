@@ -1,6 +1,6 @@
 {
   "name": "@oigroup/babylon-lightscript-self-host",
-  "version": "2.0.0-pre.1",
+  "version": "2.0.0",
   "description": "LightScript parser for use in self-hosting environments",
   "author": "Alex Rattray <rattray.alex@gmail.com>",
   "homepage": "http://lightscript.org/",
