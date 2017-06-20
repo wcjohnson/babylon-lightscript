@@ -1,3 +1,4 @@
 {
+  "excludePlugins": ["flow", "classProperties"],
   "throws": "Unexpected token, expected ( (1:10)"
 }

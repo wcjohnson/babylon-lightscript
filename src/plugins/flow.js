@@ -834,10 +834,8 @@ pp.flowParseTypeAnnotatableIdentifier = function () {
 };
 
 pp.typeCastToParameter = function (node) {
-  // Lightscript: Existential expressions look like optional flow types
-  // Unwrap them
   let innerNode = node.expression;
-  if (this.hasPlugin("lightscript") && innerNode.type === "ExistentialExpression") {
+  if (this.hasPlugin("existentialExpression") && innerNode.type === "ExistentialExpression") {
     innerNode = this.existentialToParameter(innerNode);
   }
 
@@ -927,6 +925,12 @@ export default function (instance) {
       // only do the expensive clone if there is a question mark
       // and if we come from inside parens
       if (refNeedsArrowPos && this.match(tt.question)) {
+
+        // Flow types are illegal in match atoms.
+        if (this.state.inMatchAtom) {
+          this.unexpected(null, "Illegal expression in match atom.");
+        }
+
         const state = this.state.clone();
         try {
           return inner.call(this, expr, noIn, startPos, startLoc);
@@ -1056,7 +1060,7 @@ export default function (instance) {
     return function (node, isBinding, contextDescription) {
       if (node.type === "TypeCastExpression") {
         return inner.call(this, this.typeCastToParameter(node), isBinding, contextDescription);
-      } else if (this.hasPlugin("lightscript") && node.type === "ExistentialExpression") {
+      } else if (this.hasPlugin("existentialExpression") && node.type === "ExistentialExpression") {
         // Existential expression looks like an optional flow parameter
         return inner.call(this, this.existentialToParameter(node), isBinding, contextDescription);
       } else {
@@ -1072,7 +1076,7 @@ export default function (instance) {
         const expr = exprList[i];
         if (expr && expr.type === "TypeCastExpression") {
           exprList[i] = this.typeCastToParameter(expr);
-        } else if (this.hasPlugin("lightscript") && expr && expr.type === "ExistentialExpression") {
+        } else if (this.hasPlugin("existentialExpression") && expr && expr.type === "ExistentialExpression") {
           // Existential expression looks like an optional flow parameter
           exprList[i] = this.existentialToParameter(expr);
         }

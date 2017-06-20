@@ -1,0 +1,11 @@
+{
+  "alternatives": {
+    "all": {
+      "expected": "expected.lightscript.json"
+    },
+    "noLsc": {
+      "allPlugins": true,
+      "excludePlugins": ["lightscript", "match", "enhancedComprehension"]
+    }
+  }
+}

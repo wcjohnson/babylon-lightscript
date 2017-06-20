@@ -111,9 +111,10 @@ pp.expectParenFreeBlockStart = function (node) {
   // if true: blah
   // if true { blah }
   // if (true) blah
+  // match (foo) as bar:
   if (node && node.extra && node.extra.hasParens) {
     this.expect(tt.parenR);
-  } else if (!(this.match(tt.colon) || this.match(tt.braceL))) {
+  } else if (!(this.match(tt.colon) || this.match(tt.braceL) || this.isContextual("as"))) {
     this.unexpected(null, "Paren-free test expressions must be followed by braces or a colon.");
   }
 };
@@ -134,62 +135,23 @@ pp.parseObjectComprehension = function(node) {
   return this.finishNode(node, "ObjectComprehension");
 };
 
-pp.couldBeginStatement = function() {
-  // ExpressionStatement
-  if (this.state.type.startsExpr) return true;
-
-  // c/p from parseStatement
-  switch (this.state.type) {
-    case tt._break:
-    case tt._continue:
-    case tt._debugger:
-    case tt._do:
-    case tt._for:
-    case tt._function:
-    case tt._class:
-    case tt._if:
-    case tt._return:
-    case tt._switch:
-    case tt._throw:
-    case tt._try:
-    case tt._let:
-    case tt._const:
-    case tt._var:
-    case tt._now:
-    case tt._while:
-    case tt._with:
-    case tt.braceL:
-    case tt.semi:
-    case tt._export:
-    case tt._import:
-    case tt.name:
-    case tt.awaitArrow:
-      return true;
-  }
-
-  return false;
+pp.parseInlineWhiteBlock = function(node) {
+  if (this.state.type.startsExpr) return this.parseMaybeAssign();
+  // oneline statement case
+  node.body = [this.parseStatement(true)];
+  node.directives = [];
+  this.addExtra(node, "curly", false);
+  return this.finishNode(node, "BlockStatement");
 };
 
-pp.finishWhiteBlock = function(node, allowEmptyBody) {
-  if (!allowEmptyBody && !node.body.length) {
+pp.parseMultilineWhiteBlock = function(node, indentLevel) {
+  this.parseBlockBody(node, false, false, indentLevel);
+  if (!node.body.length) {
     this.unexpected(node.start, "Expected an Indent or Statement");
   }
 
   this.addExtra(node, "curly", false);
   return this.finishNode(node, "BlockStatement");
-};
-
-pp.parseInlineWhiteBlock = function(node, allowEmptyBody) {
-  if (this.state.type.startsExpr) return this.parseMaybeAssign();
-  // oneline statement case
-  node.body = this.couldBeginStatement() ? [this.parseStatement(true)] : [];
-  node.directives = [];
-  return this.finishWhiteBlock(node, allowEmptyBody);
-};
-
-pp.parseMultilineWhiteBlock = function(node, indentLevel, allowEmptyBody) {
-  this.parseBlockBody(node, false, false, indentLevel);
-  return this.finishWhiteBlock(node, allowEmptyBody);
 };
 
 pp.parseWhiteBlock = function (isExpression?) {
@@ -199,14 +161,14 @@ pp.parseWhiteBlock = function (isExpression?) {
   // Oneline whiteblock
   if (!this.isLineBreak()) {
     if (isExpression) {
-      return this.parseInlineWhiteBlock(node, false);
+      return this.parseInlineWhiteBlock(node);
     } else {
       return this.parseStatement(false);
     }
   }
 
   // TODO: document the fact that directives aren't parsed
-  return this.parseMultilineWhiteBlock(node, indentLevel, false);
+  return this.parseMultilineWhiteBlock(node, indentLevel);
 };
 
 pp.expectCommaOrLineBreak = function (loc = null) {
@@ -214,20 +176,7 @@ pp.expectCommaOrLineBreak = function (loc = null) {
   if (!(this.eat(tt.comma) || this.isLineBreak())) this.unexpected(loc, tt.comma);
 };
 
-// lightscript only allows plain space (ascii-32), \r\n, and \n.
-// note that the space could appear within a string.
-
-pp.isWhitespaceAt = function (pos) {
-  const ch = this.state.input.charCodeAt(pos);
-  return (ch === 32 || ch === 13 || ch === 10);
-};
-
-pp.isNextCharWhitespace = function () {
-  return this.isWhitespaceAt(this.state.end);
-};
-
 // Arguably one of the hackiest parts of LightScript so far.
-
 pp.seemsLikeStatementStart = function () {
   const lastTok = this.state.tokens[this.state.tokens.length - 1];
   if (lastTok && lastTok.type === tt.semi) return true;
@@ -235,53 +184,6 @@ pp.seemsLikeStatementStart = function () {
 
   // This is not accurate; could easily be a continuation of a previous expression.
   if (this.isLineBreak()) return true;
-};
-
-pp.isFollowedByLineBreak = function () {
-  const end = this.state.input.length;
-
-  let pos = this.state.pos;
-  while (pos < end) {
-    const code = this.state.input.charCodeAt(pos);
-    if (code === 10) {
-      return true;
-    } else if (code === 32 || code === 13) {
-      ++pos;
-      continue;
-    } else {
-      return false;
-    }
-  }
-};
-
-// detect whether we're on a (non-indented) newline
-// relative to another position, eg;
-// x y -> false
-// x\ny -> true
-// x\n  y -> false
-
-pp.isNonIndentedBreakFrom = function (pos) {
-  const indentLevel = this.indentLevelAt(pos);
-  return this.isLineBreak() && this.state.indentLevel <= indentLevel;
-};
-
-// walk backwards til newline or start-of-file.
-// if two consecutive spaces are found together, increment indents.
-// if non-space found, reset indentation.
-
-pp.indentLevelAt = function (pos) {
-  let indents = 0;
-  while (pos > 0 && this.state.input[pos] !== "\n") {
-    if (this.state.input[pos--] === " ") {
-      if (this.state.input[pos] === " ") {
-        --pos;
-        ++indents;
-      }
-    } else {
-      indents = 0;
-    }
-  }
-  return indents;
 };
 
 pp.parseArrowType = function (node) {
@@ -345,7 +247,7 @@ pp.parseArrowFunctionBody = function (node) {
   this.state.inFunction = true;
 
   const indentLevel = this.state.indentLevel;
-  node.body = this.startNode();
+  const nodeAtArrow = this.startNode();
   this.expect(tt.arrow);
   if (!this.isLineBreak()) {
     if (this.match(tt.braceL)) {
@@ -356,10 +258,10 @@ pp.parseArrowFunctionBody = function (node) {
       this.addExtra(node.body, "curly", true);
       node.body = this.finishNode(node.body, "BlockStatement");
     } else {
-      node.body = this.parseInlineWhiteBlock(node.body, true);
+      node.body = this.parseInlineWhiteBlock(nodeAtArrow);
     }
   } else {
-    node.body = this.parseMultilineWhiteBlock(node.body, indentLevel, true);
+    node.body = this.parseMultilineWhiteBlock(nodeAtArrow, indentLevel);
   }
 
   if (node.body.type !== "BlockStatement") {
@@ -407,20 +309,7 @@ pp.parseNamedArrowFromCallExpression = function (node, call) {
   return this.finishNode(node, isMember ? "NamedArrowMemberExpression" : "NamedArrowExpression");
 };
 
-pp.pushBlockState = function (blockType, indentLevel) {
-  this.state.blockStack.push({ blockType, indentLevel });
-};
-
-pp.matchBlockState = function(blockType, indentLevel) {
-  return this.state.blockStack.some( (x) => x.blockType === blockType && x.indentLevel === indentLevel );
-};
-
-pp.popBlockState = function() {
-  this.state.blockStack.pop();
-};
-
 // c/p parseIfStatement
-
 pp.parseIf = function (node, isExpression, requireColon = null) {
   const indentLevel = this.state.indentLevel;
   this.next();
@@ -589,204 +478,6 @@ pp.isBitwiseOp = function () {
   );
 };
 
-pp.parseSafeCall = function(expr, startPos, startLoc) {
-  this.expect(tt.parenL);
-  const node = this.startNodeAt(startPos, startLoc);
-  node.callee = expr;
-  node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
-  node.safe = true;
-  return this.finishNode(node, "CallExpression");
-};
-
-pp.parseExistential = function(expr, startPos, startLoc) {
-  const node = this.startNodeAt(startPos, startLoc);
-  node.argument = expr;
-  return this.finishNode(node, "ExistentialExpression");
-};
-
-pp.parseQuestionSubscript = function(lhs, startPos, startLoc, noCalls) {
-  const questionPos = this.state.pos;
-  const questionLine = this.state.curLine;
-  const state = this.state.clone();
-
-  this.eat(tt.question);
-
-  // `?(` = safecall or poorly-formatted ternary
-  // TODO: lint rule for ternaries recommending space after ?
-  if (!noCalls && this.match(tt.parenL) && this.state.pos === (questionPos + 1)) {
-    try {
-      return this.parseSafeCall(lhs, startPos, startLoc);
-    } catch (e) {
-      this.state = state;
-      this.eat(tt.question);
-    }
-  }
-
-  // If the next token startsExpr, this is a ternary -- unwind recursive descent
-  if (this.state.type.startsExpr && this.state.curLine === questionLine) {
-    this.state = state;
-    return null;
-  }
-
-  // Otherwise this is an existential
-  return this.parseExistential(lhs, startPos, startLoc);
-};
-
-// Convert an existential to an optional flow parameter.
-// Resolves grammar ambiguity in arrow function arg lists.
-pp.existentialToParameter = function(node) {
-  node.argument.optional = true;
-  return node.argument;
-};
-
-pp.parseMatchStatement = function(node) {
-  return this.parseMatch(node);
-};
-
-pp.parseMatchExpression = function() {
-  return this.parseMatch(this.startNode(), true);
-};
-
-pp.parseMatch = function (node, isExpression) {
-  this.expect(tt._match);
-  node.discriminant = this.parseParenExpression();
-
-  let isEnd;
-  if (this.match(tt.colon)) {
-    const indentLevel = this.state.indentLevel;
-    this.next();
-    isEnd = () => this.state.indentLevel <= indentLevel || this.match(tt.eof);
-  } else {
-    this.expect(tt.braceL);
-    isEnd = () => this.eat(tt.braceR);
-  }
-
-  node.cases = [];
-  let hasUsedElse = false;
-  while (!isEnd()) {
-    if (hasUsedElse) {
-      this.unexpected(null, "`else` must be last case.");
-    }
-
-    const matchCase = this.parseMatchCase();
-    if (matchCase.test && matchCase.test.type === "MatchElse") {
-      hasUsedElse = true;
-    }
-    node.cases.push(matchCase);
-  }
-
-  return this.finishNode(node, isExpression ? "MatchExpression" : "MatchStatement");
-};
-
-pp.parseMatchCaseConsequent = function(matchNode) {
-  // c/p parseIf
-  if (this.match(tt.braceL)) {
-    matchNode.consequent = this.parseBlock(false, true);
-  } else {
-    matchNode.consequent = this.parseWhiteBlock(true);
-  }
-};
-
-pp.parseMatchCaseWithConsequent = function(matchNode) {
-  // with (x) -> ..., with async, with ->
-  if (this.match(tt.parenL) || this.match(tt.arrow) || this.isContextual("async")) {
-    const consequent = this.parseMaybeAssign();
-    if (consequent.type !== "ArrowFunctionExpression") {
-      this.unexpected(consequent.start, tt.arrow);
-    }
-    matchNode.consequent = consequent;
-    matchNode.functional = true;
-    return;
-  }
-
-  // with <Identifier> -> ...
-  // with <BindingAtom>: ...
-  const node = this.startNode();
-  const bindingAtom = this.parseBindingAtom();
-  if (this.match(tt.arrow)) {
-    matchNode.consequent = this.parseArrowExpression(node, bindingAtom ? [bindingAtom] : [], false);
-    matchNode.functional = true;
-    return;
-  }
-
-  matchNode.binding = bindingAtom;
-  this.parseMatchCaseConsequent(matchNode);
-};
-
-pp.parseMatchCase = function () {
-  const node = this.startNode();
-
-  node.test = this.parseMatchCaseTest();
-
-  const oldInMatchCaseConsequent = this.state.inMatchCaseConsequent;
-  this.state.inMatchCaseConsequent = true;
-  if (this.eat(tt._with)) {
-    this.parseMatchCaseWithConsequent(node);
-  } else {
-    this.parseMatchCaseConsequent(node);
-  }
-  this.state.inMatchCaseConsequent = oldInMatchCaseConsequent;
-
-  return this.finishNode(node, "MatchCase");
-};
-
-pp.parseMatchCaseTest = function () {
-  // can't be nested so no need to read/restore old value
-  this.state.inMatchCaseTest = true;
-
-  this.expect(tt.bitwiseOR);
-  if (this.isLineBreak()) this.unexpected(this.state.lastTokEnd, "Illegal newline.");
-
-  let test;
-  if (this.match(tt._else)) {
-    const elseNode = this.startNode();
-    this.next();
-    test = this.finishNode(elseNode, "MatchElse");
-  } else {
-    test = this.parseExprOps();
-  }
-
-  this.state.inMatchCaseTest = false;
-  return test;
-};
-
-pp.isBinaryTokenForMatchCase = function (tokenType) {
-  return (
-    tokenType.binop != null &&
-    tokenType !== tt.logicalOR &&
-    tokenType !== tt.logicalAND &&
-    tokenType !== tt.bitwiseOR
-  );
-};
-
-pp.isSubscriptTokenForMatchCase = function (tokenType) {
-  return (
-    tokenType === tt.dot ||
-    tokenType === tt.elvis ||
-    tokenType === tt.tilde ||
-    tokenType === tt.bracketL ||
-    tokenType === tt.question
-  );
-};
-
-pp.allowMatchCasePlaceholder = function () {
-  if (!this.state.inMatchCaseTest) {
-    return false;
-  }
-  const cur = this.state.type;
-  const prev = this.state.tokens[this.state.tokens.length - 1].type;
-
-  // don't allow two binary tokens in a row to use placeholders, eg; `+ *`
-  if (this.isBinaryTokenForMatchCase(cur)) {
-    return !this.isBinaryTokenForMatchCase(prev);
-  }
-  // don't allow two subscripts in a row to use placeholders, eg; `..`
-  if (this.isSubscriptTokenForMatchCase(cur)) {
-    return !this.isSubscriptTokenForMatchCase(prev);
-  }
-  return false;
-};
-
 export default function (instance) {
 
   // if, switch, while, with --> don't need no stinkin' parens no more
@@ -804,7 +495,8 @@ export default function (instance) {
         // first, try paren-free style
         try {
           const val = this.parseExpression();
-          if (this.match(tt.braceL) || this.match(tt.colon)) {
+          // "as" for `match (foo) as bar:`, bit dirty to allow for all but not a problem
+          if (this.match(tt.braceL) || this.match(tt.colon) || this.isContextual("as")) {
             if (val.extra && val.extra.parenthesized) {
               delete val.extra.parenthesized;
               delete val.extra.parenStart;
@@ -813,6 +505,11 @@ export default function (instance) {
           }
         } catch (_err) {
           // fall-through, will re-raise if it's an error below
+        }
+
+        // Could have been an un-parenthesized SeqExpr
+        if (this.hasPlugin("seqExprRequiresParen") && this.match(tt.comma)) {
+          this.unexpected();
         }
 
         // otherwise, try traditional parseParenExpression

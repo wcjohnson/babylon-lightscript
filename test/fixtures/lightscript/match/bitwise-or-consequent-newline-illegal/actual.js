@@ -1,4 +1,4 @@
 a = match x:
-  | 3 with ->
+  | 3:
     x
     | 1

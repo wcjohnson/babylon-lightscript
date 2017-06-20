@@ -1,3 +1,9 @@
 {
-  "plugins": ["lightscript", "jsx", "flow"]
+  "plugins": ["lightscript", "jsx", "flow"],
+  "alternatives": {
+    "all": {
+      "allPlugins": true,
+      "excludePlugins": ["existentialExpression", "safeCallExpression", "enhancedComprehension"]
+    }
+  }
 }

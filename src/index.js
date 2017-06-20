@@ -1,4 +1,4 @@
-import Parser, { plugins } from "./parser";
+import Parser, { plugins, pluginMetadata } from "./parser";
 import "./parser/util";
 import "./parser/statement";
 import "./parser/lval";
@@ -11,14 +11,9 @@ import { types as tokTypes } from "./tokenizer/types";
 import "./tokenizer";
 import "./tokenizer/context";
 
-import lightscriptPlugin from "./plugins/lightscript";
-import estreePlugin from "./plugins/estree";
-import flowPlugin from "./plugins/flow";
-import jsxPlugin from "./plugins/jsx";
-plugins.lightscript = lightscriptPlugin;
-plugins.estree = estreePlugin;
-plugins.flow = flowPlugin;
-plugins.jsx = jsxPlugin;
+import registerPlugins from "./registerPlugins";
+
+registerPlugins(plugins, pluginMetadata);
 
 export function parse(input, options) {
   return new Parser(options, input).parse();
@@ -32,5 +27,14 @@ export function parseExpression(input, options) {
   return parser.getExpression();
 }
 
+export function getAvailablePlugins() {
+  const result = [];
+  for (const pluginKey of Object.keys(plugins)) {
+    if (!(pluginMetadata[pluginKey] && pluginMetadata[pluginKey].private)) {
+      result.push(pluginKey);
+    }
+  }
+  return result;
+}
 
 export { tokTypes };

@@ -94,7 +94,7 @@ pp.jsxReadNewLine = function(normalizeCRLF) {
   this.state.lineStart = this.state.pos;
 
   // DUP in `Tokenizer.skipSpace()`
-  if (this.hasPlugin("lightscript")) {
+  if (this.hasPlugin("significantWhitespace")) {
     this.state.indentLevel = 0;
     while (this.input.charCodeAt(this.state.pos) === 32) {
       if (this.input.charCodeAt(this.state.pos + 1) === 32) {
@@ -435,7 +435,7 @@ export default function(instance) {
       if (this.state.inPropertyName) return inner.call(this, code);
 
       // don't allow jsx inside match case tests
-      if (this.hasPlugin("lightscript") && this.state.inMatchCaseTest) {
+      if (this.hasPlugin("matchCoreSyntax") && this.state.inMatchCaseTest) {
         return inner.call(this, code);
       }
 

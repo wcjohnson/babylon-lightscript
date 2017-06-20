@@ -1,3 +1,15 @@
 {
-  "throws": "Unexpected token (1:6)"
+  "alternatives": {
+    "all": {
+      "throws": "Unexpected token (1:10)"
+    },
+    "noLsc": {
+      "throws": "Unexpected token, expected ) (1:5)"
+    },
+    "noSeqExprParens": {
+      "allPlugins": true,
+      "excludePlugins": ["seqExprRequiresParen", "enhancedComprehension", "bangCall"],
+      "throws": "Unexpected token (1:6)"
+    }
+  }
 }

@@ -1,0 +1,11 @@
+{
+  "alternatives": {
+    "all": {
+      "throws": "Unexpected token, expected } (1:26)"
+    },
+    "noSeqExprParens": {
+      "allPlugins": true,
+      "excludePlugins": ["existentialExpression", "safeCallExpression", "enhancedComprehension", "seqExprRequiresParen", "bangCall"]
+    }
+  }
+}

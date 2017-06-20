@@ -71,7 +71,7 @@ pp.parseExpression = function (noIn, refShorthandDefaultPos) {
   const startPos = this.state.start;
   const startLoc = this.state.startLoc;
   const expr = this.parseMaybeAssign(noIn, refShorthandDefaultPos);
-  if (this.match(tt.comma)) {
+  if (this.match(tt.comma) && !this.hasPlugin("seqExprRequiresParen")) {
     const node = this.startNodeAt(startPos, startLoc);
     node.expressions = [expr];
     while (this.eat(tt.comma)) {
@@ -207,6 +207,10 @@ pp.parseMaybeConditional = function (noIn, refShorthandDefaultPos, refNeedsArrow
 
 pp.parseConditional = function (expr, noIn, startPos, startLoc) {
   if (this.eat(tt.question)) {
+    if (this.state.inMatchAtom) {
+      this.unexpected(null, "Illegal expression in match atom.");
+    }
+
     const node = this.startNodeAt(startPos, startLoc);
     node.test = expr;
     node.consequent = this.parseMaybeAssign();
@@ -239,15 +243,12 @@ pp.parseExprOps = function (noIn, refShorthandDefaultPos) {
 pp.parseExprOp = function(left, leftStartPos, leftStartLoc, minPrec, noIn) {
   // correct ASI failures.
   if (this.hasPlugin("lightscript") && this.isLineBreak()) {
-
     // if it's a newline followed by a unary +/-, bail so it can be parsed separately.
     if (this.match(tt.plusMin) && !this.isNextCharWhitespace()) {
       return left;
     }
-    // if it's a `|` in a match/case on a newline, assume it's for the "case"
-    // TODO: consider using indentation to be more precise about this
-    // TODO: just remove all bitwise operators so this isn't necessary.
-    if (this.match(tt.bitwiseOR) && this.state.inMatchCaseConsequent) {
+    // for match/case
+    if (this.match(tt.bitwiseOR)) {
       return left;
     }
   }
@@ -278,6 +279,9 @@ pp.parseExprOp = function(left, leftStartPos, leftStartLoc, minPrec, noIn) {
       }
 
       const op = this.state.type;
+      if ( this.state.inMatchAtom && (op !== tt.logicalOR && op !== tt.logicalAND)) {
+        this.unexpected(null, "Illegal operator in match atom.");
+      }
       this.next();
 
       const startPos = this.state.start;
@@ -294,12 +298,7 @@ pp.parseExprOp = function(left, leftStartPos, leftStartLoc, minPrec, noIn) {
 // Parse unary operators, both prefix and postfix.
 
 pp.parseMaybeUnary = function (refShorthandDefaultPos) {
-  const matchCaseBinaryPlusMin = this.hasPlugin("lightscript") &&
-    this.state.inMatchCaseTest &&
-    this.match(tt.plusMin) &&
-    this.isNextCharWhitespace();
-
-  if (this.state.type.prefix && !matchCaseBinaryPlusMin) {
+  if (this.state.type.prefix) {
     if (this.hasPlugin("lightscript") && this.match(tt.plusMin)) {
       if (this.isNextCharWhitespace()) this.unexpected(null, "Unary +/- cannot be followed by a space in lightscript.");
     }
@@ -310,6 +309,13 @@ pp.parseMaybeUnary = function (refShorthandDefaultPos) {
 
     // `not` -> `!` etc.
     if (this.hasPlugin("lightscript")) this.rewriteOperator(node);
+
+    if (
+      this.state.inMatchAtom &&
+      !(node.operator === "!" || node.operator === "+" || node.operator === "-")
+    ) {
+      this.unexpected(null, "Illegal operator in match atom");
+    }
 
     node.prefix = true;
     this.next();
@@ -336,6 +342,11 @@ pp.parseMaybeUnary = function (refShorthandDefaultPos) {
   const startLoc = this.state.startLoc;
   let expr = this.parseExprSubscripts(refShorthandDefaultPos);
   if (refShorthandDefaultPos && refShorthandDefaultPos.start) return expr;
+
+  if (this.state.inMatchAtom && this.state.type.postfix) {
+    this.unexpected(null, "Illegal operator in match atom.");
+  }
+
   while (this.state.type.postfix && !this.canInsertSemicolon()) {
     const node = this.startNodeAt(startPos, startLoc);
     node.operator = this.state.value;
@@ -369,12 +380,22 @@ pp.parseExprSubscripts = function (refShorthandDefaultPos) {
 
 pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
   for (;;) {
-    if (!noCalls && this.eat(tt.doubleColon)) {
+    if (this.hasPlugin("bangCall") && this.shouldUnwindBangSubscript()) {
+      return base;
+    } else if (!noCalls && this.eat(tt.doubleColon)) {
       const node = this.startNodeAt(startPos, startLoc);
       node.object = base;
       node.callee = this.parseNoCallExpr();
       return this.parseSubscripts(this.finishNode(node, "BindExpression"), startPos, startLoc, noCalls);
     } else if (this.match(tt.dot)) {
+      // require indentation
+      if (this.hasPlugin("enforceSubscriptIndentation") && this.isNonIndentedBreakFrom(startPos)) {
+        if (this.lookahead().type === tt.num) {
+          this.unexpected(null, "Either indent for array access or use a leading zero for a decimal.");
+        }
+        this.unexpected(null, "Indentation required.");
+      }
+
       // catch malformed decimals (but allow `0.0.toString()`, which is actually valid)
       if (this.hasPlugin("lightscript") && base.type === "NumericLiteral") {
         if (!(base.extra && base.extra.raw && base.extra.raw.match(/\./))) {
@@ -396,6 +417,9 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       }
       base = this.finishNode(node, "MemberExpression");
     } else if (this.hasPlugin("lightscript") && this.match(tt.elvis)) {
+      if (this.hasPlugin("enforceSubscriptIndentation") && this.isNonIndentedBreakFrom(startPos)) {
+        this.unexpected(null, "Indentation required.");
+      }
       // `x?.y`
       const node = this.startNodeAt(startPos, startLoc);
       const op = this.state.value;
@@ -419,18 +443,19 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       }
       base = this.finishNode(node, "SafeMemberExpression");
     } else if (
-      this.hasPlugin("lightscript") &&
+      (this.hasPlugin("safeCallExpression") || this.hasPlugin("existentialExpression")) &&
       this.match(tt.question) &&
-      (
-        this.state.inMatchCaseTest ||
-        this.state.lastTokEnd === (this.state.pos - 1)
-      )
+      (this.state.lastTokEnd === (this.state.pos - 1))
     ) {
       // A `?` immediately following an expr (no whitespace) could be a
       // safecall, ternary, or existential.
-      const next = this.parseQuestionSubscript(base, startPos, startLoc, noCalls);
-      if (next) base = next; else return base;
+      const [next, canSubscript] = this.parseQuestionSubscript(base, startPos, startLoc, noCalls);
+      if (!next) return base;
+      if (canSubscript) base = next; else return next;
     } else if (this.hasPlugin("lightscript") && !noCalls && this.match(tt.tilde)) {
+      if (this.hasPlugin("enforceSubscriptIndentation") && this.isNonIndentedBreakFrom(startPos)) {
+        this.unexpected(null, "Indentation required.");
+      }
       this.next();
       const node = this.startNodeAt(startPos, startLoc);
       node.left = base;
@@ -441,9 +466,25 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       // Allow safe tilde calls (a~b?(c))
       if (this.eat(tt.question)) node.safe = true;
 
-      this.expect(tt.parenL);
-      node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
-      base = this.finishNode(node, "TildeCallExpression");
+      // Allow bang tilde calls
+      if (this.hasPlugin("bangCall") && this.isBang()) {
+        const next = this.parseBangCall(node, "TildeCallExpression");
+        if (next) base = next; else return node;
+      } else {
+        this.expect(tt.parenL);
+        node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
+        base = this.finishNode(node, "TildeCallExpression");
+      }
+    } else if (
+      !noCalls &&
+      this.hasPlugin("bangCall") &&
+      this.isBang() &&
+      (this.state.lastTokEnd === (this.state.pos - 1))
+    ) {
+      const node = this.startNodeAt(startPos, startLoc);
+      node.callee = base;
+      const next = this.parseBangCall(node, "CallExpression");
+      if (next) base = next; else return node;
     } else if (!(this.hasPlugin("lightscript") && this.isNonIndentedBreakFrom(startPos)) && this.eat(tt.bracketL)) {
       const node = this.startNodeAt(startPos, startLoc);
       node.object = base;
@@ -598,6 +639,9 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
 
     case tt._import:
       if (!this.hasPlugin("dynamicImport")) this.unexpected();
+      if (this.state.inMatchAtom) {
+        this.unexpected(null, "Illegal expression in match atom.");
+      }
 
       node = this.startNode();
       this.next();
@@ -612,6 +656,9 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       return this.finishNode(node, "ThisExpression");
 
     case tt._yield:
+      if (this.state.inMatchAtom) {
+        this.unexpected(null, "Illegal expression in match atom.");
+      }
       if (this.state.inGenerator) this.unexpected();
 
     case tt.name:
@@ -642,6 +689,9 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
 
     case tt._do:
       if (this.hasPlugin("doExpressions")) {
+        if (this.state.inMatchAtom) {
+          this.unexpected(null, "Illegal expression in match atom.");
+        }
         const node = this.startNode();
         this.next();
         const oldInFunction = this.state.inFunction;
@@ -682,6 +732,12 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       return this.parseParenAndDistinguishExpression(null, null, canBeArrow);
 
     case tt.bracketL:
+      if (this.state.inMatchAtom) {
+        this.unexpected(null, "Illegal expression in match atom.");
+      }
+      if (this.hasPlugin("enhancedComprehension")) {
+        return this.parseComprehensionArray(refShorthandDefaultPos);
+      }
       node = this.startNode();
       this.next();
       if (this.hasPlugin("lightscript") && this.match(tt._for)) {
@@ -692,20 +748,35 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       return this.finishNode(node, "ArrayExpression");
 
     case tt.braceL:
+      if (this.state.inMatchAtom) {
+        this.unexpected(null, "Illegal expression in match atom.");
+      }
       return this.parseObj(false, refShorthandDefaultPos);
 
     case tt._function:
+      if (this.state.inMatchAtom) {
+        this.unexpected(null, "Illegal expression in match atom.");
+      }
       return this.parseFunctionExpression();
 
     case tt.at:
+      if (this.state.inMatchAtom) {
+        this.unexpected(null, "Illegal expression in match atom.");
+      }
       this.parseDecorators();
 
     case tt._class:
+      if (this.state.inMatchAtom) {
+        this.unexpected(null, "Illegal expression in match atom.");
+      }
       node = this.startNode();
       this.takeDecorators(node);
       return this.parseClass(node, false);
 
     case tt._new:
+      if (this.state.inMatchAtom) {
+        this.unexpected(null, "Illegal expression in match atom.");
+      }
       return this.parseNew();
 
     case tt.backQuote:
@@ -724,23 +795,33 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
 
     case tt._if:
       if (this.hasPlugin("lightscript")) {
+        if (this.state.inMatchAtom) {
+          this.unexpected(null, "Illegal expression in match atom.");
+        }
         node = this.startNode();
         return this.parseIfExpression(node);
       }
 
     case tt._match:
-      if (this.hasPlugin("lightscript")) {
-        return this.parseMatchExpression();
+      if (this.hasPlugin("matchCoreSyntax")) {
+        node = this.startNode();
+        return this.parseMatchExpression(node);
       }
 
     case tt.arrow:
       if (this.hasPlugin("lightscript")) {
+        if (this.state.inMatchAtom) {
+          this.unexpected(null, "Illegal expression in match atom.");
+        }
         node = this.startNode();
         return this.parseArrowExpression(node, []);
       }
 
     case tt.awaitArrow:
       if (this.hasPlugin("lightscript")) {
+        if (this.state.inMatchAtom) {
+          this.unexpected(null, "Illegal expression in match atom.");
+        }
         node = this.startNode();
         const isSafe = this.state.value === "<!-";
         this.next();
@@ -753,16 +834,18 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       }
 
     case tt.dot:
-      if (this.hasPlugin("lightscript") && !this.allowMatchCasePlaceholder() && this.lookahead().type === tt.num) {
+      if (this.hasPlugin("lightscript") && this.lookahead().type === tt.num) {
         this.unexpected(null, "Decimal numbers must be prefixed with a `0` in LightScript (eg; `0.1`).");
       }
 
-    default:
-      if (this.hasPlugin("lightscript") && this.allowMatchCasePlaceholder()) {
-        // use the blank space as an empty value (perhaps 0-length would be better)
+    case tt.tilde:
+      if (this.state.inMatchAtom && this.hasPlugin("lightscript")) {
+        // Predicate
         node = this.startNodeAt(this.state.lastTokEnd, this.state.lastTokEndLoc);
-        return this.finishNodeAt(node, "PlaceholderExpression", this.state.start, this.state.startLoc);
+        return this.finishNodeAt(node, "MatchPlaceholderExpression", this.state.start, this.state.startLoc);
       }
+
+    default:
       this.unexpected();
   }
 };
@@ -939,6 +1022,9 @@ pp.parseTemplateElement = function () {
 };
 
 pp.parseTemplate = function () {
+  const wasInMatchAtom = this.state.inMatchAtom;
+  this.state.inMatchAtom = false;
+
   const node = this.startNode();
   this.next();
   node.expressions = [];
@@ -951,6 +1037,9 @@ pp.parseTemplate = function () {
     node.quasis.push(curElt = this.parseTemplateElement());
   }
   this.next();
+
+  this.state.inMatchAtom = wasInMatchAtom;
+
   return this.finishNode(node, "TemplateLiteral");
 };
 
@@ -960,13 +1049,18 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
   let decorators = [];
   const propHash = Object.create(null);
   let first = true;
+  let hasComprehension = false;
   const node = this.startNode();
 
   node.properties = [];
   this.next();
 
   // `for` keyword begins an object comprehension.
-  if (this.hasPlugin("lightscript") && this.match(tt._for)) {
+  if (
+    this.hasPlugin("lightscript") &&
+    !this.hasPlugin("enhancedComprehension") &&
+    this.match(tt._for)
+  ) {
     // ...however, `{ for: x }` is a legal JS object.
     if (this.lookahead().type !== tt.colon) {
       return this.parseObjectComprehension(node);
@@ -985,6 +1079,20 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
         this.expect(tt.comma);
       }
       if (this.eat(tt.braceR)) break;
+    }
+
+    if (
+      this.hasPlugin("enhancedComprehension") &&
+      (this.match(tt._for) || this.match(tt._case))
+    ) {
+      if (isPattern) {
+        this.unexpected(null, "Comprehensions are illegal in patterns.");
+      }
+      if (this.lookahead().type !== tt.colon) {
+        node.properties.push(this.parseSomeComprehension());
+        hasComprehension = true;
+        continue;
+      }
     }
 
     while (this.match(tt.at)) {
@@ -1067,7 +1175,7 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
     this.raise(this.state.start, "You have trailing decorators with no property");
   }
 
-  return this.finishNode(node, isPattern ? "ObjectPattern" : "ObjectExpression");
+  return this.finishNode(node, hasComprehension ? "ObjectComprehension" : (isPattern ? "ObjectPattern" : "ObjectExpression"));
 };
 
 pp.isGetterOrSetterMethod = function (prop, isPattern) {
@@ -1173,6 +1281,9 @@ pp.parsePropertyName = function (prop) {
 // Initialize empty function node.
 
 pp.initFunction = function (node, isAsync) {
+  if (this.hasPlugin("matchCoreSyntax") && this.state.inMatchCaseTest) {
+    this.unexpected(node.start, "Cannot match on functions.");
+  }
   node.id = null;
   node.generator = false;
   node.expression = false;

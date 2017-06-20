@@ -1,3 +1,9 @@
 {
-  "throws": "Unexpected token (1:13)"
+  "alternatives": {
+    "noExistential": {
+      "allPlugins": true,
+      "excludePlugins": ["existentialExpression", "estree"],
+      "throws": "Unexpected token (1:13)"
+    }
+  }
 }

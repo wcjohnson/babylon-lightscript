@@ -117,7 +117,7 @@ pp.parseStatement = function (declaration, topLevel) {
       return starttype === tt._import ? this.parseImport(node) : this.parseExport(node);
 
     case tt._match:
-      if (this.hasPlugin("lightscript")) return this.parseMatchStatement(node);
+      if (this.hasPlugin("matchCoreSyntax")) return this.parseMatchStatement(node);
 
     case tt.name:
       if (this.state.value === "async") {
@@ -375,7 +375,7 @@ pp.parseReturnStatement = function (node) {
   // optional arguments, we eagerly look for a semicolon or the
   // possibility to insert one.
 
-  if (this.isLineTerminator()) {
+  if (this.isLineTerminator() || (this.hasPlugin("lightscript") && !this.state.type.startsExpr)) {
     node.argument = null;
   } else {
     node.argument = this.parseExpression();
@@ -1179,7 +1179,7 @@ pp.parseImport = function (node) {
     node.source = this.parseExprAtom();
 
     // import 'foo': a, { b, c, d as e }
-    if (this.hasPlugin("lightscript") && this.eat(tt.colon)) {
+    if (this.hasPlugin("flippedImports") && this.eat(tt.colon)) {
       this.parseImportSpecifiers(node);
     }
   } else {

@@ -1,3 +1,10 @@
 {
-  "plugins": ["flow", "jsx", "estree"]
+  "alternatives": {
+    "all": {
+      "allPlugins": true,
+      "includePlugins": ["estree"],
+      "optionsOverride": "options.lightscript.json",
+      "expected": "expected.lightscript.json"
+    }
+  }
 }

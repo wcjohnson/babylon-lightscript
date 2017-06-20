@@ -3,6 +3,8 @@ import { getOptions } from "../options";
 import Tokenizer from "../tokenizer";
 
 export const plugins = {};
+export const pluginMetadata = {};
+
 const frozenDeprecatedWildcardPluginList = [
   "jsx",
   "doExpressions",
@@ -73,7 +75,24 @@ export default class Parser extends Tokenizer {
       return { "*": true };
     }
 
+    // TODO: ugly, rewrite
     const pluginMap = {};
+    pluginList = pluginList.slice();
+    let done = false;
+    while (!done) {
+      done = true;
+      for (let i = 0; i < pluginList.length; i++) {
+        const name = pluginList[i];
+        if (pluginMetadata[name] && pluginMetadata[name].dependencies) {
+          for (const dep of pluginMetadata[name].dependencies) {
+            if (pluginList.indexOf(dep) < 0) {
+              pluginList.splice(i, 0, dep);
+              done = false;
+            }
+          }
+        }
+      }
+    }
 
     if (pluginList.indexOf("flow") >= 0) {
       // ensure flow plugin loads last

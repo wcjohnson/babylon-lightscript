@@ -39,7 +39,7 @@ export class TokenType {
   }
 }
 
-class KeywordTokenType extends TokenType {
+export class KeywordTokenType extends TokenType {
   constructor(name, options = {}) {
     options.keyword = name;
 
@@ -127,7 +127,6 @@ export const keywords = {
   "or": types.logicalOR,
   "and": types.logicalAND,
   "not": new KeywordTokenType("not", { beforeExpr, prefix, startsExpr }),
-  "match": new KeywordTokenType("match", { beforeExpr, startsExpr }),
 
   "break": new KeywordTokenType("break"),
   "case": new KeywordTokenType("case", { beforeExpr }),
@@ -140,7 +139,7 @@ export const keywords = {
   "finally": new KeywordTokenType("finally"),
   "for": new KeywordTokenType("for", { isLoop }),
   "function": new KeywordTokenType("function", { startsExpr }),
-  "if": new KeywordTokenType("if"),
+  "if": new KeywordTokenType("if", { startsExpr }),
   "return": new KeywordTokenType("return", { beforeExpr }),
   "switch": new KeywordTokenType("switch"),
   "throw": new KeywordTokenType("throw", { beforeExpr }),
