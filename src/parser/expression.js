@@ -518,7 +518,10 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
         if (this.match(tt.colon)) {
           const state = this.state.clone();
           try {
-            return this.parseNamedArrowFromCallExpression(this.startNodeAt(startPos, startLoc), node);
+            return this.parseNamedArrowFromCallExpression(
+              this.startNodeAt(startPos, startLoc),
+              node.__cloneDeep()
+            );
           } catch (err) {
             if (this.match(tt.arrow) || err._errorWasInFunctionBody) throw err;
             this.state = state;

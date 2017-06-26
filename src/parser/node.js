@@ -31,6 +31,29 @@ class Node {
 
     return node2;
   }
+
+  // c/p babel-types
+  __cloneDeep(): Node {
+    const newNode = new Node;
+
+    for (const key in this) {
+      if (commentKeys.indexOf(key) >= 0) continue;
+
+      let val = this[key];
+
+      if (val) {
+        if (val.type) {
+          val = val.__cloneDeep();
+        } else if (Array.isArray(val)) {
+          val = val.map((v) => v.__cloneDeep());
+        }
+      }
+
+      newNode[key] = val;
+    }
+
+    return newNode;
+  }
 }
 
 pp.startNode = function () {
