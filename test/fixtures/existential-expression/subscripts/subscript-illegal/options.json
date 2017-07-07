@@ -1,4 +1,4 @@
 {
-  "excludePlugins": ["lightscript", "bangCall", "enforceSubscriptIndentation", "match", "enhancedComprehension"],
+  "excludePlugins": ["lightscript", "bangCall", "enforceSubscriptIndentation", "match", "enhancedComprehension", "objectBlockAmbiguity_preferObject"],
   "throws": "Unexpected token, expected ; (1:2)"
 }

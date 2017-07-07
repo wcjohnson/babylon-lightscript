@@ -71,4 +71,10 @@ export default function registerPlugins(plugins, metadata) {
       "seqExprRequiresParen"
     ]
   });
+
+  // Speculatively parse whiteblocks and arrows beginning with `{`,
+  // preferring to parse as ObjectExpressions when possible.
+  registerPlugin("objectBlockAmbiguity_preferObject", noncePlugin, {
+    dependencies: ["lightscript"]
+  });
 }

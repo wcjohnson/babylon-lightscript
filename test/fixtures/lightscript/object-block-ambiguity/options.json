@@ -1,0 +1,9 @@
+{
+  "alternatives": {
+    "objectBlockAmbiguity": {
+      "allPlugins": true,
+      "excludePlugins": ["existentialExpression", "safeCallExpression", "enhancedComprehension", "bangCall", "flippedImports", "objectBlockAmbiguity_preferObject"],
+      "expected": "expected.objectBlockAmbiguity.json"
+    }
+  }
+}

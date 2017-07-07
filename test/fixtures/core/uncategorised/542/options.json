@@ -1,7 +1,7 @@
 {
   "alternatives": {
     "noLsc": {
-      "excludePlugins": ["bangCall", "enforceSubscriptIndentation", "significantWhitespace", "enhancedComprehension"]
+      "excludePlugins": ["bangCall", "enforceSubscriptIndentation", "significantWhitespace", "enhancedComprehension", "objectBlockAmbiguity_preferObject"]
     }
   }
 }

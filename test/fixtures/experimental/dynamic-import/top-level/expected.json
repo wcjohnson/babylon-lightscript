@@ -421,22 +421,58 @@
               "expression": false,
               "async": false,
               "params": [],
+              "skinny": false,
               "body": {
                 "type": "BlockStatement",
-                "start": 108,
+                "start": 105,
                 "end": 110,
                 "loc": {
                   "start": {
                     "line": 6,
-                    "column": 32
+                    "column": 29
                   },
                   "end": {
                     "line": 6,
                     "column": 34
                   }
                 },
-                "body": [],
-                "directives": []
+                "body": [
+                  {
+                    "type": "ExpressionStatement",
+                    "start": 108,
+                    "end": 110,
+                    "loc": {
+                      "start": {
+                        "line": 6,
+                        "column": 32
+                      },
+                      "end": {
+                        "line": 6,
+                        "column": 34
+                      }
+                    },
+                    "expression": {
+                      "type": "ObjectExpression",
+                      "start": 108,
+                      "end": 110,
+                      "loc": {
+                        "start": {
+                          "line": 6,
+                          "column": 32
+                        },
+                        "end": {
+                          "line": 6,
+                          "column": 34
+                        }
+                      },
+                      "properties": []
+                    }
+                  }
+                ],
+                "directives": [],
+                "extra": {
+                  "curly": false
+                }
               }
             }
           ]
