@@ -139,11 +139,12 @@ pp.parseObjectComprehension = function(node) {
 pp.parseObjectWhiteBlock = function(node, blockIndentLevel) {
   const exprStmt = this.startNode();
   const obj = this.parseMaybeAssign();
+
   if (obj.type !== "ObjectExpression" && obj.type !== "ObjectComprehension") {
-    this.unexpected(null, "not an object");
+    throw new Error("WRONG_SPECULATIVE_BRANCH");
   }
   if (this.state.indentLevel > blockIndentLevel) {
-    this.unexpected(null, "not just an object");
+    throw new Error("WRONG_SPECULATIVE_BRANCH");
   }
 
   exprStmt.expression = obj;
@@ -153,6 +154,29 @@ pp.parseObjectWhiteBlock = function(node, blockIndentLevel) {
   node.directives = [];
   this.addExtra(node, "curly", false);
   return this.finishNode(node, "BlockStatement");
+};
+
+pp.tryParseObjectWhiteBlock = function(node, blockIndentLevel) {
+  const state = this.state.clone();
+  try {
+    return [this.parseObjectWhiteBlock(node, blockIndentLevel)];
+  } catch (err) {
+    this.state = state;
+    return [null, err];
+  }
+};
+
+pp.rethrowObjParseError = function(objParseResult, blockParseError) {
+  const objParseError = objParseResult ? objParseResult[1] : null;
+  if (objParseError) {
+    if (objParseError.message === "WRONG_SPECULATIVE_BRANCH") {
+      throw blockParseError;
+    } else {
+      throw objParseError;
+    }
+  } else {
+    throw blockParseError;
+  }
 };
 
 pp.parseInlineWhiteBlock = function(node) {
@@ -165,18 +189,19 @@ pp.parseInlineWhiteBlock = function(node) {
 };
 
 pp.parseMultilineWhiteBlock = function(node, indentLevel) {
+  let objParseResult = null;
   if (this.match(tt.braceL) && this.hasPlugin("objectBlockAmbiguity_preferObject")) {
-    const state = this.state.clone();
-    try {
-      return this.parseObjectWhiteBlock(node, indentLevel);
-    } catch (err) {
-      this.state = state;
-    }
+    objParseResult = this.tryParseObjectWhiteBlock(node, indentLevel);
+    if (objParseResult[0]) return objParseResult[0];
   }
 
-  this.parseBlockBody(node, false, false, indentLevel);
-  if (!node.body.length) {
-    this.unexpected(node.start, "Expected an Indent or Statement");
+  try {
+    this.parseBlockBody(node, false, false, indentLevel);
+    if (!node.body.length) {
+      this.unexpected(node.start, "Expected an Indent or Statement");
+    }
+  } catch (err) {
+    this.rethrowObjParseError(objParseResult, err);
   }
 
   this.addExtra(node, "curly", false);
@@ -189,20 +214,21 @@ pp.parseWhiteBlock = function (isExpression?) {
 
   // Oneline whiteblock
   if (!this.isLineBreak()) {
+    let objParseResult = null;
+
     if (isExpression) {
       return this.parseInlineWhiteBlock(node);
     }
 
     if (this.match(tt.braceL) && this.hasPlugin("objectBlockAmbiguity_preferObject")) {
-      const state = this.state.clone();
-      try {
-        return this.parseObjectWhiteBlock(node, indentLevel);
-      } catch (err) {
-        this.state = state;
-      }
+      objParseResult = this.tryParseObjectWhiteBlock(node, indentLevel);
+      if (objParseResult[0]) return objParseResult[0];
     }
-
-    return this.parseStatement(false);
+    try {
+      return this.parseStatement(false);
+    } catch (err) {
+      this.rethrowObjParseError(objParseResult, err);
+    }
   }
 
   // TODO: document the fact that directives aren't parsed
@@ -289,14 +315,11 @@ pp.parseArrowFunctionBody = function (node) {
   this.expect(tt.arrow);
   if (!this.isLineBreak()) {
     if (this.match(tt.braceL)) {
+      let objParseResult = null;
+
       if (this.hasPlugin("objectBlockAmbiguity_preferObject")) {
-        // Try to parse an object
-        const state = this.state.clone();
-        try {
-          node.body = this.parseObjectWhiteBlock(nodeAtArrow, indentLevel);
-        } catch (err) {
-          this.state = state;
-        }
+        objParseResult = this.tryParseObjectWhiteBlock(nodeAtArrow, indentLevel);
+        if (objParseResult[0]) node.body = objParseResult[0];
       }
 
       // If we couldn't parse an object...
@@ -304,7 +327,12 @@ pp.parseArrowFunctionBody = function (node) {
         // restart node at brace start instead of arrow start
         node.body = this.startNode();
         this.next();
-        this.parseBlockBody(node.body, true, false, tt.braceR);
+        try {
+          this.parseBlockBody(node.body, true, false, tt.braceR);
+        } catch (err) {
+          node.body = null;
+          this.rethrowObjParseError(objParseResult, err);
+        }
         this.addExtra(node.body, "curly", true);
         node.body = this.finishNode(node.body, "BlockStatement");
       }
