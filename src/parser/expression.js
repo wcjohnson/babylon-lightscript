@@ -1004,6 +1004,10 @@ pp.parseNew = function () {
   if (!(this.hasPlugin("lightscript") && this.isLineBreak()) && this.eat(tt.parenL)) {
     node.arguments = this.parseExprList(tt.parenR);
     this.toReferencedList(node.arguments);
+  } else if (this.hasPlugin("bangCall") && this.isBang() && !this.isLineBreak()) {
+    this.parseBangCall(node, "NewExpression");
+    this.toReferencedList(node.arguments);
+    return node;
   } else {
     node.arguments = [];
   }
