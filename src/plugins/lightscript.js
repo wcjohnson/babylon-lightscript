@@ -140,7 +140,12 @@ pp.parseObjectWhiteBlock = function(node, blockIndentLevel) {
   const exprStmt = this.startNode();
   const obj = this.parseMaybeAssign();
 
-  if (obj.type !== "ObjectExpression" && obj.type !== "ObjectComprehension") {
+  if (
+    obj.type !== "ObjectExpression" &&
+    obj.type !== "ObjectComprehension" &&
+    // A tilde call can begin with { if an ObjectExpression is the thisArg.
+    obj.type !== "TildeCallExpression"
+  ) {
     throw new Error("WRONG_SPECULATIVE_BRANCH");
   }
   if (this.state.indentLevel > blockIndentLevel) {

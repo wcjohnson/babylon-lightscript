@@ -1,0 +1,7 @@
+{
+  "alternatives": {
+    "objectBlockAmbiguity": {
+      "throws": "Unexpected token (1:8)"
+    }
+  }
+}
