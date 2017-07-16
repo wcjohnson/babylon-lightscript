@@ -10,6 +10,14 @@ export default function(parser) {
     return this.state.type.prefix && (this.state.value === "!");
   };
 
+  pp.isAdjacentBang = function() {
+    return (
+      this.state.type.prefix &&
+      this.state.value === "!" &&
+      this.state.lastTokEnd === (this.state.pos - 1)
+    );
+  };
+
   // Parse `!` followed by an arg list. Returns truthy if further subscripting
   // is legal.
   pp.parseBangCall = function(node, nodeType) {

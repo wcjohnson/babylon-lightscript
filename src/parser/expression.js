@@ -467,7 +467,7 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       if (this.eat(tt.question)) node.safe = true;
 
       // Allow bang tilde calls
-      if (this.hasPlugin("bangCall") && this.isBang()) {
+      if (this.hasPlugin("bangCall") && this.isAdjacentBang()) {
         const next = this.parseBangCall(node, "TildeCallExpression");
         if (next) base = next; else return node;
       } else {
@@ -478,8 +478,7 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
     } else if (
       !noCalls &&
       this.hasPlugin("bangCall") &&
-      this.isBang() &&
-      (this.state.lastTokEnd === (this.state.pos - 1))
+      this.isAdjacentBang()
     ) {
       const node = this.startNodeAt(startPos, startLoc);
       node.callee = base;
@@ -1004,11 +1003,7 @@ pp.parseNew = function () {
   if (!(this.hasPlugin("lightscript") && this.isLineBreak()) && this.eat(tt.parenL)) {
     node.arguments = this.parseExprList(tt.parenR);
     this.toReferencedList(node.arguments);
-  } else if (
-    this.hasPlugin("bangCall") &&
-    this.isBang() &&
-    (this.state.lastTokEnd === (this.state.pos - 1))
-  ) {
+  } else if (this.hasPlugin("bangCall") && this.isAdjacentBang()) {
     this.parseBangCall(node, "NewExpression");
     this.toReferencedList(node.arguments);
     return node;
