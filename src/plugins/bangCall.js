@@ -33,13 +33,13 @@ export default function(parser) {
 
     // Read args
     let first = true;
-    const oldBangIndentLevel = this.state.bangIndentLevel;
-    this.state.bangIndentLevel = bangIndentLevel;
+    const oldBangUnwindLevel = this.state.bangUnwindLevel;
+    this.state.bangUnwindLevel = bangIndentLevel + 1;
 
     while (true) {
       // First argument on a different line from the `!` establishes indent level
       if (this.state.curLine !== bangLine && argIndentLevel === null) {
-        argIndentLevel = this.state.indentLevel;
+        this.state.bangUnwindLevel = argIndentLevel = this.state.indentLevel;
       }
 
       // Comma-separated arg and first arg skip ASI/whitespace checks
@@ -71,7 +71,7 @@ export default function(parser) {
       }
     }
 
-    this.state.bangIndentLevel = oldBangIndentLevel;
+    this.state.bangUnwindLevel = oldBangUnwindLevel;
 
     node = this.finishNode(node, nodeType);
 
@@ -84,6 +84,6 @@ export default function(parser) {
 
   // When subscripting, a newline always breaks up bang args.
   pp.shouldUnwindBangSubscript = function() {
-    return this.isLineBreak() && (this.state.indentLevel <= this.state.bangIndentLevel);
+    return this.isLineBreak() && (this.state.indentLevel <= this.state.bangUnwindLevel);
   };
 }

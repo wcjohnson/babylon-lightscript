@@ -1,28 +1,28 @@
 {
   "type": "File",
   "start": 0,
-  "end": 12,
+  "end": 18,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 2,
+      "line": 4,
       "column": 4
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 12,
+    "end": 18,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 2,
+        "line": 4,
         "column": 4
       }
     },
@@ -31,49 +31,49 @@
       {
         "type": "ExpressionStatement",
         "start": 0,
-        "end": 12,
+        "end": 18,
         "loc": {
           "start": {
             "line": 1,
             "column": 0
           },
           "end": {
-            "line": 2,
+            "line": 4,
             "column": 4
           }
         },
         "expression": {
           "type": "MemberExpression",
           "start": 0,
-          "end": 12,
+          "end": 18,
           "loc": {
             "start": {
               "line": 1,
               "column": 0
             },
             "end": {
-              "line": 2,
+              "line": 4,
               "column": 4
             }
           },
           "object": {
             "type": "CallExpression",
             "start": 0,
-            "end": 7,
+            "end": 13,
             "loc": {
               "start": {
                 "line": 1,
                 "column": 0
               },
               "end": {
-                "line": 1,
-                "column": 7
+                "line": 3,
+                "column": 6
               }
             },
             "callee": {
               "type": "Identifier",
               "start": 0,
-              "end": 4,
+              "end": 1,
               "loc": {
                 "start": {
                   "line": 1,
@@ -81,29 +81,62 @@
                 },
                 "end": {
                   "line": 1,
-                  "column": 4
+                  "column": 1
                 },
-                "identifierName": "bang"
+                "identifierName": "a"
               },
-              "name": "bang"
+              "name": "a"
             },
             "arguments": [
               {
-                "type": "Identifier",
-                "start": 6,
-                "end": 7,
+                "type": "MemberExpression",
+                "start": 5,
+                "end": 13,
                 "loc": {
                   "start": {
-                    "line": 1,
-                    "column": 6
+                    "line": 2,
+                    "column": 2
                   },
                   "end": {
-                    "line": 1,
-                    "column": 7
-                  },
-                  "identifierName": "a"
+                    "line": 3,
+                    "column": 6
+                  }
                 },
-                "name": "a"
+                "object": {
+                  "type": "Identifier",
+                  "start": 5,
+                  "end": 6,
+                  "loc": {
+                    "start": {
+                      "line": 2,
+                      "column": 2
+                    },
+                    "end": {
+                      "line": 2,
+                      "column": 3
+                    },
+                    "identifierName": "b"
+                  },
+                  "name": "b"
+                },
+                "property": {
+                  "type": "Identifier",
+                  "start": 12,
+                  "end": 13,
+                  "loc": {
+                    "start": {
+                      "line": 3,
+                      "column": 5
+                    },
+                    "end": {
+                      "line": 3,
+                      "column": 6
+                    },
+                    "identifierName": "c"
+                  },
+                  "name": "c"
+                },
+                "computed": false
               }
             ],
             "extra": {
@@ -112,20 +145,20 @@
           },
           "property": {
             "type": "Identifier",
-            "start": 11,
-            "end": 12,
+            "start": 17,
+            "end": 18,
             "loc": {
               "start": {
-                "line": 2,
+                "line": 4,
                 "column": 3
               },
               "end": {
-                "line": 2,
+                "line": 4,
                 "column": 4
               },
-              "identifierName": "b"
+              "identifierName": "d"
             },
-            "name": "b"
+            "name": "d"
           },
           "computed": false
         }

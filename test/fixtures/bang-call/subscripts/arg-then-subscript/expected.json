@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 19,
+  "end": 11,
   "loc": {
     "start": {
       "line": 1,
@@ -9,13 +9,13 @@
     },
     "end": {
       "line": 3,
-      "column": 6
+      "column": 4
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 19,
+    "end": 11,
     "loc": {
       "start": {
         "line": 1,
@@ -23,7 +23,7 @@
       },
       "end": {
         "line": 3,
-        "column": 6
+        "column": 4
       }
     },
     "sourceType": "script",
@@ -31,7 +31,7 @@
       {
         "type": "ExpressionStatement",
         "start": 0,
-        "end": 19,
+        "end": 11,
         "loc": {
           "start": {
             "line": 1,
@@ -39,13 +39,13 @@
           },
           "end": {
             "line": 3,
-            "column": 6
+            "column": 4
           }
         },
         "expression": {
           "type": "MemberExpression",
           "start": 0,
-          "end": 19,
+          "end": 11,
           "loc": {
             "start": {
               "line": 1,
@@ -53,13 +53,13 @@
             },
             "end": {
               "line": 3,
-              "column": 6
+              "column": 4
             }
           },
           "object": {
-            "type": "MemberExpression",
+            "type": "CallExpression",
             "start": 0,
-            "end": 12,
+            "end": 6,
             "loc": {
               "start": {
                 "line": 1,
@@ -67,13 +67,13 @@
               },
               "end": {
                 "line": 2,
-                "column": 4
+                "column": 3
               }
             },
-            "object": {
-              "type": "CallExpression",
+            "callee": {
+              "type": "Identifier",
               "start": 0,
-              "end": 7,
+              "end": 1,
               "loc": {
                 "start": {
                   "line": 1,
@@ -81,80 +81,47 @@
                 },
                 "end": {
                   "line": 1,
-                  "column": 7
-                }
+                  "column": 1
+                },
+                "identifierName": "a"
               },
-              "callee": {
+              "name": "a"
+            },
+            "arguments": [
+              {
                 "type": "Identifier",
-                "start": 0,
-                "end": 4,
+                "start": 5,
+                "end": 6,
                 "loc": {
                   "start": {
-                    "line": 1,
-                    "column": 0
+                    "line": 2,
+                    "column": 2
                   },
                   "end": {
-                    "line": 1,
-                    "column": 4
+                    "line": 2,
+                    "column": 3
                   },
-                  "identifierName": "bang"
+                  "identifierName": "b"
                 },
-                "name": "bang"
-              },
-              "arguments": [
-                {
-                  "type": "Identifier",
-                  "start": 6,
-                  "end": 7,
-                  "loc": {
-                    "start": {
-                      "line": 1,
-                      "column": 6
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 7
-                    },
-                    "identifierName": "a"
-                  },
-                  "name": "a"
-                }
-              ],
-              "extra": {
-                "bang": true
+                "name": "b"
               }
-            },
-            "property": {
-              "type": "Identifier",
-              "start": 11,
-              "end": 12,
-              "loc": {
-                "start": {
-                  "line": 2,
-                  "column": 3
-                },
-                "end": {
-                  "line": 2,
-                  "column": 4
-                },
-                "identifierName": "b"
-              },
-              "name": "b"
-            },
-            "computed": false
+            ],
+            "extra": {
+              "bang": true
+            }
           },
           "property": {
             "type": "Identifier",
-            "start": 18,
-            "end": 19,
+            "start": 10,
+            "end": 11,
             "loc": {
               "start": {
                 "line": 3,
-                "column": 5
+                "column": 3
               },
               "end": {
                 "line": 3,
-                "column": 6
+                "column": 4
               },
               "identifierName": "c"
             },
