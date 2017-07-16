@@ -1,0 +1,18 @@
+{
+  "alternatives": {
+    "all": {
+      "throws": "Unexpected token (1:0)"
+    },
+    "noLsc": {
+      "throws": "Unexpected token (1:0)"
+    },
+    "noTildeCalls": {
+      "allPlugins": true,
+      "excludePlugins": [
+        "lightscript", "match", "enhancedComprehension",
+        "objectBlockAmbiguity_preferObject", "tildeCallExpression"
+      ],
+      "expected": "expected.json"
+    }
+  }
+}

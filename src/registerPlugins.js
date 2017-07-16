@@ -2,6 +2,7 @@ import lightscriptPlugin from "./plugins/lightscript";
 import estreePlugin from "./plugins/estree";
 import flowPlugin from "./plugins/flow";
 import jsxPlugin from "./plugins/jsx";
+import tildeCallPlugin from "./plugins/tildeCall";
 import safeCallExistentialPlugin from "./plugins/safeCallExistential";
 import bangCallPlugin from "./plugins/bangCall";
 import significantWhitespacePlugin from "./plugins/significantWhitespace";
@@ -38,11 +39,12 @@ export default function registerPlugins(plugins, metadata) {
   registerPlugin("seqExprRequiresParen");
   registerPlugin("significantWhitespace", significantWhitespacePlugin);
 
+  registerPlugin("tildeCallExpression", tildeCallPlugin);
   registerPlugin("safeCallExpression", safeCallExistentialPlugin);
   registerPlugin("existentialExpression", safeCallExistentialPlugin);
 
   registerPlugin("lightscript", lightscriptPlugin, {
-    dependencies: ["significantWhitespace"]
+    dependencies: ["significantWhitespace", "tildeCallExpression"]
   });
 
   registerPlugin("bangCall", bangCallPlugin, {

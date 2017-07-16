@@ -566,7 +566,13 @@ export default class Tokenizer {
         return this.readToken_eq_excl(code);
 
       case 126: // '~'
-        if (this.hasPlugin("lightscript")) {
+        if (this.hasPlugin("tildeCallExpression")) {
+          // `~>`
+          if (this.input.charCodeAt(this.state.pos + 1) === 62) {
+            this.state.pos += 2;
+            return this.finishToken(tt.tilde, "~>");
+          }
+
           ++this.state.pos;
           return this.finishToken(tt.tilde);
         } else {

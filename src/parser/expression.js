@@ -452,29 +452,13 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       const [next, canSubscript] = this.parseQuestionSubscript(base, startPos, startLoc, noCalls);
       if (!next) return base;
       if (canSubscript) base = next; else return next;
-    } else if (this.hasPlugin("lightscript") && !noCalls && this.match(tt.tilde)) {
+    } else if (this.hasPlugin("tildeCallExpression") && !noCalls && this.match(tt.tilde)) {
       if (this.hasPlugin("enforceSubscriptIndentation") && this.isNonIndentedBreakFrom(startPos)) {
         this.unexpected(null, "Indentation required.");
       }
-      this.next();
       const node = this.startNodeAt(startPos, startLoc);
-      node.left = base;
-      // allow `this`, Identifier or MemberExpression, but not calls
-      const right = this.match(tt._this) ? this.parseExprAtom() : this.parseIdentifier();
-      node.right = this.parseSubscripts(right, this.state.start, this.state.startLoc, true);
-
-      // Allow safe tilde calls (a~b?(c))
-      if (this.eat(tt.question)) node.safe = true;
-
-      // Allow bang tilde calls
-      if (this.hasPlugin("bangCall") && this.isAdjacentBang()) {
-        const next = this.parseBangCall(node, "TildeCallExpression");
-        if (next) base = next; else return node;
-      } else {
-        this.expect(tt.parenL);
-        node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
-        base = this.finishNode(node, "TildeCallExpression");
-      }
+      const next = this.parseTildeCall(node, base);
+      if (next) base = next; else return node;
     } else if (
       !noCalls &&
       this.hasPlugin("bangCall") &&
@@ -841,7 +825,7 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       }
 
     case tt.tilde:
-      if (this.state.inMatchAtom && this.hasPlugin("lightscript")) {
+      if (this.state.inMatchAtom && this.hasPlugin("tildeCallExpression")) {
         // Predicate
         node = this.startNodeAt(this.state.lastTokEnd, this.state.lastTokEndLoc);
         return this.finishNodeAt(node, "MatchPlaceholderExpression", this.state.start, this.state.startLoc);
