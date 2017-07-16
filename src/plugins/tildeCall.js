@@ -13,7 +13,7 @@ export default function(parser) {
     node.left = left;
 
     // allow `this`, Identifier or MemberExpression, but not calls
-    const right = this.match(tt._this) ? this.parseExprAtom() : this.parseIdentifier();
+    const right = this.match(tt._this) ? this.parseExprAtom() : this.parseIdentifierOrPlaceholder();
     node.right = this.parseSubscripts(right, this.state.start, this.state.startLoc, true);
 
     // Allow safe tilde calls (a~b?(c))
