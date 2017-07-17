@@ -235,6 +235,10 @@ exports.Test = class Test {
         }
       }
     }
+
+    if (alt.parserOpts) {
+      this.parserOpts = Object.assign({}, this.parserOpts, alt.parserOpts);
+    }
   }
 
   includePlugins(plugins, list) {
