@@ -412,7 +412,7 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
         node.property = this.parseExprAtom();
         node.computed = true;
       } else {
-        node.property = this.parseIdentifier(true);
+        node.property = this.parseIdentifierOrPlaceholder(true);
         node.computed = false;
       }
       base = this.finishNode(node, "MemberExpression");
@@ -431,7 +431,7 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
           node.property = this.parseLiteral(this.state.value, "NumericLiteral");
           node.computed = true;
         } else {
-          node.property = this.parseIdentifier(true);
+          node.property = this.parseIdentifierOrPlaceholder(true);
           node.computed = false;
         }
       } else if (op === "?[") {
@@ -651,7 +651,7 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       node = this.startNode();
       const allowAwait = this.state.value === "await" && this.state.inAsync;
       const allowYield = this.shouldAllowYieldIdentifier();
-      const id = this.parseIdentifier(allowAwait || allowYield);
+      const id = this.parseIdentifierOrPlaceholder(allowAwait || allowYield);
 
       if (id.name === "await") {
         if (this.state.inAsync || this.inModule) {
@@ -661,7 +661,7 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
         this.next();
         return this.parseFunction(node, false, false, true);
       } else if (canBeArrow && id.name === "async" && this.match(tt.name)) {
-        const params = [this.parseIdentifier()];
+        const params = [this.parseIdentifierOrPlaceholder()];
         this.check(tt.arrow);
         // let foo = bar => {};
         return this.parseArrowExpression(node, params, true);
@@ -1134,6 +1134,7 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
     if (!isPattern && this.isContextual("async")) {
       if (isGenerator) this.unexpected();
 
+      // TODO: syntacticPlaceholder: is a placeholder legal here?
       const asyncId = this.parseIdentifier();
       if (this.match(tt.colon) || this.match(tt.parenL) || this.match(tt.braceR) || this.match(tt.eq) || this.match(tt.comma) || (this.hasPlugin("lightscript") && this.isLineBreak())) {
         prop.key = asyncId;
@@ -1262,6 +1263,7 @@ pp.parsePropertyName = function (prop) {
     prop.computed = false;
     const oldInPropertyName = this.state.inPropertyName;
     this.state.inPropertyName = true;
+    // TODO: syntacticPlaceholder: is a placeholder legal here?
     prop.key = (this.match(tt.num) || this.match(tt.string)) ? this.parseExprAtom() : this.parseIdentifier(true);
     this.state.inPropertyName = oldInPropertyName;
   }
@@ -1463,6 +1465,15 @@ pp.parseIdentifier = function (liberal) {
 
   this.next();
   return this.finishNode(node, "Identifier");
+};
+
+// Syntactic placeholders: shunt based on plugin status
+pp.parseIdentifierOrPlaceholder = function(liberal) {
+  if (this.hasPlugin("syntacticPlaceholder")) {
+    return this._parseIdentifierOrPlaceholder(liberal);
+  } else {
+    return this.parseIdentifier(liberal);
+  }
 };
 
 pp.checkReservedWord = function (word, startLoc, checkKeywords, isBinding) {

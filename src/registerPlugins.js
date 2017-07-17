@@ -7,6 +7,7 @@ import safeCallExistentialPlugin from "./plugins/safeCallExistential";
 import bangCallPlugin from "./plugins/bangCall";
 import significantWhitespacePlugin from "./plugins/significantWhitespace";
 import enhancedComprehensionPlugin from "./plugins/enhancedComprehension";
+import syntacticPlaceholderPlugin from "./plugins/syntacticPlaceholder";
 import { matchCoreSyntax, match } from "./plugins/match";
 
 function noncePlugin() {}
@@ -79,4 +80,8 @@ export default function registerPlugins(plugins, metadata) {
   registerPlugin("objectBlockAmbiguity_preferObject", noncePlugin, {
     dependencies: ["lightscript"]
   });
+
+  // Parse identifiers beginning with `_` or another user-chosen symbol
+  // as PlaceholderExpressions.
+  registerPlugin("syntacticPlaceholder", syntacticPlaceholderPlugin);
 }
