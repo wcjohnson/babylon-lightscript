@@ -13,13 +13,13 @@ export default function(parser) {
 
     node.left = left;
 
-    // Left-associative parsing of pipeCalls
+    // To get left-associative parsing for pipe calls, we can't let the RHS
+    // of a pipe call subscript into another pipe call.
+    // Thus we use a state flag to prevent deep parsing of pipe calls
+    // Hackish but avoids changing the core args of parseSubscripts
     const right = this.parseExprAtom();
-    if (this.match(tt.pipeCall)) {
-      node.right = right;
-    } else {
-      node.right = this.parseSubscripts(right, this.state.start, this.state.startLoc, true);
-    }
+    this.state.noPipeSubscripts = true;
+    node.right = this.parseSubscripts(right, this.state.start, this.state.startLoc);
 
     return this.finishNode(node, "PipeCallExpression");
   };

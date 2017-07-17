@@ -379,6 +379,12 @@ pp.parseExprSubscripts = function (refShorthandDefaultPos) {
 };
 
 pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
+
+  // pipeCall plugin hack: pass noPipes via state to avoid changing args
+  // to core parser function.
+  const noPipes = this.state.noPipeSubscripts;
+  this.state.noPipeSubscripts = false;
+
   for (;;) {
     if (this.hasPlugin("bangCall") && this.shouldUnwindBangSubscript()) {
       return base;
@@ -470,6 +476,7 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       if (next) base = next; else return node;
     } else if (
       !noCalls &&
+      !noPipes &&
       this.hasPlugin("pipeCall") &&
       this.match(tt.pipeCall)
     ) {
