@@ -468,6 +468,13 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       node.callee = base;
       const next = this.parseBangCall(node, "CallExpression");
       if (next) base = next; else return node;
+    } else if (
+      !noCalls &&
+      this.hasPlugin("pipeCall") &&
+      this.match(tt.pipeCall)
+    ) {
+      const node = this.startNodeAt(startPos, startLoc);
+      base = this.parsePipeCall(node, base);
     } else if (!(this.hasPlugin("lightscript") && this.isNonIndentedBreakFrom(startPos)) && this.eat(tt.bracketL)) {
       const node = this.startNodeAt(startPos, startLoc);
       node.object = base;
