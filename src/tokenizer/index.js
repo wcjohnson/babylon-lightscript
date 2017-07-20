@@ -437,6 +437,11 @@ export default class Tokenizer {
       size = 2;
     }
 
+    if (code === 60 && next === 124 && this.hasPlugin("pipeCall")) {
+      this.state.pos += 2;
+      return this.finishToken(tt.pipeCall, "<|");
+    }
+
     return this.finishOp(tt.relational, size);
   }
 
