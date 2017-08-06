@@ -30,7 +30,8 @@ export default function(parser) {
 
     // ASI, ignore impossible args
     if (
-      (this.isLineBreak() && this.state.indentLevel <= bangIndentLevel) || !this.state.type.startsExpr
+      (this.isLineBreak() && this.state.indentLevel <= bangIndentLevel) ||
+      !this.state.type.startsExpr
     ) {
       return this.finishNode(node, nodeType);
     }
@@ -90,7 +91,7 @@ export default function(parser) {
       return null;
   };
 
-  // When subscripting, a newline always breaks up bang args.
+  // Subscripts to a bang call must appear at the arg indent level
   pp.shouldUnwindBangSubscript = function() {
     return this.isLineBreak() && (this.state.indentLevel <= this.state.bangUnwindLevel);
   };
