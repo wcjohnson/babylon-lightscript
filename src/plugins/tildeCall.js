@@ -31,9 +31,4 @@ export default function(parser) {
       return this.finishNode(node, "TildeCallExpression");
     }
   };
-
-  // When subscripting, a newline always breaks up bang args.
-  pp.shouldUnwindBangSubscript = function() {
-    return this.isLineBreak() && (this.state.indentLevel <= this.state.bangUnwindLevel);
-  };
 }
