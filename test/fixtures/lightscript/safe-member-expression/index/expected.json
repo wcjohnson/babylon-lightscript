@@ -43,7 +43,7 @@
           }
         },
         "expression": {
-          "type": "SafeMemberExpression",
+          "type": "MemberExpression",
           "start": 0,
           "end": 4,
           "loc": {
@@ -87,13 +87,14 @@
                 "column": 4
               }
             },
-            "value": 0,
             "extra": {
-              "raw": "0",
-              "rawValue": 0
-            }
+              "rawValue": 0,
+              "raw": "0"
+            },
+            "value": 0
           },
-          "computed": true
+          "computed": true,
+          "optional": true
         }
       }
     ],

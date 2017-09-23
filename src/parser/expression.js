@@ -426,28 +426,39 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       if (this.hasPlugin("enforceSubscriptIndentation") && this.isNonIndentedBreakFrom(startPos)) {
         this.unexpected(null, "Indentation required.");
       }
-      // `x?.y`
-      const node = this.startNodeAt(startPos, startLoc);
+
       const op = this.state.value;
       this.next();
-      node.object = base;
-      if (op === "?.") {
-        // arr?.0 -> arr?[0]
-        if (this.match(tt.num)) {
-          node.property = this.parseLiteral(this.state.value, "NumericLiteral");
-          node.computed = true;
-        } else {
-          node.property = this.parseIdentifierOrPlaceholder(true);
-          node.computed = false;
-        }
-      } else if (op === "?[") {
-        node.property = this.parseExpression();
-        node.computed = true;
-        this.expect(tt.bracketR);
+
+      if (op === "?." && this.match(tt.parenL) && this.hasPlugin("safeCallExpression")) {
+        // x?.(...) = JS safe call proposal
+        const [next, canSubscript] = this.parseSafeCall(base, startPos, startLoc);
+        if (canSubscript) base = next; else return base;
       } else {
-        this.unexpected();
+        // `x?.y` `x?[y]`
+        const node = this.startNodeAt(startPos, startLoc);
+        node.object = base;
+
+        if (op === "?.") {
+          if (this.match(tt.num)) {
+            // arr?.0 -> arr?[0]
+            node.property = this.parseLiteral(this.state.value, "NumericLiteral");
+            node.computed = true;
+          } else {
+            node.property = this.parseIdentifierOrPlaceholder(true);
+            node.computed = false;
+          }
+        } else if (op === "?[") {
+          node.property = this.parseExpression();
+          node.computed = true;
+          this.expect(tt.bracketR);
+        } else {
+          this.unexpected();
+        }
+
+        node.optional = true;
+        base = this.finishNode(node, "MemberExpression");
       }
-      base = this.finishNode(node, "SafeMemberExpression");
     } else if (
       (this.hasPlugin("safeCallExpression") || this.hasPlugin("existentialExpression")) &&
       this.match(tt.question) &&

@@ -10,7 +10,7 @@ export default function(parser) {
   pp.parseSafeCall = function(expr, startPos, startLoc) {
     const node = this.startNodeAt(startPos, startLoc);
     node.callee = expr;
-    node.safe = true;
+    node.optional = true;
 
     if (this.hasPlugin("bangCall") && this.isBang()) {
       const canSubscript = this.parseBangCall(node, "CallExpression");

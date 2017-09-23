@@ -120,7 +120,7 @@
                     },
                     "name": "it"
                   },
-                  "safe": true,
+                  "optional": true,
                   "arguments": [
                     {
                       "type": "Identifier",

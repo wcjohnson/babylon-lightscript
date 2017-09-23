@@ -18,7 +18,7 @@ export default function(parser) {
 
     // Allow safe tilde calls (a~b?(c))
     if (this.hasPlugin("safeCallExpression") && this.eat(tt.question)) {
-      node.safe = true;
+      node.optional = true;
     }
 
     // Allow bang tilde calls

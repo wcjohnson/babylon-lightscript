@@ -121,6 +121,7 @@
               },
               "name": "c"
             },
+            "optional": true,
             "arguments": [
               {
                 "type": "Identifier",
@@ -139,8 +140,7 @@
                 },
                 "name": "d"
               }
-            ],
-            "safe": true
+            ]
           }
         }
       }

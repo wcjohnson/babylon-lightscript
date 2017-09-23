@@ -87,6 +87,7 @@
               },
               "name": "a"
             },
+            "optional": true,
             "arguments": [
               {
                 "type": "Identifier",
@@ -105,8 +106,7 @@
                 },
                 "name": "b"
               }
-            ],
-            "safe": true
+            ]
           },
           "typeAnnotation": {
             "type": "TypeAnnotation",
