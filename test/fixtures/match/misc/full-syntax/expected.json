@@ -107,7 +107,7 @@
                   }
                 },
                 "left": {
-                  "type": "TildeCallExpression",
+                  "type": "CallExpression",
                   "start": 29,
                   "end": 40,
                   "loc": {
@@ -120,22 +120,7 @@
                       "column": 31
                     }
                   },
-                  "left": {
-                    "type": "MatchPlaceholderExpression",
-                    "start": 28,
-                    "end": 29,
-                    "loc": {
-                      "start": {
-                        "line": 2,
-                        "column": 19
-                      },
-                      "end": {
-                        "line": 2,
-                        "column": 20
-                      }
-                    }
-                  },
-                  "right": {
+                  "callee": {
                     "type": "Identifier",
                     "start": 30,
                     "end": 38,
@@ -152,11 +137,28 @@
                     },
                     "name": "isWidget"
                   },
-                  "arguments": []
+                  "arguments": [
+                    {
+                      "type": "MatchPlaceholderExpression",
+                      "start": 28,
+                      "end": 29,
+                      "loc": {
+                        "start": {
+                          "line": 2,
+                          "column": 19
+                        },
+                        "end": {
+                          "line": 2,
+                          "column": 20
+                        }
+                      }
+                    }
+                  ],
+                  "tilde": true
                 },
                 "operator": "&&",
                 "right": {
-                  "type": "TildeCallExpression",
+                  "type": "CallExpression",
                   "start": 45,
                   "end": 55,
                   "loc": {
@@ -169,22 +171,7 @@
                       "column": 46
                     }
                   },
-                  "left": {
-                    "type": "MatchPlaceholderExpression",
-                    "start": 44,
-                    "end": 45,
-                    "loc": {
-                      "start": {
-                        "line": 2,
-                        "column": 35
-                      },
-                      "end": {
-                        "line": 2,
-                        "column": 36
-                      }
-                    }
-                  },
-                  "right": {
+                  "callee": {
                     "type": "Identifier",
                     "start": 46,
                     "end": 53,
@@ -201,7 +188,24 @@
                     },
                     "name": "isCheap"
                   },
-                  "arguments": []
+                  "arguments": [
+                    {
+                      "type": "MatchPlaceholderExpression",
+                      "start": 44,
+                      "end": 45,
+                      "loc": {
+                        "start": {
+                          "line": 2,
+                          "column": 35
+                        },
+                        "end": {
+                          "line": 2,
+                          "column": 36
+                        }
+                      }
+                    }
+                  ],
+                  "tilde": true
                 }
               },
               {
@@ -221,7 +225,7 @@
                 "operator": "!",
                 "prefix": true,
                 "argument": {
-                  "type": "TildeCallExpression",
+                  "type": "CallExpression",
                   "start": 61,
                   "end": 71,
                   "loc": {
@@ -234,22 +238,7 @@
                       "column": 62
                     }
                   },
-                  "left": {
-                    "type": "MatchPlaceholderExpression",
-                    "start": 60,
-                    "end": 61,
-                    "loc": {
-                      "start": {
-                        "line": 2,
-                        "column": 51
-                      },
-                      "end": {
-                        "line": 2,
-                        "column": 52
-                      }
-                    }
-                  },
-                  "right": {
+                  "callee": {
                     "type": "Identifier",
                     "start": 62,
                     "end": 69,
@@ -266,7 +255,24 @@
                     },
                     "name": "isShirt"
                   },
-                  "arguments": []
+                  "arguments": [
+                    {
+                      "type": "MatchPlaceholderExpression",
+                      "start": 60,
+                      "end": 61,
+                      "loc": {
+                        "start": {
+                          "line": 2,
+                          "column": 51
+                        },
+                        "end": {
+                          "line": 2,
+                          "column": 52
+                        }
+                      }
+                    }
+                  ],
+                  "tilde": true
                 },
                 "extra": {
                   "parenthesizedArgument": false

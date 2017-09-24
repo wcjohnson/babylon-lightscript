@@ -89,7 +89,7 @@
                 }
               },
               "expression": {
-                "type": "TildeCallExpression",
+                "type": "CallExpression",
                 "start": 6,
                 "end": 12,
                 "loc": {
@@ -102,23 +102,7 @@
                     "column": 12
                   }
                 },
-                "left": {
-                  "type": "ObjectExpression",
-                  "start": 6,
-                  "end": 8,
-                  "loc": {
-                    "start": {
-                      "line": 1,
-                      "column": 6
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 8
-                    }
-                  },
-                  "properties": []
-                },
-                "right": {
+                "callee": {
                   "type": "Identifier",
                   "start": 9,
                   "end": 10,
@@ -135,7 +119,25 @@
                   },
                   "name": "y"
                 },
-                "arguments": []
+                "arguments": [
+                  {
+                    "type": "ObjectExpression",
+                    "start": 6,
+                    "end": 8,
+                    "loc": {
+                      "start": {
+                        "line": 1,
+                        "column": 6
+                      },
+                      "end": {
+                        "line": 1,
+                        "column": 8
+                      }
+                    },
+                    "properties": []
+                  }
+                ],
+                "tilde": true
               }
             }
           ],
