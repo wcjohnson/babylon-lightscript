@@ -23,9 +23,9 @@ export default function(parser) {
     // Allow bang tilde calls
     if (this.hasPlugin("bangCall") && this.isAdjacentBang()) {
       const next = this.parseBangCall(node, "CallExpression");
+      node.arguments.unshift(firstArg);
+      node.tilde = true;
       if (next) {
-        next.arguments.unshift(firstArg);
-        next.tilde = true;
         return next;
       } else {
         return false;
