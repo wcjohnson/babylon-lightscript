@@ -1089,10 +1089,10 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
       this.hasPlugin("enhancedComprehension") &&
       (this.match(tt._for) || this.match(tt._case))
     ) {
-      if (isPattern) {
-        this.unexpected(null, "Comprehensions are illegal in patterns.");
-      }
       if (this.lookahead().type !== tt.colon) {
+        if (isPattern) {
+          this.unexpected(null, "Comprehensions are illegal in patterns.");
+        }
         node.properties.push(this.parseSomeComprehension());
         hasComprehension = true;
         continue;
