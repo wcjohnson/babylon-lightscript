@@ -187,7 +187,9 @@ pp.rethrowObjParseError = function(objParseResult, blockParseError) {
 pp.parseInlineWhiteBlock = function(node) {
   if (this.state.type.startsExpr) return this.parseMaybeAssign();
   // oneline statement case
+  this.state.nestedBlockLevel++;
   node.body = [this.parseStatement(true)];
+  this.state.nestedBlockLevel--;
   node.directives = [];
   this.addExtra(node, "curly", false);
   return this.finishNode(node, "BlockStatement");
@@ -198,15 +200,20 @@ pp.parseMultilineWhiteBlock = function(node, indentLevel) {
   if (this.match(tt.braceL) && this.hasPlugin("objectBlockAmbiguity_preferObject")) {
     objParseResult = this.tryParseObjectWhiteBlock(node, indentLevel);
     if (objParseResult[0]) return objParseResult[0];
-  }
 
-  try {
+    try {
+      this.parseBlockBody(node, false, false, indentLevel);
+      if (!node.body.length) {
+        this.unexpected(node.start, "Expected an Indent or Statement");
+      }
+    } catch (err) {
+      this.rethrowObjParseError(objParseResult, err);
+    }
+  } else {
     this.parseBlockBody(node, false, false, indentLevel);
     if (!node.body.length) {
       this.unexpected(node.start, "Expected an Indent or Statement");
     }
-  } catch (err) {
-    this.rethrowObjParseError(objParseResult, err);
   }
 
   this.addExtra(node, "curly", false);
@@ -230,7 +237,10 @@ pp.parseWhiteBlock = function (isExpression?) {
       if (objParseResult[0]) return objParseResult[0];
     }
     try {
-      return this.parseStatement(false);
+      this.state.nestedBlockLevel++;
+      const stmt = this.parseStatement(false);
+      this.state.nestedBlockLevel--;
+      return stmt;
     } catch (err) {
       this.rethrowObjParseError(objParseResult, err);
     }

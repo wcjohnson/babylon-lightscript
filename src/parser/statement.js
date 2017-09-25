@@ -608,6 +608,8 @@ pp.parseBlockBody = function (node, allowDirectives, topLevel, end) {
   let oldStrict;
   let octalPosition;
 
+  this.state.nestedBlockLevel++;
+
   let isEnd;
   if (this.hasPlugin("lightscript") && typeof end === "number") {
     isEnd = () => this.state.indentLevel <= end || this.match(tt.eof);
@@ -641,6 +643,8 @@ pp.parseBlockBody = function (node, allowDirectives, topLevel, end) {
     parsedNonDirective = true;
     node.body.push(stmt);
   }
+
+  this.state.nestedBlockLevel--;
 
   if (oldStrict === false) {
     this.setStrict(false);

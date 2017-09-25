@@ -43,6 +43,8 @@ export default function(parser) {
     // Read args
     let first = true;
     const oldBangUnwindLevel = this.state.bangUnwindLevel;
+    const oldBangBlockLevel = this.state.bangBlockLevel;
+    this.state.bangBlockLevel = this.state.nestedBlockLevel;
     this.state.bangUnwindLevel = bangIndentLevel + 1;
 
     while (true) {
@@ -81,6 +83,7 @@ export default function(parser) {
     }
 
     this.state.bangUnwindLevel = oldBangUnwindLevel;
+    this.state.bangBlockLevel = oldBangBlockLevel;
 
     node = this.finishNode(node, nodeType);
 
@@ -93,6 +96,8 @@ export default function(parser) {
 
   // Subscripts to a bang call must appear at the arg indent level
   pp.shouldUnwindBangSubscript = function() {
-    return this.isLineBreak() && (this.state.indentLevel <= this.state.bangUnwindLevel);
+    return this.isLineBreak() &&
+      (this.state.bangBlockLevel == this.state.nestedBlockLevel) &&
+      (this.state.indentLevel <= this.state.bangUnwindLevel);
   };
 }

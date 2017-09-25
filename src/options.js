@@ -9,7 +9,8 @@ export const defaultOptions: {
   allowImportExportEverywhere: boolean,
   allowSuperOutsideMethod: boolean,
   plugins: Array<string>,
-  strictMode: any
+  strictMode: any,
+  placeholder: string
 } = {
   // Source type ("script" or "module") for different semantics
   sourceType: "script",
@@ -30,6 +31,8 @@ export const defaultOptions: {
   plugins: [],
   // TODO
   strictMode: null,
+  // Default placeholder for use with syntacticPlaceholder plugin
+  placeholder: "_"
 };
 
 // Interpret and default an options object
