@@ -40,6 +40,7 @@ export default class State {
 
     // for lightscript
     this.indentLevel = 0;
+    this.nestedBlockLevel = 0;
     this.inMatchCaseTest = false;
 
     this.type = tt.eof;
