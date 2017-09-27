@@ -453,7 +453,8 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
           node.computed = true;
           this.expect(tt.bracketR);
         } else {
-          this.unexpected();
+          node.property = this.parseIdentifierOrPlaceholder(true);
+          node.computed = false;
         }
 
         node.optional = true;
