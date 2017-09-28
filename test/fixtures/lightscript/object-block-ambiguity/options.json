@@ -2,6 +2,7 @@
   "alternatives": {
     "whiteblock": {
       "allPlugins": true,
+      "excludePlugins": ["splatComprehension"],
       "expected": "expected.whiteblock.json"
     }
   }

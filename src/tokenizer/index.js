@@ -282,6 +282,25 @@ export default class Tokenizer {
     const next2 = this.input.charCodeAt(this.state.pos + 2);
     if (next === 46 && next2 === 46) { // 46 = dot '.'
       this.state.pos += 3;
+      // splatComprehension: parse ...for and ...if
+      if (this.hasPlugin("splatComprehension")) {
+        const next3 = this.input.charCodeAt(this.state.pos);
+        const next4 = this.input.charCodeAt(this.state.pos + 1);
+        const next5 = this.input.charCodeAt(this.state.pos + 2);
+        // "...if"
+        if (next3 === 105 && next4 === 102 && !isIdentifierChar(next5)) {
+          this.state.pos += 2;
+          return this.finishToken(tt.splatComprehension, "if");
+        } else if ( // "...for"
+          next3 === 102 &&
+          next4 === 111 &&
+          next5 === 114 &&
+          !isIdentifierChar(this.input.charCodeAt(this.state.pos + 3))
+        ) {
+          this.state.pos += 3;
+          return this.finishToken(tt.splatComprehension, "for");
+        }
+      }
       return this.finishToken(tt.ellipsis);
     } else {
       ++this.state.pos;

@@ -9,7 +9,7 @@
     "noTildeCalls": {
       "allPlugins": true,
       "excludePlugins": [
-        "lightscript", "match", "enhancedComprehension",
+        "lightscript", "match", "splatComprehension",
         "whiteblockOnly", "tildeCallExpression"
       ],
       "expected": "expected.json"
