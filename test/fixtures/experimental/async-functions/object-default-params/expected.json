@@ -204,54 +204,22 @@
               "skinny": false,
               "body": {
                 "type": "BlockStatement",
-                "start": 32,
+                "start": 35,
                 "end": 37,
                 "loc": {
                   "start": {
                     "line": 1,
-                    "column": 32
+                    "column": 35
                   },
                   "end": {
                     "line": 1,
                     "column": 37
                   }
                 },
-                "body": [
-                  {
-                    "type": "ExpressionStatement",
-                    "start": 35,
-                    "end": 37,
-                    "loc": {
-                      "start": {
-                        "line": 1,
-                        "column": 35
-                      },
-                      "end": {
-                        "line": 1,
-                        "column": 37
-                      }
-                    },
-                    "expression": {
-                      "type": "ObjectExpression",
-                      "start": 35,
-                      "end": 37,
-                      "loc": {
-                        "start": {
-                          "line": 1,
-                          "column": 35
-                        },
-                        "end": {
-                          "line": 1,
-                          "column": 37
-                        }
-                      },
-                      "properties": []
-                    }
-                  }
-                ],
+                "body": [],
                 "directives": [],
                 "extra": {
-                  "curly": false
+                  "curly": true
                 }
               }
             }

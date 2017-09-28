@@ -76,16 +76,14 @@ export default function registerPlugins(plugins, metadata) {
     ]
   });
 
-  // Speculatively parse whiteblocks and arrows beginning with `{`,
-  // preferring to parse as ObjectExpressions when possible.
-  registerPlugin("objectBlockAmbiguity_preferObject", noncePlugin, {
-    dependencies: ["lightscript"]
-  });
-
   // Parse identifiers beginning with `_` or another user-chosen symbol
   // as PlaceholderExpressions.
   registerPlugin("syntacticPlaceholder", syntacticPlaceholderPlugin);
 
   // |> infix operator for piped function calls
   registerPlugin("pipeCall", pipeCallPlugin);
+
+  registerPlugin("whiteblockOnly", noncePlugin, {
+    dependencies: ["lightscript"]
+  });
 }

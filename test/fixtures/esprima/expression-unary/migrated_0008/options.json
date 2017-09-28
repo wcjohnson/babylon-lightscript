@@ -10,7 +10,7 @@
       "allPlugins": true,
       "excludePlugins": [
         "lightscript", "match", "enhancedComprehension",
-        "objectBlockAmbiguity_preferObject", "tildeCallExpression"
+        "whiteblockOnly", "tildeCallExpression"
       ],
       "expected": "expected.json"
     }

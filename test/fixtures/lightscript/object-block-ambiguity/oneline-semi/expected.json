@@ -66,12 +66,12 @@
         "skinny": false,
         "body": {
           "type": "BlockStatement",
-          "start": 4,
+          "start": 7,
           "end": 12,
           "loc": {
             "start": {
               "line": 1,
-              "column": 4
+              "column": 7
             },
             "end": {
               "line": 1,
@@ -81,95 +81,40 @@
           "body": [
             {
               "type": "ExpressionStatement",
-              "start": 7,
-              "end": 12,
+              "start": 9,
+              "end": 10,
               "loc": {
                 "start": {
                   "line": 1,
-                  "column": 7
+                  "column": 9
                 },
                 "end": {
                   "line": 1,
-                  "column": 12
+                  "column": 10
                 }
               },
               "expression": {
-                "type": "ObjectExpression",
-                "start": 7,
-                "end": 12,
+                "type": "Identifier",
+                "start": 9,
+                "end": 10,
                 "loc": {
                   "start": {
                     "line": 1,
-                    "column": 7
+                    "column": 9
                   },
                   "end": {
                     "line": 1,
-                    "column": 12
-                  }
+                    "column": 10
+                  },
+                  "identifierName": "x"
                 },
-                "properties": [
-                  {
-                    "type": "ObjectProperty",
-                    "start": 9,
-                    "end": 10,
-                    "loc": {
-                      "start": {
-                        "line": 1,
-                        "column": 9
-                      },
-                      "end": {
-                        "line": 1,
-                        "column": 10
-                      }
-                    },
-                    "method": false,
-                    "shorthand": true,
-                    "computed": false,
-                    "key": {
-                      "type": "Identifier",
-                      "start": 9,
-                      "end": 10,
-                      "loc": {
-                        "start": {
-                          "line": 1,
-                          "column": 9
-                        },
-                        "end": {
-                          "line": 1,
-                          "column": 10
-                        },
-                        "identifierName": "x"
-                      },
-                      "name": "x"
-                    },
-                    "value": {
-                      "type": "Identifier",
-                      "start": 9,
-                      "end": 10,
-                      "loc": {
-                        "start": {
-                          "line": 1,
-                          "column": 9
-                        },
-                        "end": {
-                          "line": 1,
-                          "column": 10
-                        },
-                        "identifierName": "x"
-                      },
-                      "name": "x"
-                    },
-                    "extra": {
-                      "shorthand": true
-                    }
-                  }
-                ]
+                "name": "x"
               }
             }
           ],
           "directives": [],
           "extra": {
-            "curly": false
+            "curly": true
           }
         }
       },

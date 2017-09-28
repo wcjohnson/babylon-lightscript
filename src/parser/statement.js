@@ -97,6 +97,8 @@ pp.parseStatement = function (declaration, topLevel) {
       // in lightscript, allow line-starting `{` to be parsed as obj or obj pattern
       if (this.hasPlugin("lightscript") && this.isLineBreak()) {
         break;
+      } else if (this.hasPlugin("whiteblockOnly")) {
+        break;
       } else {
         return this.parseBlock();
       }
@@ -588,6 +590,9 @@ pp.parseExpressionStatement = function (node, expr) {
 // function bodies).
 
 pp.parseBlock = function (allowDirectives?) {
+  if (this.hasPlugin("whiteblockOnly")) {
+    this.unexpected(null, "Brace-delimited blocks are illegal in whiteblock-only mode.");
+  }
   const node = this.startNode();
   this.expect(tt.braceL);
   this.parseBlockBody(node, allowDirectives, false, tt.braceR);
@@ -806,6 +811,9 @@ pp.parseClassBody = function (node) {
     this.next();
     isEnd = () => this.state.indentLevel <= indentLevel || this.match(tt.eof);
   } else {
+    if (this.hasPlugin("whiteblockOnly")) {
+      this.unexpected(null, "Brace-delimited blocks are illegal in whiteblock-only mode.");
+    }
     this.expect(tt.braceL);
     isEnd = () => this.eat(tt.braceR);
   }

@@ -5,7 +5,7 @@
     },
     "noLsc": {
       "allPlugins": true,
-      "excludePlugins": ["lightscript", "match", "enhancedComprehension", "objectBlockAmbiguity_preferObject"]
+      "excludePlugins": ["lightscript", "match", "enhancedComprehension", "whiteblockOnly"]
     }
   }
 }

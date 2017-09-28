@@ -137,6 +137,7 @@ pp.parseObjectComprehension = function(node) {
 
 // Parse a whiteblock body consisting of a single object expr.
 pp.parseObjectWhiteBlock = function(node, blockIndentLevel) {
+  const errorPos = this.state.start;
   const exprStmt = this.startNode();
   const obj = this.parseMaybeAssign();
 
@@ -146,10 +147,11 @@ pp.parseObjectWhiteBlock = function(node, blockIndentLevel) {
     // A tilde call can begin with { if an ObjectExpression is the thisArg.
     (obj.type !== "CallExpression" || !obj.tilde)
   ) {
-    throw new Error("WRONG_SPECULATIVE_BRANCH");
+    this.unexpected(errorPos, "Expected an object.");
   }
+
   if (this.state.indentLevel > blockIndentLevel) {
-    throw new Error("WRONG_SPECULATIVE_BRANCH");
+    this.unexpected(errorPos, "Expected an object.");
   }
 
   exprStmt.expression = obj;
@@ -159,29 +161,6 @@ pp.parseObjectWhiteBlock = function(node, blockIndentLevel) {
   node.directives = [];
   this.addExtra(node, "curly", false);
   return this.finishNode(node, "BlockStatement");
-};
-
-pp.tryParseObjectWhiteBlock = function(node, blockIndentLevel) {
-  const state = this.state.clone();
-  try {
-    return [this.parseObjectWhiteBlock(node, blockIndentLevel)];
-  } catch (err) {
-    this.state = state;
-    return [null, err];
-  }
-};
-
-pp.rethrowObjParseError = function(objParseResult, blockParseError) {
-  const objParseError = objParseResult ? objParseResult[1] : null;
-  if (objParseError) {
-    if (objParseError.message === "WRONG_SPECULATIVE_BRANCH") {
-      throw blockParseError;
-    } else {
-      throw objParseError;
-    }
-  } else {
-    throw blockParseError;
-  }
 };
 
 pp.parseInlineWhiteBlock = function(node) {
@@ -196,24 +175,13 @@ pp.parseInlineWhiteBlock = function(node) {
 };
 
 pp.parseMultilineWhiteBlock = function(node, indentLevel) {
-  let objParseResult = null;
-  if (this.match(tt.braceL) && this.hasPlugin("objectBlockAmbiguity_preferObject")) {
-    objParseResult = this.tryParseObjectWhiteBlock(node, indentLevel);
-    if (objParseResult[0]) return objParseResult[0];
+  if (this.match(tt.braceL) && this.hasPlugin("whiteblockOnly")) {
+    return this.parseObjectWhiteBlock(node, indentLevel);
+  }
 
-    try {
-      this.parseBlockBody(node, false, false, indentLevel);
-      if (!node.body.length) {
-        this.unexpected(node.start, "Expected an Indent or Statement");
-      }
-    } catch (err) {
-      this.rethrowObjParseError(objParseResult, err);
-    }
-  } else {
-    this.parseBlockBody(node, false, false, indentLevel);
-    if (!node.body.length) {
-      this.unexpected(node.start, "Expected an Indent or Statement");
-    }
+  this.parseBlockBody(node, false, false, indentLevel);
+  if (!node.body.length) {
+    this.unexpected(node.start, "Expected an Indent or Statement");
   }
 
   this.addExtra(node, "curly", false);
@@ -226,24 +194,19 @@ pp.parseWhiteBlock = function (isExpression?) {
 
   // Oneline whiteblock
   if (!this.isLineBreak()) {
-    let objParseResult = null;
-
     if (isExpression) {
       return this.parseInlineWhiteBlock(node);
     }
 
-    if (this.match(tt.braceL) && this.hasPlugin("objectBlockAmbiguity_preferObject")) {
-      objParseResult = this.tryParseObjectWhiteBlock(node, indentLevel);
-      if (objParseResult[0]) return objParseResult[0];
+    if (this.match(tt.braceL) && this.hasPlugin("whiteblockOnly")) {
+      // Parse as object
+      return this.parseObjectWhiteBlock(node, indentLevel);
     }
-    try {
-      this.state.nestedBlockLevel++;
-      const stmt = this.parseStatement(false);
-      this.state.nestedBlockLevel--;
-      return stmt;
-    } catch (err) {
-      this.rethrowObjParseError(objParseResult, err);
-    }
+
+    this.state.nestedBlockLevel++;
+    const stmt = this.parseStatement(false);
+    this.state.nestedBlockLevel--;
+    return stmt;
   }
 
   // TODO: document the fact that directives aren't parsed
@@ -323,24 +286,14 @@ pp.parseArrowFunctionBody = function (node) {
   this.expect(tt.arrow);
   if (!this.isLineBreak()) {
     if (this.match(tt.braceL)) {
-      let objParseResult = null;
-
-      if (this.hasPlugin("objectBlockAmbiguity_preferObject")) {
-        objParseResult = this.tryParseObjectWhiteBlock(nodeAtArrow, indentLevel);
-        if (objParseResult[0]) node.body = objParseResult[0];
-      }
-
-      // If we couldn't parse an object...
-      if (!node.body) {
+      if (this.hasPlugin("whiteblockOnly")) {
+        // In whiteblock mode, arrows that start with `{` must be object exprs
+        node.body = this.parseObjectWhiteBlock(nodeAtArrow, indentLevel);
+      } else {
         // restart node at brace start instead of arrow start
         node.body = this.startNode();
         this.next();
-        try {
-          this.parseBlockBody(node.body, true, false, tt.braceR);
-        } catch (err) {
-          node.body = null;
-          this.rethrowObjParseError(objParseResult, err);
-        }
+        this.parseBlockBody(node.body, true, false, tt.braceR);
         this.addExtra(node.body, "curly", true);
         node.body = this.finishNode(node.body, "BlockStatement");
       }
@@ -587,8 +540,7 @@ export default function (instance) {
         // first, try paren-free style
         try {
           const val = this.parseExpression();
-          // "as" for `match (foo) as bar:`, bit dirty to allow for all but not a problem
-          if (this.match(tt.braceL) || this.match(tt.colon) || this.isContextual("as")) {
+          if (this.match(tt.braceL) || this.match(tt.colon)) {
             if (val.extra && val.extra.parenthesized) {
               delete val.extra.parenthesized;
               delete val.extra.parenStart;
@@ -676,6 +628,9 @@ export default function (instance) {
     return function () {
       if (this.match(tt.colon)) {
         return this.parseWhiteBlock();
+      }
+      if (this.hasPlugin("whiteblockOnly")) {
+        this.unexpected(null, tt.colon);
       }
       const block = inner.apply(this, arguments);
       this.addExtra(block, "curly", true);

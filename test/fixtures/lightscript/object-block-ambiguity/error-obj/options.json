@@ -1,9 +1,9 @@
 {
   "alternatives": {
-    "all": {
+    "whiteblock": {
       "throws": "Expected an Indent or Statement (7:6)"
     },
-    "objectBlockAmbiguity": {
+    "all": {
       "throws": "Leading decorators must be attached to a class declaration (7:2)"
     }
   }

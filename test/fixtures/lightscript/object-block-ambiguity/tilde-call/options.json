@@ -1,6 +1,6 @@
 {
   "alternatives": {
-    "objectBlockAmbiguity": {
+    "all": {
       "throws": "Unexpected token (1:8)"
     }
   }

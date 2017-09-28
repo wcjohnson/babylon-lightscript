@@ -1,0 +1,7 @@
+{
+  "alternatives": {
+    "all": {
+      "throws": "Unexpected token, expected : (1:16)"
+    }
+  }
+}

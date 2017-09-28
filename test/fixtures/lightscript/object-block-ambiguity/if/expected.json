@@ -61,12 +61,12 @@
         },
         "consequent": {
           "type": "BlockStatement",
-          "start": 4,
+          "start": 6,
           "end": 11,
           "loc": {
             "start": {
               "line": 1,
-              "column": 4
+              "column": 6
             },
             "end": {
               "line": 1,
@@ -76,105 +76,50 @@
           "body": [
             {
               "type": "ExpressionStatement",
-              "start": 6,
-              "end": 11,
+              "start": 8,
+              "end": 9,
               "loc": {
                 "start": {
                   "line": 1,
-                  "column": 6
+                  "column": 8
                 },
                 "end": {
                   "line": 1,
-                  "column": 11
+                  "column": 9
                 }
               },
               "expression": {
-                "type": "ObjectExpression",
-                "start": 6,
-                "end": 11,
+                "type": "Identifier",
+                "start": 8,
+                "end": 9,
                 "loc": {
                   "start": {
                     "line": 1,
-                    "column": 6
+                    "column": 8
                   },
                   "end": {
                     "line": 1,
-                    "column": 11
-                  }
+                    "column": 9
+                  },
+                  "identifierName": "y"
                 },
-                "properties": [
-                  {
-                    "type": "ObjectProperty",
-                    "start": 8,
-                    "end": 9,
-                    "loc": {
-                      "start": {
-                        "line": 1,
-                        "column": 8
-                      },
-                      "end": {
-                        "line": 1,
-                        "column": 9
-                      }
-                    },
-                    "method": false,
-                    "shorthand": true,
-                    "computed": false,
-                    "key": {
-                      "type": "Identifier",
-                      "start": 8,
-                      "end": 9,
-                      "loc": {
-                        "start": {
-                          "line": 1,
-                          "column": 8
-                        },
-                        "end": {
-                          "line": 1,
-                          "column": 9
-                        },
-                        "identifierName": "y"
-                      },
-                      "name": "y"
-                    },
-                    "value": {
-                      "type": "Identifier",
-                      "start": 8,
-                      "end": 9,
-                      "loc": {
-                        "start": {
-                          "line": 1,
-                          "column": 8
-                        },
-                        "end": {
-                          "line": 1,
-                          "column": 9
-                        },
-                        "identifierName": "y"
-                      },
-                      "name": "y"
-                    },
-                    "extra": {
-                      "shorthand": true
-                    }
-                  }
-                ]
+                "name": "y"
               }
             }
           ],
           "directives": [],
           "extra": {
-            "curly": false
+            "curly": true
           }
         },
         "alternate": {
           "type": "BlockStatement",
-          "start": 16,
+          "start": 18,
           "end": 25,
           "loc": {
             "start": {
               "line": 1,
-              "column": 16
+              "column": 18
             },
             "end": {
               "line": 3,
@@ -184,95 +129,40 @@
           "body": [
             {
               "type": "ExpressionStatement",
-              "start": 18,
-              "end": 25,
+              "start": 22,
+              "end": 23,
               "loc": {
                 "start": {
-                  "line": 1,
-                  "column": 18
+                  "line": 2,
+                  "column": 2
                 },
                 "end": {
-                  "line": 3,
-                  "column": 1
+                  "line": 2,
+                  "column": 3
                 }
               },
               "expression": {
-                "type": "ObjectExpression",
-                "start": 18,
-                "end": 25,
+                "type": "Identifier",
+                "start": 22,
+                "end": 23,
                 "loc": {
                   "start": {
-                    "line": 1,
-                    "column": 18
+                    "line": 2,
+                    "column": 2
                   },
                   "end": {
-                    "line": 3,
-                    "column": 1
-                  }
+                    "line": 2,
+                    "column": 3
+                  },
+                  "identifierName": "z"
                 },
-                "properties": [
-                  {
-                    "type": "ObjectProperty",
-                    "start": 22,
-                    "end": 23,
-                    "loc": {
-                      "start": {
-                        "line": 2,
-                        "column": 2
-                      },
-                      "end": {
-                        "line": 2,
-                        "column": 3
-                      }
-                    },
-                    "method": false,
-                    "shorthand": true,
-                    "computed": false,
-                    "key": {
-                      "type": "Identifier",
-                      "start": 22,
-                      "end": 23,
-                      "loc": {
-                        "start": {
-                          "line": 2,
-                          "column": 2
-                        },
-                        "end": {
-                          "line": 2,
-                          "column": 3
-                        },
-                        "identifierName": "z"
-                      },
-                      "name": "z"
-                    },
-                    "value": {
-                      "type": "Identifier",
-                      "start": 22,
-                      "end": 23,
-                      "loc": {
-                        "start": {
-                          "line": 2,
-                          "column": 2
-                        },
-                        "end": {
-                          "line": 2,
-                          "column": 3
-                        },
-                        "identifierName": "z"
-                      },
-                      "name": "z"
-                    },
-                    "extra": {
-                      "shorthand": true
-                    }
-                  }
-                ]
+                "name": "z"
               }
             }
           ],
           "directives": [],
           "extra": {
-            "curly": false
+            "curly": true
           }
         }
       }

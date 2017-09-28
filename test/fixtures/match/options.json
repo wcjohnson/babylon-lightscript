@@ -1,7 +1,8 @@
 {
   "alternatives": {
     "default": {
-      "allPlugins": true
+      "allPlugins": true,
+      "excludePlugins": ["whiteblockOnly"]
     }
   }
 }

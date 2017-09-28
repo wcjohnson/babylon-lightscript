@@ -75,10 +75,11 @@
                 }
               }
             }
-          ]
+          ],
+          "extra": {}
         },
         "consequent": {
-          "type": "BlockStatement",
+          "type": "ExpressionStatement",
           "start": 28,
           "end": 30,
           "loc": {
@@ -91,8 +92,22 @@
               "column": 20
             }
           },
-          "body": [],
-          "directives": []
+          "expression": {
+            "type": "ObjectExpression",
+            "start": 28,
+            "end": 30,
+            "loc": {
+              "start": {
+                "line": 2,
+                "column": 18
+              },
+              "end": {
+                "line": 2,
+                "column": 20
+              }
+            },
+            "properties": []
+          }
         },
         "alternate": null,
         "leadingComments": [
