@@ -747,7 +747,7 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       if (this.state.inMatchAtom) {
         this.unexpected(null, "Illegal expression in match atom.");
       }
-      if (this.hasPlugin("enhancedComprehension")) {
+      if (this.hasPlugin("splatComprehension")) {
         return this.parseComprehensionArray(refShorthandDefaultPos);
       }
       node = this.startNode();
@@ -1074,7 +1074,7 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
   // `for` keyword begins an object comprehension.
   if (
     this.hasPlugin("lightscript") &&
-    !this.hasPlugin("enhancedComprehension") &&
+    !this.hasPlugin("splatComprehension") &&
     this.match(tt._for)
   ) {
     // ...however, `{ for: x }` is a legal JS object.
@@ -1097,18 +1097,13 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
       if (this.eat(tt.braceR)) break;
     }
 
-    if (
-      this.hasPlugin("enhancedComprehension") &&
-      (this.match(tt._for) || this.match(tt._case))
-    ) {
-      if (this.lookahead().type !== tt.colon) {
-        if (isPattern) {
-          this.unexpected(null, "Comprehensions are illegal in patterns.");
-        }
-        node.properties.push(this.parseSomeComprehension());
-        hasComprehension = true;
-        continue;
+    if (this.hasPlugin("splatComprehension") && this.match(tt.splatComprehension)) {
+      if (isPattern) {
+        this.unexpected(null, "Comprehensions are illegal in patterns.");
       }
+      node.properties.push(this.parseSomeComprehension());
+      hasComprehension = true;
+      continue;
     }
 
     while (this.match(tt.at)) {

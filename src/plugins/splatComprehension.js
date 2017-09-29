@@ -1,10 +1,12 @@
 import Parser from "../parser";
-import { types as tt } from "../tokenizer/types";
+import { types as tt, TokenType } from "../tokenizer/types";
 const pp = Parser.prototype;
 
 export default function(parser) {
-  if (parser.__enhancedComprehensionPluginInstalled) return;
-  parser.__enhancedComprehensionPluginInstalled = true;
+  if (parser.__splatComprehensionPluginInstalled) return;
+  parser.__splatComprehensionPluginInstalled = true;
+
+  tt.splatComprehension = new TokenType("...for");
 
   pp.parseComprehensionArray = function(refShorthandDefaultPos) {
     const node = this.startNode();
@@ -34,10 +36,10 @@ export default function(parser) {
         if (this.eat(tt.bracketR)) break;
       }
 
-      if (this.match(tt._for)) {
+      if (this.match(tt.splatComprehension) && this.state.value === "for") {
         hasComprehension = true;
         elts.push(this.parseLoopComprehension());
-      } else if (this.match(tt._case)) {
+      } else if (this.match(tt.splatComprehension) && this.state.value === "if") {
         hasComprehension = true;
         elts.push(this.parseCaseComprehension());
       } else {
@@ -64,12 +66,12 @@ export default function(parser) {
   };
 
   pp.parseSomeComprehension = function() {
-    if (this.match(tt._for)) {
+    if (this.match(tt.splatComprehension) && this.state.value === "for") {
       return this.parseLoopComprehension();
-    } else if (this.match(tt._case)) {
+    } else if (this.match(tt.splatComprehension) && this.state.value === "if") {
       return this.parseCaseComprehension();
     } else {
-      this.unexpected(null, "Unexpected token, expected `for` or `case`");
+      this.unexpected();
     }
   };
 }

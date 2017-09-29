@@ -6,7 +6,7 @@ import tildeCallPlugin from "./plugins/tildeCall";
 import safeCallExistentialPlugin from "./plugins/safeCallExistential";
 import bangCallPlugin from "./plugins/bangCall";
 import significantWhitespacePlugin from "./plugins/significantWhitespace";
-import enhancedComprehensionPlugin from "./plugins/enhancedComprehension";
+import splatComprehensionPlugin from "./plugins/splatComprehension";
 import syntacticPlaceholderPlugin from "./plugins/syntacticPlaceholder";
 import pipeCallPlugin from "./plugins/pipeCall";
 import { matchCoreSyntax, match } from "./plugins/match";
@@ -69,7 +69,7 @@ export default function registerPlugins(plugins, metadata) {
     dependencies: ["lightscript", "matchCoreSyntax"]
   });
 
-  registerPlugin("enhancedComprehension", enhancedComprehensionPlugin, {
+  registerPlugin("splatComprehension", splatComprehensionPlugin, {
     dependencies: [
       "lightscript", // needed for `parseIf`
       "seqExprRequiresParen"

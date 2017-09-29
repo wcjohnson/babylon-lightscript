@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 14,
+  "end": 20,
   "loc": {
     "start": {
       "line": 1,
@@ -9,13 +9,13 @@
     },
     "end": {
       "line": 1,
-      "column": 14
+      "column": 20
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 14,
+    "end": 20,
     "loc": {
       "start": {
         "line": 1,
@@ -23,7 +23,7 @@
       },
       "end": {
         "line": 1,
-        "column": 14
+        "column": 20
       }
     },
     "sourceType": "script",
@@ -31,7 +31,7 @@
       {
         "type": "ExpressionStatement",
         "start": 0,
-        "end": 14,
+        "end": 20,
         "loc": {
           "start": {
             "line": 1,
@@ -39,13 +39,13 @@
           },
           "end": {
             "line": 1,
-            "column": 14
+            "column": 20
           }
         },
         "expression": {
           "type": "ArrayComprehension",
           "start": 0,
-          "end": 14,
+          "end": 20,
           "loc": {
             "start": {
               "line": 1,
@@ -53,14 +53,14 @@
             },
             "end": {
               "line": 1,
-              "column": 14
+              "column": 20
             }
           },
           "elements": [
             {
               "type": "CaseComprehension",
               "start": 1,
-              "end": 13,
+              "end": 18,
               "loc": {
                 "start": {
                   "line": 1,
@@ -68,13 +68,13 @@
                 },
                 "end": {
                   "line": 1,
-                  "column": 13
+                  "column": 18
                 }
               },
               "conditional": {
                 "type": "IfStatement",
                 "start": 1,
-                "end": 13,
+                "end": 18,
                 "loc": {
                   "start": {
                     "line": 1,
@@ -82,58 +82,75 @@
                   },
                   "end": {
                     "line": 1,
-                    "column": 13
+                    "column": 18
                   }
                 },
                 "test": {
                   "type": "BooleanLiteral",
-                  "start": 6,
-                  "end": 10,
+                  "start": 7,
+                  "end": 11,
                   "loc": {
                     "start": {
                       "line": 1,
-                      "column": 6
+                      "column": 7
                     },
                     "end": {
                       "line": 1,
-                      "column": 10
+                      "column": 11
                     }
                   },
                   "value": true
                 },
                 "consequent": {
                   "type": "ExpressionStatement",
-                  "start": 12,
-                  "end": 13,
+                  "start": 13,
+                  "end": 18,
                   "loc": {
                     "start": {
                       "line": 1,
-                      "column": 12
+                      "column": 13
                     },
                     "end": {
                       "line": 1,
-                      "column": 13
+                      "column": 18
                     }
                   },
                   "expression": {
-                    "type": "NumericLiteral",
-                    "start": 12,
-                    "end": 13,
+                    "type": "ArrayExpression",
+                    "start": 13,
+                    "end": 18,
                     "loc": {
                       "start": {
                         "line": 1,
-                        "column": 12
+                        "column": 13
                       },
                       "end": {
                         "line": 1,
-                        "column": 13
+                        "column": 18
                       }
                     },
-                    "extra": {
-                      "rawValue": 1,
-                      "raw": "1"
-                    },
-                    "value": 1
+                    "elements": [
+                      {
+                        "type": "NumericLiteral",
+                        "start": 15,
+                        "end": 16,
+                        "loc": {
+                          "start": {
+                            "line": 1,
+                            "column": 15
+                          },
+                          "end": {
+                            "line": 1,
+                            "column": 16
+                          }
+                        },
+                        "extra": {
+                          "rawValue": 1,
+                          "raw": "1"
+                        },
+                        "value": 1
+                      }
+                    ]
                   }
                 },
                 "alternate": null

@@ -5,7 +5,7 @@
     },
     "noSeqExprParens": {
       "allPlugins": true,
-      "excludePlugins": ["existentialExpression", "safeCallExpression", "enhancedComprehension", "seqExprRequiresParen", "bangCall"],
+      "excludePlugins": ["existentialExpression", "safeCallExpression", "splatComprehension", "seqExprRequiresParen", "bangCall"],
       "throws": "Binding invalid left-hand side in variable declaration (1:6)"
     }
   }

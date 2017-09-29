@@ -5,7 +5,7 @@
     },
     "noEnforcedSubscriptIndentation": {
       "allPlugins": true,
-      "excludePlugins": ["existentialExpression", "safeCallExpression", "enhancedComprehension", "bangCall", "flippedImports", "enforceSubscriptIndentation"]
+      "excludePlugins": ["existentialExpression", "safeCallExpression", "splatComprehension", "bangCall", "flippedImports", "enforceSubscriptIndentation"]
     }
   }
 }
