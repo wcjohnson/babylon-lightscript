@@ -8,7 +8,7 @@
     },
     "noSeqExprParens": {
       "allPlugins": true,
-      "excludePlugins": ["seqExprRequiresParen", "splatComprehension", "bangCall", "whiteblockOnly"]
+      "excludePlugins": ["seqExprRequiresParen", "splatComprehension", "bangCall", "whiteblockOnly", "whiteblockPreferred"]
     }
   }
 }

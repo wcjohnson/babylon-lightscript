@@ -2,6 +2,7 @@
   "alternatives": {
     "whiteblock": {
       "allPlugins": true,
+      "excludePlugins": ["whiteblockPreferred"],
       "expected": "expected.whiteblock.json"
     }
   }

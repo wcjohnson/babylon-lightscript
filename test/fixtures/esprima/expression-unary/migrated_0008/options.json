@@ -10,7 +10,7 @@
       "allPlugins": true,
       "excludePlugins": [
         "lightscript", "match", "splatComprehension",
-        "whiteblockOnly", "tildeCallExpression"
+        "whiteblockOnly", "tildeCallExpression", "whiteblockPreferred"
       ],
       "expected": "expected.json"
     }

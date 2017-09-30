@@ -14,10 +14,18 @@ import { matchCoreSyntax, match } from "./plugins/match";
 function noncePlugin() {}
 
 export default function registerPlugins(plugins, metadata) {
+  metadata._reverseDeps = {};
+
   function registerPlugin(name, plugin, meta) {
     if (!plugin) plugin = noncePlugin;
     plugins[name] = plugin;
     metadata[name] = meta;
+    if (meta && meta.dependencies) {
+      meta.dependencies.forEach( (dep) => {
+        if (!metadata._reverseDeps[dep]) metadata._reverseDeps[dep] = [];
+        metadata._reverseDeps[dep].push(name);
+      });
+    }
   }
 
   registerPlugin("doExpressions");
@@ -84,6 +92,10 @@ export default function registerPlugins(plugins, metadata) {
   registerPlugin("pipeCall", pipeCallPlugin);
 
   registerPlugin("whiteblockOnly", noncePlugin, {
+    dependencies: ["lightscript"]
+  });
+
+  registerPlugin("whiteblockPreferred", noncePlugin, {
     dependencies: ["lightscript"]
   });
 }
