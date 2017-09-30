@@ -1,6 +1,6 @@
 {
   "alternatives": {
-    "all": {
+    "braceblock": {
       "throws": "Unexpected token (1:8)"
     }
   }

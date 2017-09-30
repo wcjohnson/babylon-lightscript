@@ -1,7 +1,10 @@
 {
   "alternatives": {
+    "all": {
+      "throws": "Only normal whitespace (ascii-32) is allowed. (1:0)"
+    },
     "noLsc": {
-      "excludePlugins": ["significantWhitespace", "bangCall", "enforceSubscriptIndentation", "lightscript", "match", "splatComprehension", "whiteblockOnly"]
+      "excludePlugins": ["significantWhitespace"]
     }
   }
 }

@@ -7,7 +7,7 @@
     },
     "noLsc": {
       "allPlugins": true,
-      "excludePlugins": ["lightscript", "match", "splatComprehension", "whiteblockOnly"]
+      "excludePlugins": ["lightscript", "match", "splatComprehension", "whiteblockOnly", "whiteblockPreferred"]
     }
   }
 }

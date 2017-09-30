@@ -163,6 +163,36 @@ pp.parseObjectWhiteBlock = function(node, blockIndentLevel) {
   return this.finishNode(node, "BlockStatement");
 };
 
+pp.tryParseObjectWhiteBlock = function(node, blockIndentLevel) {
+  const state = this.state.clone();
+  try {
+    return [this.parseObjectWhiteBlock(node, blockIndentLevel)];
+  } catch (err) {
+    this.state = state;
+    return [null, err];
+  }
+};
+
+pp.rethrowObjParseError = function(objParseResult, blockParseError) {
+  const objParseError = objParseResult ? objParseResult[1] : null;
+  if (objParseError) {
+    if (objParseError.message === "WRONG_SPECULATIVE_BRANCH") {
+      throw blockParseError;
+    } else {
+      throw objParseError;
+    }
+  } else {
+    throw blockParseError;
+  }
+};
+
+pp.parseNonemptyWhiteBlock = function(node, indentLevel) {
+  this.parseBlockBody(node, false, false, indentLevel);
+  if (!node.body.length) {
+    this.unexpected(node.start, "Expected an Indent or Statement");
+  }
+};
+
 pp.parseInlineWhiteBlock = function(node) {
   if (this.state.type.startsExpr) return this.parseMaybeAssign();
   // oneline statement case
@@ -179,9 +209,17 @@ pp.parseMultilineWhiteBlock = function(node, indentLevel) {
     return this.parseObjectWhiteBlock(node, indentLevel);
   }
 
-  this.parseBlockBody(node, false, false, indentLevel);
-  if (!node.body.length) {
-    this.unexpected(node.start, "Expected an Indent or Statement");
+  if (this.match(tt.braceL) && this.hasPlugin("whiteblockPreferred")) {
+    const objParseResult = this.tryParseObjectWhiteBlock(node, indentLevel);
+    if (objParseResult[0]) return objParseResult[0];
+
+    try {
+      this.parseNonemptyWhiteBlock(node, indentLevel);
+    } catch (err) {
+      this.rethrowObjParseError(objParseResult, err);
+    }
+  } else {
+    this.parseNonemptyWhiteBlock(node, indentLevel);
   }
 
   this.addExtra(node, "curly", false);
@@ -198,9 +236,25 @@ pp.parseWhiteBlock = function (isExpression?) {
       return this.parseInlineWhiteBlock(node);
     }
 
-    if (this.match(tt.braceL) && this.hasPlugin("whiteblockOnly")) {
-      // Parse as object
-      return this.parseObjectWhiteBlock(node, indentLevel);
+    if (this.match(tt.braceL)) {
+      if (this.hasPlugin("whiteblockOnly")) {
+        return this.parseObjectWhiteBlock(node, indentLevel);
+      }
+
+      let objParseResult = null;
+      if (this.hasPlugin("whiteblockPreferred")) {
+        objParseResult = this.tryParseObjectWhiteBlock(node, indentLevel);
+        if (objParseResult[0]) return objParseResult[0];
+
+        try {
+          this.state.nestedBlockLevel++;
+          const stmt = this.parseStatement(false);
+          this.state.nestedBlockLevel--;
+          return stmt;
+        } catch (err) {
+          this.rethrowObjParseError(objParseResult, err);
+        }
+      }
     }
 
     this.state.nestedBlockLevel++;
@@ -270,6 +324,35 @@ pp.parseArrowType = function (node) {
 
 // largely c/p from parseFunctionBody
 
+pp.parseBraceArrowFunctionBody = function(node, indentLevel) {
+  // In whiteblock-only mode, `{` must be introducing an object
+  if (this.hasPlugin("whiteblockOnly")) {
+    return this.parseObjectWhiteBlock(node, indentLevel);
+  }
+
+  // In whiteblock-preferred mode, try to parse an object, otherwise fall back on
+  // a braceblock.
+  if (this.hasPlugin("whiteblockPreferred")) {
+    const objParseResult = this.tryParseObjectWhiteBlock(node, indentLevel);
+    if (objParseResult[0]) return objParseResult[0];
+    this.next();
+
+    try {
+      this.parseBlockBody(node, true, false, tt.braceR);
+    } catch (err) {
+      this.rethrowObjParseError(objParseResult, err);
+    }
+
+    this.addExtra(node, "curly", true);
+    return this.finishNode(node, "BlockStatement");
+  }
+
+  this.next();
+  this.parseBlockBody(node, true, false, tt.braceR);
+  this.addExtra(node, "curly", true);
+  return this.finishNode(node, "BlockStatement");
+};
+
 pp.parseArrowFunctionBody = function (node) {
   // set and reset state surrounding block
   const oldInAsync = this.state.inAsync,
@@ -286,17 +369,7 @@ pp.parseArrowFunctionBody = function (node) {
   this.expect(tt.arrow);
   if (!this.isLineBreak()) {
     if (this.match(tt.braceL)) {
-      if (this.hasPlugin("whiteblockOnly")) {
-        // In whiteblock mode, arrows that start with `{` must be object exprs
-        node.body = this.parseObjectWhiteBlock(nodeAtArrow, indentLevel);
-      } else {
-        // restart node at brace start instead of arrow start
-        node.body = this.startNode();
-        this.next();
-        this.parseBlockBody(node.body, true, false, tt.braceR);
-        this.addExtra(node.body, "curly", true);
-        node.body = this.finishNode(node.body, "BlockStatement");
-      }
+      node.body = this.parseBraceArrowFunctionBody(this.startNode(), indentLevel);
     } else {
       node.body = this.parseInlineWhiteBlock(nodeAtArrow);
     }

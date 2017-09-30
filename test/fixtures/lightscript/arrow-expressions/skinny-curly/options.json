@@ -1,7 +1,7 @@
 {
   "alternatives": {
     "objectBlockAmbiguity": {
-      "excludePlugins": ["whiteblockOnly"],
+      "excludePlugins": ["whiteblockOnly", "whiteblockPreferred"],
       "expected": "expected.objectBlockAmbiguity.json"
     }
   }
