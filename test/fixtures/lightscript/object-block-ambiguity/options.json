@@ -1,9 +1,17 @@
 {
   "alternatives": {
-    "whiteblock": {
+    "all": {
+      "includePlugins": ["splatComprehension"]
+    },
+    "whiteblockOnly": {
       "allPlugins": true,
-      "excludePlugins": ["splatComprehension", "whiteblockPreferred"],
-      "expected": "expected.whiteblock.json"
+      "excludePlugins": ["whiteblockPreferred"],
+      "expected": "expected.whiteblockOnly.json"
+    },
+    "braceblock": {
+      "allPlugins": true,
+      "excludePlugins": ["whiteblockPreferred", "whiteblockOnly"],
+      "expected": "expected.braceblock.json"
     }
   }
 }

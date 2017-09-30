@@ -1,9 +1,12 @@
 {
   "alternatives": {
-    "whiteblock": {
+    "all": {
       "throws": "Expected an Indent or Statement (7:6)"
     },
-    "all": {
+    "whiteblockOnly": {
+      "throws": "Expected an Indent or Statement (7:6)"
+    },
+    "braceblock": {
       "throws": "Leading decorators must be attached to a class declaration (7:2)"
     }
   }

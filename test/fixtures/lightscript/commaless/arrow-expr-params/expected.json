@@ -111,10 +111,42 @@
                 "column": 7
               }
             },
-            "body": [],
+            "body": [
+              {
+                "type": "ExpressionStatement",
+                "start": 15,
+                "end": 17,
+                "loc": {
+                  "start": {
+                    "line": 4,
+                    "column": 5
+                  },
+                  "end": {
+                    "line": 4,
+                    "column": 7
+                  }
+                },
+                "expression": {
+                  "type": "ObjectExpression",
+                  "start": 15,
+                  "end": 17,
+                  "loc": {
+                    "start": {
+                      "line": 4,
+                      "column": 5
+                    },
+                    "end": {
+                      "line": 4,
+                      "column": 7
+                    }
+                  },
+                  "properties": []
+                }
+              }
+            ],
             "directives": [],
             "extra": {
-              "curly": true
+              "curly": false
             }
           }
         }

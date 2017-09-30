@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 10,
+  "end": 15,
   "loc": {
     "start": {
       "line": 1,
@@ -9,13 +9,13 @@
     },
     "end": {
       "line": 1,
-      "column": 10
+      "column": 15
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 10,
+    "end": 15,
     "loc": {
       "start": {
         "line": 1,
@@ -23,7 +23,7 @@
       },
       "end": {
         "line": 1,
-        "column": 10
+        "column": 15
       }
     },
     "sourceType": "script",
@@ -31,7 +31,7 @@
       {
         "type": "NamedArrowDeclaration",
         "start": 0,
-        "end": 10,
+        "end": 12,
         "loc": {
           "start": {
             "line": 1,
@@ -39,13 +39,13 @@
           },
           "end": {
             "line": 1,
-            "column": 10
+            "column": 12
           }
         },
         "id": {
           "type": "Identifier",
           "start": 0,
-          "end": 2,
+          "end": 1,
           "loc": {
             "start": {
               "line": 1,
@@ -53,40 +53,40 @@
             },
             "end": {
               "line": 1,
-              "column": 2
+              "column": 1
             },
-            "identifierName": "fn"
+            "identifierName": "f"
           },
-          "name": "fn"
+          "name": "f"
         },
         "generator": false,
         "expression": false,
         "async": false,
         "params": [],
-        "skinny": true,
+        "skinny": false,
         "body": {
           "type": "BlockStatement",
-          "start": 8,
-          "end": 10,
+          "start": 7,
+          "end": 12,
           "loc": {
             "start": {
               "line": 1,
-              "column": 8
+              "column": 7
             },
             "end": {
               "line": 1,
-              "column": 10
+              "column": 12
             }
           },
           "body": [
             {
               "type": "ExpressionStatement",
-              "start": 8,
+              "start": 9,
               "end": 10,
               "loc": {
                 "start": {
                   "line": 1,
-                  "column": 8
+                  "column": 9
                 },
                 "end": {
                   "line": 1,
@@ -94,27 +94,75 @@
                 }
               },
               "expression": {
-                "type": "ObjectExpression",
-                "start": 8,
+                "type": "Identifier",
+                "start": 9,
                 "end": 10,
                 "loc": {
                   "start": {
                     "line": 1,
-                    "column": 8
+                    "column": 9
                   },
                   "end": {
                     "line": 1,
                     "column": 10
-                  }
+                  },
+                  "identifierName": "x"
                 },
-                "properties": []
+                "name": "x"
               }
             }
           ],
           "directives": [],
           "extra": {
-            "curly": false
+            "curly": true
           }
+        }
+      },
+      {
+        "type": "EmptyStatement",
+        "start": 12,
+        "end": 13,
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 12
+          },
+          "end": {
+            "line": 1,
+            "column": 13
+          }
+        }
+      },
+      {
+        "type": "ExpressionStatement",
+        "start": 14,
+        "end": 15,
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 14
+          },
+          "end": {
+            "line": 1,
+            "column": 15
+          }
+        },
+        "expression": {
+          "type": "Identifier",
+          "start": 14,
+          "end": 15,
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 14
+            },
+            "end": {
+              "line": 1,
+              "column": 15
+            },
+            "identifierName": "y"
+          },
+          "name": "y"
         }
       }
     ],
