@@ -60,6 +60,11 @@ pp.parseStatement = function (declaration, topLevel) {
 
   const starttype = this.state.type;
   const node = this.startNode();
+  let expr = null;
+  let objParseError = null;
+
+  const isBlock = this.state.nextBraceIsBlock;
+  if (this.state.nextBraceIsBlock !== undefined) delete this.state.nextBraceIsBlock;
 
   // Most types of statements are recognized by the keyword they
   // start with. Many are trivial to parse, some require a bit of
@@ -94,10 +99,32 @@ pp.parseStatement = function (declaration, topLevel) {
     case tt._while: return this.parseWhileStatement(node);
     case tt._with: return this.parseWithStatement(node);
     case tt.braceL:
-      // in lightscript, allow line-starting `{` to be parsed as obj or obj pattern
-      if (this.hasPlugin("lightscript") && this.isLineBreak()) {
+      if (this.hasPlugin("whiteblockOnly")) {
+        // whiteblockOnly = what follows must be an ObjectExpression/Pattern
         break;
-      } else if (this.hasPlugin("whiteblockOnly")) {
+      } else if (this.hasPlugin("whiteblockPreferred") && !isBlock) {
+        // whiteblockPreferred = try to parse as obj, otherwise rewind and parse as block
+        const state = this.state.clone();
+        try {
+          expr = this.parseExpression();
+          break;
+        } catch (err) {
+          this.state = state;
+          objParseError = err;
+        }
+
+        try {
+          return this.parseBlock();
+        } catch (err) {
+          if (objParseError && objParseError.pos >= err.pos) {
+            throw objParseError;
+          } else {
+            throw err;
+          }
+        }
+      } else if (this.hasPlugin("lightscript") && this.isLineBreak() && !isBlock) {
+        // legacy lsc behavior
+        // allow line-starting `{` to be parsed as obj or obj pattern
         break;
       } else {
         return this.parseBlock();
@@ -141,7 +168,7 @@ pp.parseStatement = function (declaration, topLevel) {
   // next token is a colon and the expression was a simple
   // Identifier node, we switch to interpreting it as a label.
   const maybeName = this.state.value;
-  const expr = this.parseExpression();
+  if (!expr) expr = this.parseExpression();
 
   // rewrite `x = val` and `x: type = val`
   if (this.hasPlugin("lightscript") && this.isColonConstAssign(expr)) {
@@ -238,6 +265,8 @@ pp.parseDoStatement = function (node) {
     isWhiteBlock = true;
     indentLevel = this.state.indentLevel;
   }
+
+  this.state.nextBraceIsBlock = true;
   node.body = this.parseStatement(false);
   this.state.labels.pop();
   if (this.hasPlugin("lightscript") && isWhiteBlock && this.state.indentLevel !== indentLevel) {
@@ -530,6 +559,7 @@ pp.parseWhileStatement = function (node) {
   this.next();
   node.test = this.parseParenExpression();
   this.state.labels.push(loopLabel);
+  this.state.nextBraceIsBlock = true;
   node.body = this.parseStatement(false);
   this.state.labels.pop();
   return this.finishNode(node, "WhileStatement");
@@ -673,6 +703,7 @@ pp.parseFor = function (node, init) {
     this.expect(tt.parenR);
   }
 
+  this.state.nextBraceIsBlock = true;
   node.body = this.parseStatement(false);
   this.state.labels.pop();
   return this.finishNode(node, "ForStatement");
@@ -699,6 +730,7 @@ pp.parseForIn = function (node, init, forAwait) {
     this.expect(tt.parenR);
   }
 
+  this.state.nextBraceIsBlock = true;
   node.body = this.parseStatement(false);
   this.state.labels.pop();
   return this.finishNode(node, type);
