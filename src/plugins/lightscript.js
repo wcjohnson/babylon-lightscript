@@ -96,6 +96,7 @@ pp.parseEnhancedForIn = function (node) {
   const iterable = this.parseMaybeAssign(true);
 
   this.expectParenFreeBlockStart(node);
+  this.state.nextBraceIsBlock = true;
   node.body = this.parseStatement(false);
 
   if ((matchingIterationType === "idx") || (matchingIterationType === "elem")) {
@@ -460,6 +461,7 @@ pp.parseIf = function (node, isExpression, requireColon = null) {
     this.state.inFunction = oldInFunction;
     this.state.labels = oldLabels;
   } else {
+    this.state.nextBraceIsBlock = true;
     node.consequent = this.parseStatement(false);
   }
 
@@ -510,6 +512,7 @@ pp.parseIfAlternate = function (node, isExpression, ifIsWhiteBlock, ifIndentLeve
       }
     }
 
+    this.state.nextBraceIsBlock = true;
     return this.parseStatement(false);
   }
 
@@ -689,6 +692,7 @@ export default function (instance) {
   instance.extend("parseStatement", function (inner) {
     return function () {
       if (this.match(tt.colon)) {
+        delete this.state.nextBraceIsBlock;
         return this.parseWhiteBlock();
       }
       return inner.apply(this, arguments);
