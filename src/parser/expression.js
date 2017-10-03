@@ -430,36 +430,30 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       const op = this.state.value;
       this.next();
 
-      if (op === "?." && this.match(tt.parenL) && this.hasPlugin("safeCallExpression")) {
-        // x?.(...) = JS safe call proposal
-        const [next, canSubscript] = this.parseSafeCall(base, startPos, startLoc);
-        if (canSubscript) base = next; else return base;
-      } else {
-        // `x?.y` `x?[y]`
-        const node = this.startNodeAt(startPos, startLoc);
-        node.object = base;
+      // `x?.y` `x?[y]`
+      const node = this.startNodeAt(startPos, startLoc);
+      node.object = base;
 
-        if (op === "?.") {
-          if (this.match(tt.num)) {
-            // arr?.0 -> arr?[0]
-            node.property = this.parseLiteral(this.state.value, "NumericLiteral");
-            node.computed = true;
-          } else {
-            node.property = this.parseIdentifierOrPlaceholder(true);
-            node.computed = false;
-          }
-        } else if (op === "?[") {
-          node.property = this.parseExpression();
+      if (op === "?.") {
+        if (this.match(tt.num)) {
+          // arr?.0 -> arr?[0]
+          node.property = this.parseLiteral(this.state.value, "NumericLiteral");
           node.computed = true;
-          this.expect(tt.bracketR);
         } else {
           node.property = this.parseIdentifierOrPlaceholder(true);
           node.computed = false;
         }
-
-        node.optional = true;
-        base = this.finishNode(node, "MemberExpression");
+      } else if (op === "?[") {
+        node.property = this.parseExpression();
+        node.computed = true;
+        this.expect(tt.bracketR);
+      } else {
+        node.property = this.parseIdentifierOrPlaceholder(true);
+        node.computed = false;
       }
+
+      node.optional = true;
+      base = this.finishNode(node, "MemberExpression");
     } else if (
       (this.hasPlugin("safeCallExpression") || this.hasPlugin("existentialExpression")) &&
       this.match(tt.question) &&
