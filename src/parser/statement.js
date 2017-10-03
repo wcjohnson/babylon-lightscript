@@ -599,6 +599,9 @@ pp.parseLabeledStatement = function (node, maybeName, expr) {
   this.state.labels.push({ name: maybeName, kind: kind, statementStart: this.state.start });
   node.body = this.parseStatement(true);
   this.state.labels.pop();
+  if (node.body.type === "ExpressionStatement" && this.hasPlugin("noLabeledExpressionStatements")) {
+    this.raise(expr.start, "Labeled expressions are illegal.");
+  }
   node.label = expr;
   return this.finishNode(node, "LabeledStatement");
 };

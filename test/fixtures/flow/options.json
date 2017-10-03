@@ -10,7 +10,7 @@
     },
     "noLsc": {
       "allPlugins": true,
-      "excludePlugins": ["lightscript"]
+      "excludePlugins": ["lightscript", "noLabeledExpressionStatements"]
     }
   }
 }

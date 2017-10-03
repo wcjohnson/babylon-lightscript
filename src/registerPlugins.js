@@ -98,4 +98,6 @@ export default function registerPlugins(plugins, metadata) {
   registerPlugin("whiteblockPreferred", noncePlugin, {
     dependencies: ["lightscript"]
   });
+
+  registerPlugin("noLabeledExpressionStatements", noncePlugin);
 }
