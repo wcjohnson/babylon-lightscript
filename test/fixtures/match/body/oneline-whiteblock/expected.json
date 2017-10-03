@@ -76,7 +76,7 @@
             },
             "atoms": [
               {
-                "type": "TildeCallExpression",
+                "type": "CallExpression",
                 "start": 13,
                 "end": 22,
                 "loc": {
@@ -89,24 +89,7 @@
                     "column": 13
                   }
                 },
-                "left": {
-                  "type": "Identifier",
-                  "start": 13,
-                  "end": 15,
-                  "loc": {
-                    "start": {
-                      "line": 2,
-                      "column": 4
-                    },
-                    "end": {
-                      "line": 2,
-                      "column": 6
-                    },
-                    "identifierName": "it"
-                  },
-                  "name": "it"
-                },
-                "right": {
+                "callee": {
                   "type": "Identifier",
                   "start": 16,
                   "end": 20,
@@ -123,7 +106,26 @@
                   },
                   "name": "good"
                 },
-                "arguments": []
+                "arguments": [
+                  {
+                    "type": "Identifier",
+                    "start": 13,
+                    "end": 15,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 4
+                      },
+                      "end": {
+                        "line": 2,
+                        "column": 6
+                      },
+                      "identifierName": "it"
+                    },
+                    "name": "it"
+                  }
+                ],
+                "tilde": true
               }
             ],
             "consequent": {

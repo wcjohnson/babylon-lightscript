@@ -1,0 +1,15 @@
+{
+  "alternatives": {
+    "all": {
+      "throws": "Unexpected token (1:0)"
+    },
+    "noLsc": {
+      "throws": "Unexpected token (1:0)"
+    },
+    "noTildeCalls": {
+      "allPlugins": true,
+      "excludePlugins": [ "tildeCallExpression" ],
+      "expected": "expected.json"
+    }
+  }
+}

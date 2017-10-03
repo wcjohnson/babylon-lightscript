@@ -1,7 +1,10 @@
 {
   "alternatives": {
+    "all": {
+      "throws": "Only '\\n' and '\\r\\n' are legal newlines in significant-whitespace mode. (1:0)"
+    },
     "noLsc": {
-      "excludePlugins": ["significantWhitespace", "bangCall", "enforceSubscriptIndentation", "enhancedComprehension"]
+      "excludePlugins": ["significantWhitespace"]
     }
   }
 }

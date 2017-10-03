@@ -1,0 +1,13 @@
+{
+  "alternatives": {
+    "all": {
+      "throws": "Unexpected token, expected , (5:5)"
+    },
+    "whiteblockOnly": {
+      "throws": "Unexpected token, expected , (5:5)"
+    },
+    "braceblock": {
+      "throws": "Unexpected token, expected , (5:5)"
+    }
+  }
+}

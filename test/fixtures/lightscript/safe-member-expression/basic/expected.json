@@ -43,7 +43,7 @@
           }
         },
         "expression": {
-          "type": "SafeMemberExpression",
+          "type": "MemberExpression",
           "start": 0,
           "end": 4,
           "loc": {
@@ -90,7 +90,8 @@
             },
             "name": "y"
           },
-          "computed": false
+          "computed": false,
+          "optional": true
         }
       }
     ],

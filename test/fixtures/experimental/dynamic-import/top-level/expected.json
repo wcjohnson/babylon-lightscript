@@ -421,6 +421,7 @@
               "expression": false,
               "async": false,
               "params": [],
+              "skinny": false,
               "body": {
                 "type": "BlockStatement",
                 "start": 108,
@@ -436,7 +437,10 @@
                   }
                 },
                 "body": [],
-                "directives": []
+                "directives": [],
+                "extra": {
+                  "curly": true
+                }
               }
             }
           ]

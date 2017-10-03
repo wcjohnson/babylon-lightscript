@@ -3,7 +3,7 @@
   "alternatives": {
     "all": {
       "allPlugins": true,
-      "excludePlugins": ["estree"]
+      "excludePlugins": ["whiteblockOnly"]
     }
   }
 }

@@ -379,6 +379,12 @@ pp.parseExprSubscripts = function (refShorthandDefaultPos) {
 };
 
 pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
+
+  // pipeCall plugin hack: pass noPipes via state to avoid changing args
+  // to core parser function.
+  const noPipes = this.state.noPipeSubscripts;
+  this.state.noPipeSubscripts = false;
+
   for (;;) {
     if (this.hasPlugin("bangCall") && this.shouldUnwindBangSubscript()) {
       return base;
@@ -412,7 +418,7 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
         node.property = this.parseExprAtom();
         node.computed = true;
       } else {
-        node.property = this.parseIdentifier(true);
+        node.property = this.parseIdentifierOrPlaceholder(true);
         node.computed = false;
       }
       base = this.finishNode(node, "MemberExpression");
@@ -420,18 +426,21 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       if (this.hasPlugin("enforceSubscriptIndentation") && this.isNonIndentedBreakFrom(startPos)) {
         this.unexpected(null, "Indentation required.");
       }
-      // `x?.y`
-      const node = this.startNodeAt(startPos, startLoc);
+
       const op = this.state.value;
       this.next();
+
+      // `x?.y` `x?[y]`
+      const node = this.startNodeAt(startPos, startLoc);
       node.object = base;
+
       if (op === "?.") {
-        // arr?.0 -> arr?[0]
         if (this.match(tt.num)) {
+          // arr?.0 -> arr?[0]
           node.property = this.parseLiteral(this.state.value, "NumericLiteral");
           node.computed = true;
         } else {
-          node.property = this.parseIdentifier(true);
+          node.property = this.parseIdentifierOrPlaceholder(true);
           node.computed = false;
         }
       } else if (op === "?[") {
@@ -439,9 +448,12 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
         node.computed = true;
         this.expect(tt.bracketR);
       } else {
-        this.unexpected();
+        node.property = this.parseIdentifierOrPlaceholder(true);
+        node.computed = false;
       }
-      base = this.finishNode(node, "SafeMemberExpression");
+
+      node.optional = true;
+      base = this.finishNode(node, "MemberExpression");
     } else if (
       (this.hasPlugin("safeCallExpression") || this.hasPlugin("existentialExpression")) &&
       this.match(tt.question) &&
@@ -452,39 +464,30 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       const [next, canSubscript] = this.parseQuestionSubscript(base, startPos, startLoc, noCalls);
       if (!next) return base;
       if (canSubscript) base = next; else return next;
-    } else if (this.hasPlugin("lightscript") && !noCalls && this.match(tt.tilde)) {
+    } else if (this.hasPlugin("tildeCallExpression") && !noCalls && this.match(tt.tilde)) {
       if (this.hasPlugin("enforceSubscriptIndentation") && this.isNonIndentedBreakFrom(startPos)) {
         this.unexpected(null, "Indentation required.");
       }
-      this.next();
       const node = this.startNodeAt(startPos, startLoc);
-      node.left = base;
-      // allow `this`, Identifier or MemberExpression, but not calls
-      const right = this.match(tt._this) ? this.parseExprAtom() : this.parseIdentifier();
-      node.right = this.parseSubscripts(right, this.state.start, this.state.startLoc, true);
-
-      // Allow safe tilde calls (a~b?(c))
-      if (this.eat(tt.question)) node.safe = true;
-
-      // Allow bang tilde calls
-      if (this.hasPlugin("bangCall") && this.isBang()) {
-        const next = this.parseBangCall(node, "TildeCallExpression");
-        if (next) base = next; else return node;
-      } else {
-        this.expect(tt.parenL);
-        node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
-        base = this.finishNode(node, "TildeCallExpression");
-      }
+      const next = this.parseTildeCall(node, base);
+      if (next) base = next; else return node;
     } else if (
       !noCalls &&
       this.hasPlugin("bangCall") &&
-      this.isBang() &&
-      (this.state.lastTokEnd === (this.state.pos - 1))
+      this.isAdjacentBang()
     ) {
       const node = this.startNodeAt(startPos, startLoc);
       node.callee = base;
       const next = this.parseBangCall(node, "CallExpression");
       if (next) base = next; else return node;
+    } else if (
+      !noCalls &&
+      !noPipes &&
+      this.hasPlugin("pipeCall") &&
+      this.match(tt.pipeCall)
+    ) {
+      const node = this.startNodeAt(startPos, startLoc);
+      base = this.parsePipeCall(node, base);
     } else if (!(this.hasPlugin("lightscript") && this.isNonIndentedBreakFrom(startPos)) && this.eat(tt.bracketL)) {
       const node = this.startNodeAt(startPos, startLoc);
       node.object = base;
@@ -518,9 +521,12 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
         if (this.match(tt.colon)) {
           const state = this.state.clone();
           try {
-            return this.parseNamedArrowFromCallExpression(this.startNodeAt(startPos, startLoc), node);
+            return this.parseNamedArrowFromCallExpression(
+              this.startNodeAt(startPos, startLoc),
+              node.__cloneDeep()
+            );
           } catch (err) {
-            if (this.match(tt.arrow)) throw err;
+            if (this.match(tt.arrow) || err._errorWasInFunctionBody) throw err;
             this.state = state;
           }
         } else {
@@ -665,7 +671,7 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       node = this.startNode();
       const allowAwait = this.state.value === "await" && this.state.inAsync;
       const allowYield = this.shouldAllowYieldIdentifier();
-      const id = this.parseIdentifier(allowAwait || allowYield);
+      const id = this.parseIdentifierOrPlaceholder(allowAwait || allowYield);
 
       if (id.name === "await") {
         if (this.state.inAsync || this.inModule) {
@@ -675,7 +681,7 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
         this.next();
         return this.parseFunction(node, false, false, true);
       } else if (canBeArrow && id.name === "async" && this.match(tt.name)) {
-        const params = [this.parseIdentifier()];
+        const params = [this.parseIdentifierOrPlaceholder()];
         this.check(tt.arrow);
         // let foo = bar => {};
         return this.parseArrowExpression(node, params, true);
@@ -735,7 +741,7 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       if (this.state.inMatchAtom) {
         this.unexpected(null, "Illegal expression in match atom.");
       }
-      if (this.hasPlugin("enhancedComprehension")) {
+      if (this.hasPlugin("splatComprehension")) {
         return this.parseComprehensionArray(refShorthandDefaultPos);
       }
       node = this.startNode();
@@ -839,7 +845,7 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       }
 
     case tt.tilde:
-      if (this.state.inMatchAtom && this.hasPlugin("lightscript")) {
+      if (this.state.inMatchAtom && this.hasPlugin("tildeCallExpression")) {
         // Predicate
         node = this.startNodeAt(this.state.lastTokEnd, this.state.lastTokEndLoc);
         return this.finishNodeAt(node, "MatchPlaceholderExpression", this.state.start, this.state.startLoc);
@@ -1001,6 +1007,10 @@ pp.parseNew = function () {
   if (!(this.hasPlugin("lightscript") && this.isLineBreak()) && this.eat(tt.parenL)) {
     node.arguments = this.parseExprList(tt.parenR);
     this.toReferencedList(node.arguments);
+  } else if (this.hasPlugin("bangCall") && this.isAdjacentBang()) {
+    this.parseBangCall(node, "NewExpression");
+    this.toReferencedList(node.arguments);
+    return node;
   } else {
     node.arguments = [];
   }
@@ -1058,7 +1068,7 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
   // `for` keyword begins an object comprehension.
   if (
     this.hasPlugin("lightscript") &&
-    !this.hasPlugin("enhancedComprehension") &&
+    !this.hasPlugin("splatComprehension") &&
     this.match(tt._for)
   ) {
     // ...however, `{ for: x }` is a legal JS object.
@@ -1081,18 +1091,13 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
       if (this.eat(tt.braceR)) break;
     }
 
-    if (
-      this.hasPlugin("enhancedComprehension") &&
-      (this.match(tt._for) || this.match(tt._case))
-    ) {
+    if (this.hasPlugin("splatComprehension") && this.match(tt.splatComprehension)) {
       if (isPattern) {
         this.unexpected(null, "Comprehensions are illegal in patterns.");
       }
-      if (this.lookahead().type !== tt.colon) {
-        node.properties.push(this.parseSomeComprehension());
-        hasComprehension = true;
-        continue;
-      }
+      node.properties.push(this.parseSomeComprehension());
+      hasComprehension = true;
+      continue;
     }
 
     while (this.match(tt.at)) {
@@ -1144,6 +1149,7 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
     if (!isPattern && this.isContextual("async")) {
       if (isGenerator) this.unexpected();
 
+      // TODO: syntacticPlaceholder: is a placeholder legal here?
       const asyncId = this.parseIdentifier();
       if (this.match(tt.colon) || this.match(tt.parenL) || this.match(tt.braceR) || this.match(tt.eq) || this.match(tt.comma) || (this.hasPlugin("lightscript") && this.isLineBreak())) {
         prop.key = asyncId;
@@ -1272,6 +1278,7 @@ pp.parsePropertyName = function (prop) {
     prop.computed = false;
     const oldInPropertyName = this.state.inPropertyName;
     this.state.inPropertyName = true;
+    // TODO: syntacticPlaceholder: is a placeholder legal here?
     prop.key = (this.match(tt.num) || this.match(tt.string)) ? this.parseExprAtom() : this.parseIdentifier(true);
     this.state.inPropertyName = oldInPropertyName;
   }
@@ -1473,6 +1480,15 @@ pp.parseIdentifier = function (liberal) {
 
   this.next();
   return this.finishNode(node, "Identifier");
+};
+
+// Syntactic placeholders: shunt based on plugin status
+pp.parseIdentifierOrPlaceholder = function(liberal) {
+  if (this.hasPlugin("syntacticPlaceholder")) {
+    return this._parseIdentifierOrPlaceholder(liberal);
+  } else {
+    return this.parseIdentifier(liberal);
+  }
 };
 
 pp.checkReservedWord = function (word, startLoc, checkKeywords, isBinding) {

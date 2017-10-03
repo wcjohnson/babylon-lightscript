@@ -60,6 +60,11 @@ pp.parseStatement = function (declaration, topLevel) {
 
   const starttype = this.state.type;
   const node = this.startNode();
+  let expr = null;
+  let objParseError = null;
+
+  const isBlock = this.state.nextBraceIsBlock;
+  if (this.state.nextBraceIsBlock !== undefined) delete this.state.nextBraceIsBlock;
 
   // Most types of statements are recognized by the keyword they
   // start with. Many are trivial to parse, some require a bit of
@@ -94,8 +99,39 @@ pp.parseStatement = function (declaration, topLevel) {
     case tt._while: return this.parseWhileStatement(node);
     case tt._with: return this.parseWithStatement(node);
     case tt.braceL:
-      // in lightscript, allow line-starting `{` to be parsed as obj or obj pattern
-      if (this.hasPlugin("lightscript") && this.isLineBreak()) {
+      if (this.hasPlugin("whiteblockOnly")) {
+        // whiteblockOnly = what follows must be an ObjectExpression/Pattern
+        break;
+      } else if (this.hasPlugin("whiteblockPreferred") && !isBlock) {
+        // whiteblockPreferred = try to parse as obj, otherwise rewind and parse as block
+        const state = this.state.clone();
+        try {
+          expr = this.parseExpression();
+          break;
+        } catch (err) {
+          this.state = state;
+          objParseError = err;
+        }
+
+        try {
+          return this.parseBlock();
+        } catch (err) {
+          if (objParseError) {
+            if (objParseError.pos > err.pos) {
+              throw objParseError;
+            } else if (objParseError.pos < err.pos) {
+              throw err;
+            } else {
+              objParseError.message = "Cannot parse brace-delimited construct as an object or as a block. When parsed as an object, the error is: " + objParseError.message;
+              throw objParseError;
+            }
+          } else {
+            throw err;
+          }
+        }
+      } else if (this.hasPlugin("lightscript") && this.isLineBreak() && !isBlock) {
+        // legacy lsc behavior
+        // allow line-starting `{` to be parsed as obj or obj pattern
         break;
       } else {
         return this.parseBlock();
@@ -139,7 +175,7 @@ pp.parseStatement = function (declaration, topLevel) {
   // next token is a colon and the expression was a simple
   // Identifier node, we switch to interpreting it as a label.
   const maybeName = this.state.value;
-  const expr = this.parseExpression();
+  if (!expr) expr = this.parseExpression();
 
   // rewrite `x = val` and `x: type = val`
   if (this.hasPlugin("lightscript") && this.isColonConstAssign(expr)) {
@@ -236,6 +272,8 @@ pp.parseDoStatement = function (node) {
     isWhiteBlock = true;
     indentLevel = this.state.indentLevel;
   }
+
+  this.state.nextBraceIsBlock = true;
   node.body = this.parseStatement(false);
   this.state.labels.pop();
   if (this.hasPlugin("lightscript") && isWhiteBlock && this.state.indentLevel !== indentLevel) {
@@ -528,6 +566,7 @@ pp.parseWhileStatement = function (node) {
   this.next();
   node.test = this.parseParenExpression();
   this.state.labels.push(loopLabel);
+  this.state.nextBraceIsBlock = true;
   node.body = this.parseStatement(false);
   this.state.labels.pop();
   return this.finishNode(node, "WhileStatement");
@@ -567,6 +606,9 @@ pp.parseLabeledStatement = function (node, maybeName, expr) {
   this.state.labels.push({ name: maybeName, kind: kind, statementStart: this.state.start });
   node.body = this.parseStatement(true);
   this.state.labels.pop();
+  if (node.body.type === "ExpressionStatement" && this.hasPlugin("noLabeledExpressionStatements")) {
+    this.raise(expr.start, "Labeled expressions are illegal.");
+  }
   node.label = expr;
   return this.finishNode(node, "LabeledStatement");
 };
@@ -588,6 +630,9 @@ pp.parseExpressionStatement = function (node, expr) {
 // function bodies).
 
 pp.parseBlock = function (allowDirectives?) {
+  if (this.hasPlugin("whiteblockOnly")) {
+    this.unexpected(null, "Brace-delimited blocks are illegal in whiteblock-only mode.");
+  }
   const node = this.startNode();
   this.expect(tt.braceL);
   this.parseBlockBody(node, allowDirectives, false, tt.braceR);
@@ -607,6 +652,8 @@ pp.parseBlockBody = function (node, allowDirectives, topLevel, end) {
   let parsedNonDirective = false;
   let oldStrict;
   let octalPosition;
+
+  this.state.nestedBlockLevel++;
 
   let isEnd;
   if (this.hasPlugin("lightscript") && typeof end === "number") {
@@ -642,6 +689,8 @@ pp.parseBlockBody = function (node, allowDirectives, topLevel, end) {
     node.body.push(stmt);
   }
 
+  this.state.nestedBlockLevel--;
+
   if (oldStrict === false) {
     this.setStrict(false);
   }
@@ -664,6 +713,7 @@ pp.parseFor = function (node, init) {
     this.expect(tt.parenR);
   }
 
+  this.state.nextBraceIsBlock = true;
   node.body = this.parseStatement(false);
   this.state.labels.pop();
   return this.finishNode(node, "ForStatement");
@@ -690,6 +740,7 @@ pp.parseForIn = function (node, init, forAwait) {
     this.expect(tt.parenR);
   }
 
+  this.state.nextBraceIsBlock = true;
   node.body = this.parseStatement(false);
   this.state.labels.pop();
   return this.finishNode(node, type);
@@ -802,6 +853,9 @@ pp.parseClassBody = function (node) {
     this.next();
     isEnd = () => this.state.indentLevel <= indentLevel || this.match(tt.eof);
   } else {
+    if (this.hasPlugin("whiteblockOnly")) {
+      this.unexpected(null, "Brace-delimited blocks are illegal in whiteblock-only mode.");
+    }
     this.expect(tt.braceL);
     isEnd = () => this.eat(tt.braceR);
   }

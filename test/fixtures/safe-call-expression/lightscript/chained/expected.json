@@ -87,11 +87,11 @@
               },
               "name": "f"
             },
-            "arguments": [],
-            "safe": true
+            "optional": true,
+            "arguments": []
           },
-          "arguments": [],
-          "safe": true
+          "optional": true,
+          "arguments": []
         }
       }
     ],

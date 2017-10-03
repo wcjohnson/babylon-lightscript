@@ -106,7 +106,7 @@
                   },
                   "name": "it"
                 },
-                "safe": true,
+                "optional": true,
                 "arguments": []
               }
             ],

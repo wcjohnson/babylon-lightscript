@@ -5,8 +5,8 @@
     },
     "noSeqExprParens": {
       "allPlugins": true,
-      "excludePlugins": ["existentialExpression", "safeCallExpression", "enhancedComprehension", "seqExprRequiresParen", "bangCall"],
-      "throws": "Unexpected token, expected { (1:28)"
+      "excludePlugins": ["existentialExpression", "safeCallExpression", "splatComprehension", "seqExprRequiresParen", "bangCall"],
+      "throws": "Unexpected token, expected { (1:17)"
     }
   }
 }

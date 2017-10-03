@@ -92,7 +92,7 @@
                 "operator": "!",
                 "prefix": true,
                 "argument": {
-                  "type": "TildeCallExpression",
+                  "type": "CallExpression",
                   "start": 17,
                   "end": 29,
                   "loc": {
@@ -105,22 +105,7 @@
                       "column": 20
                     }
                   },
-                  "left": {
-                    "type": "MatchPlaceholderExpression",
-                    "start": 16,
-                    "end": 17,
-                    "loc": {
-                      "start": {
-                        "line": 2,
-                        "column": 7
-                      },
-                      "end": {
-                        "line": 2,
-                        "column": 8
-                      }
-                    }
-                  },
-                  "right": {
+                  "callee": {
                     "type": "Identifier",
                     "start": 18,
                     "end": 27,
@@ -137,7 +122,24 @@
                     },
                     "name": "predicate"
                   },
-                  "arguments": []
+                  "arguments": [
+                    {
+                      "type": "MatchPlaceholderExpression",
+                      "start": 16,
+                      "end": 17,
+                      "loc": {
+                        "start": {
+                          "line": 2,
+                          "column": 7
+                        },
+                        "end": {
+                          "line": 2,
+                          "column": 8
+                        }
+                      }
+                    }
+                  ],
+                  "tilde": true
                 },
                 "extra": {
                   "parenthesizedArgument": false

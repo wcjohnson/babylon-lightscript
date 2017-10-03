@@ -1,8 +1,7 @@
 {
   "alternatives": {
     "default": {
-      "allPlugins": true,
-      "excludePlugins": ["estree"]
+      "allPlugins": true
     }
   }
 }

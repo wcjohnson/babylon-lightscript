@@ -10,6 +10,14 @@ export default function(parser) {
     return this.state.type.prefix && (this.state.value === "!");
   };
 
+  pp.isAdjacentBang = function() {
+    return (
+      this.state.type.prefix &&
+      this.state.value === "!" &&
+      this.state.lastTokEnd === (this.state.pos - 1)
+    );
+  };
+
   // Parse `!` followed by an arg list. Returns truthy if further subscripting
   // is legal.
   pp.parseBangCall = function(node, nodeType) {
@@ -22,7 +30,8 @@ export default function(parser) {
 
     // ASI, ignore impossible args
     if (
-      (this.isLineBreak() && this.state.indentLevel <= bangIndentLevel) || !this.state.type.startsExpr
+      (this.isLineBreak() && this.state.indentLevel <= bangIndentLevel) ||
+      !this.state.type.startsExpr
     ) {
       return this.finishNode(node, nodeType);
     }
@@ -33,13 +42,15 @@ export default function(parser) {
 
     // Read args
     let first = true;
-    const oldBangIndentLevel = this.state.bangIndentLevel;
-    this.state.bangIndentLevel = bangIndentLevel;
+    const oldBangUnwindLevel = this.state.bangUnwindLevel;
+    const oldBangBlockLevel = this.state.bangBlockLevel;
+    this.state.bangBlockLevel = this.state.nestedBlockLevel;
+    this.state.bangUnwindLevel = bangIndentLevel + 1;
 
     while (true) {
       // First argument on a different line from the `!` establishes indent level
       if (this.state.curLine !== bangLine && argIndentLevel === null) {
-        argIndentLevel = this.state.indentLevel;
+        this.state.bangUnwindLevel = argIndentLevel = this.state.indentLevel;
       }
 
       // Comma-separated arg and first arg skip ASI/whitespace checks
@@ -71,7 +82,8 @@ export default function(parser) {
       }
     }
 
-    this.state.bangIndentLevel = oldBangIndentLevel;
+    this.state.bangUnwindLevel = oldBangUnwindLevel;
+    this.state.bangBlockLevel = oldBangBlockLevel;
 
     node = this.finishNode(node, nodeType);
 
@@ -82,8 +94,10 @@ export default function(parser) {
       return null;
   };
 
-  // When subscripting, a newline always breaks up bang args.
+  // Subscripts to a bang call must appear at the arg indent level
   pp.shouldUnwindBangSubscript = function() {
-    return this.isLineBreak() && (this.state.indentLevel <= this.state.bangIndentLevel);
+    return this.isLineBreak() &&
+      (this.state.bangBlockLevel == this.state.nestedBlockLevel) &&
+      (this.state.indentLevel <= this.state.bangUnwindLevel);
   };
 }

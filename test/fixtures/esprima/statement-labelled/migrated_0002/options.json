@@ -1,0 +1,7 @@
+{
+  "alternatives": {
+    "all": {
+      "throws": "Labeled expressions are illegal. (1:0)"
+    }
+  }
+}

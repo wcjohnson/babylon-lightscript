@@ -282,6 +282,25 @@ export default class Tokenizer {
     const next2 = this.input.charCodeAt(this.state.pos + 2);
     if (next === 46 && next2 === 46) { // 46 = dot '.'
       this.state.pos += 3;
+      // splatComprehension: parse ...for and ...if
+      if (this.hasPlugin("splatComprehension")) {
+        const next3 = this.input.charCodeAt(this.state.pos);
+        const next4 = this.input.charCodeAt(this.state.pos + 1);
+        const next5 = this.input.charCodeAt(this.state.pos + 2);
+        // "...if"
+        if (next3 === 105 && next4 === 102 && !isIdentifierChar(next5)) {
+          this.state.pos += 2;
+          return this.finishToken(tt.splatComprehension, "if");
+        } else if ( // "...for"
+          next3 === 102 &&
+          next4 === 111 &&
+          next5 === 114 &&
+          !isIdentifierChar(this.input.charCodeAt(this.state.pos + 3))
+        ) {
+          this.state.pos += 3;
+          return this.finishToken(tt.splatComprehension, "for");
+        }
+      }
       return this.finishToken(tt.ellipsis);
     } else {
       ++this.state.pos;
@@ -341,6 +360,10 @@ export default class Tokenizer {
     if (next === code) return this.finishOp(code === 124 ? tt.logicalOR : tt.logicalAND, 2);
     if (next === 61) return this.finishOp(tt.assign, 2);
     if (code === 124 && next === 125 && this.hasPlugin("flow")) return this.finishOp(tt.braceBarR, 2);
+    if (code === 124 && next === 62 && this.hasPlugin("pipeCall")) {
+      this.state.pos += 2;
+      return this.finishToken(tt.pipeCall, "|>");
+    }
     return this.finishOp(code === 124 ? tt.bitwiseOR : tt.bitwiseAND, 1);
   }
 
@@ -390,17 +413,6 @@ export default class Tokenizer {
           return this.finishToken(tt.arrow, "-*/>");
         }
       }
-
-      let getOrSet;
-      if (next === 103) getOrSet = "get";
-      if (next === 115) getOrSet = "set";
-      if (getOrSet && next2 === 101 &&
-        this.input.charCodeAt(this.state.pos + 3) === 116 &&
-        this.input.charCodeAt(this.state.pos + 4) === 62
-      ) {
-        this.state.pos += 5;
-        return this.finishToken(tt.arrow, `-${getOrSet}>`);
-      }
     }
 
     if (next === 61) {
@@ -442,6 +454,11 @@ export default class Tokenizer {
     if (next === 61) {
       // <= | >=
       size = 2;
+    }
+
+    if (code === 60 && next === 124 && this.hasPlugin("pipeCall")) {
+      this.state.pos += 2;
+      return this.finishToken(tt.pipeCall, "<|");
     }
 
     return this.finishOp(tt.relational, size);
@@ -577,7 +594,13 @@ export default class Tokenizer {
         return this.readToken_eq_excl(code);
 
       case 126: // '~'
-        if (this.hasPlugin("lightscript")) {
+        if (this.hasPlugin("tildeCallExpression")) {
+          // `~>`
+          if (this.input.charCodeAt(this.state.pos + 1) === 62) {
+            this.state.pos += 2;
+            return this.finishToken(tt.tilde, "~>");
+          }
+
           ++this.state.pos;
           return this.finishToken(tt.tilde);
         } else {

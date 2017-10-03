@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 14,
+  "end": 19,
   "loc": {
     "start": {
       "line": 1,
@@ -9,13 +9,13 @@
     },
     "end": {
       "line": 1,
-      "column": 14
+      "column": 19
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 14,
+    "end": 19,
     "loc": {
       "start": {
         "line": 1,
@@ -23,7 +23,7 @@
       },
       "end": {
         "line": 1,
-        "column": 14
+        "column": 19
       }
     },
     "sourceType": "script",
@@ -31,7 +31,7 @@
       {
         "type": "ExpressionStatement",
         "start": 0,
-        "end": 14,
+        "end": 19,
         "loc": {
           "start": {
             "line": 1,
@@ -39,13 +39,13 @@
           },
           "end": {
             "line": 1,
-            "column": 14
+            "column": 19
           }
         },
         "expression": {
           "type": "ArrayComprehension",
           "start": 0,
-          "end": 14,
+          "end": 19,
           "loc": {
             "start": {
               "line": 1,
@@ -53,14 +53,14 @@
             },
             "end": {
               "line": 1,
-              "column": 14
+              "column": 19
             }
           },
           "elements": [
             {
               "type": "CaseComprehension",
               "start": 1,
-              "end": 10,
+              "end": 15,
               "loc": {
                 "start": {
                   "line": 1,
@@ -68,13 +68,13 @@
                 },
                 "end": {
                   "line": 1,
-                  "column": 10
+                  "column": 15
                 }
               },
               "conditional": {
                 "type": "IfStatement",
                 "start": 1,
-                "end": 10,
+                "end": 15,
                 "loc": {
                   "start": {
                     "line": 1,
@@ -82,21 +82,21 @@
                   },
                   "end": {
                     "line": 1,
-                    "column": 10
+                    "column": 15
                   }
                 },
                 "test": {
                   "type": "NumericLiteral",
-                  "start": 6,
-                  "end": 7,
+                  "start": 7,
+                  "end": 8,
                   "loc": {
                     "start": {
                       "line": 1,
-                      "column": 6
+                      "column": 7
                     },
                     "end": {
                       "line": 1,
-                      "column": 7
+                      "column": 8
                     }
                   },
                   "extra": {
@@ -107,37 +107,54 @@
                 },
                 "consequent": {
                   "type": "ExpressionStatement",
-                  "start": 9,
-                  "end": 10,
+                  "start": 10,
+                  "end": 15,
                   "loc": {
                     "start": {
                       "line": 1,
-                      "column": 9
+                      "column": 10
                     },
                     "end": {
                       "line": 1,
-                      "column": 10
+                      "column": 15
                     }
                   },
                   "expression": {
-                    "type": "NumericLiteral",
-                    "start": 9,
-                    "end": 10,
+                    "type": "ArrayExpression",
+                    "start": 10,
+                    "end": 15,
                     "loc": {
                       "start": {
                         "line": 1,
-                        "column": 9
+                        "column": 10
                       },
                       "end": {
                         "line": 1,
-                        "column": 10
+                        "column": 15
                       }
                     },
-                    "extra": {
-                      "rawValue": 2,
-                      "raw": "2"
-                    },
-                    "value": 2
+                    "elements": [
+                      {
+                        "type": "NumericLiteral",
+                        "start": 12,
+                        "end": 13,
+                        "loc": {
+                          "start": {
+                            "line": 1,
+                            "column": 12
+                          },
+                          "end": {
+                            "line": 1,
+                            "column": 13
+                          }
+                        },
+                        "extra": {
+                          "rawValue": 2,
+                          "raw": "2"
+                        },
+                        "value": 2
+                      }
+                    ]
                   }
                 },
                 "alternate": null
@@ -145,16 +162,16 @@
             },
             {
               "type": "NumericLiteral",
-              "start": 12,
-              "end": 13,
+              "start": 17,
+              "end": 18,
               "loc": {
                 "start": {
                   "line": 1,
-                  "column": 12
+                  "column": 17
                 },
                 "end": {
                   "line": 1,
-                  "column": 13
+                  "column": 18
                 }
               },
               "extra": {
