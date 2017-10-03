@@ -1,3 +1,10 @@
 {
-  "throws": "Unexpected token (1:1)"
+  "alternatives": {
+    "all": {
+      "throws": "Cannot parse brace-delimited construct as an object or as a block. When parsed as an object, the error is: Unexpected token (1:1)"
+    },
+    "noLsc": {
+      "throws": "Unexpected token (1:1)"
+    }
+  }
 }

@@ -116,8 +116,15 @@ pp.parseStatement = function (declaration, topLevel) {
         try {
           return this.parseBlock();
         } catch (err) {
-          if (objParseError && objParseError.pos >= err.pos) {
-            throw objParseError;
+          if (objParseError) {
+            if (objParseError.pos > err.pos) {
+              throw objParseError;
+            } else if (objParseError.pos < err.pos) {
+              throw err;
+            } else {
+              objParseError.message = "Cannot parse brace-delimited construct as an object or as a block. When parsed as an object, the error is: " + objParseError.message;
+              throw objParseError;
+            }
           } else {
             throw err;
           }
