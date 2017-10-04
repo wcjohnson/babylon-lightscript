@@ -73,6 +73,8 @@ pp.canInsertSemicolon = function () {
       this.match(tt._elif) ||
       // Allow (-> throw new Error)()
       this.match(tt.parenR) ||
+      // Allow [-> throw new Error]
+      this.match(tt.bracketR) ||
       // Technically it is legal to insert a ; after a ;.
       // Allows -> throw new Error; f()
       this.state.tokens[this.state.tokens.length - 1].type === tt.semi
