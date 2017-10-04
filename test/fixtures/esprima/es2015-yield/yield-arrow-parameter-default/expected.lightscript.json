@@ -58,7 +58,7 @@
           },
           "id": null,
           "generator": false,
-          "expression": false,
+          "expression": true,
           "async": false,
           "params": [
             {
@@ -114,7 +114,7 @@
           ],
           "skinny": false,
           "body": {
-            "type": "BlockStatement",
+            "type": "ObjectExpression",
             "start": 15,
             "end": 17,
             "loc": {
@@ -127,43 +127,7 @@
                 "column": 17
               }
             },
-            "body": [
-              {
-                "type": "ExpressionStatement",
-                "start": 15,
-                "end": 17,
-                "loc": {
-                  "start": {
-                    "line": 1,
-                    "column": 15
-                  },
-                  "end": {
-                    "line": 1,
-                    "column": 17
-                  }
-                },
-                "expression": {
-                  "type": "ObjectExpression",
-                  "start": 15,
-                  "end": 17,
-                  "loc": {
-                    "start": {
-                      "line": 1,
-                      "column": 15
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 17
-                    }
-                  },
-                  "properties": []
-                }
-              }
-            ],
-            "directives": [],
-            "extra": {
-              "curly": false
-            }
+            "properties": []
           }
         }
       }

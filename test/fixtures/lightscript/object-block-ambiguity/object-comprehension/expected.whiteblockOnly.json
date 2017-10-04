@@ -59,152 +59,131 @@
           "value": true
         },
         "consequent": {
-          "type": "BlockStatement",
-          "start": 7,
+          "type": "ExpressionStatement",
+          "start": 9,
           "end": 38,
           "loc": {
             "start": {
               "line": 1,
-              "column": 7
+              "column": 9
             },
             "end": {
               "line": 3,
               "column": 1
             }
           },
-          "body": [
-            {
-              "type": "ExpressionStatement",
-              "start": 9,
-              "end": 38,
-              "loc": {
-                "start": {
-                  "line": 1,
-                  "column": 9
-                },
-                "end": {
-                  "line": 3,
-                  "column": 1
-                }
+          "expression": {
+            "type": "ObjectComprehension",
+            "start": 9,
+            "end": 38,
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 9
               },
-              "expression": {
-                "type": "ObjectComprehension",
-                "start": 9,
-                "end": 38,
+              "end": {
+                "line": 3,
+                "column": 1
+              }
+            },
+            "properties": [
+              {
+                "type": "LoopComprehension",
+                "start": 13,
+                "end": 36,
                 "loc": {
                   "start": {
-                    "line": 1,
-                    "column": 9
+                    "line": 2,
+                    "column": 2
                   },
                   "end": {
-                    "line": 3,
-                    "column": 1
+                    "line": 2,
+                    "column": 25
                   }
                 },
-                "properties": [
-                  {
-                    "type": "LoopComprehension",
-                    "start": 13,
+                "loop": {
+                  "type": "ForInArrayStatement",
+                  "start": 13,
+                  "end": 36,
+                  "loc": {
+                    "start": {
+                      "line": 2,
+                      "column": 2
+                    },
+                    "end": {
+                      "line": 2,
+                      "column": 25
+                    }
+                  },
+                  "elem": {
+                    "type": "Identifier",
+                    "start": 25,
+                    "end": 26,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 14
+                      },
+                      "end": {
+                        "line": 2,
+                        "column": 15
+                      },
+                      "identifierName": "e"
+                    },
+                    "name": "e"
+                  },
+                  "body": {
+                    "type": "ExpressionStatement",
+                    "start": 35,
                     "end": 36,
                     "loc": {
                       "start": {
                         "line": 2,
-                        "column": 2
+                        "column": 24
                       },
                       "end": {
                         "line": 2,
                         "column": 25
                       }
                     },
-                    "loop": {
-                      "type": "ForInArrayStatement",
-                      "start": 13,
+                    "expression": {
+                      "type": "Identifier",
+                      "start": 35,
                       "end": 36,
                       "loc": {
                         "start": {
                           "line": 2,
-                          "column": 2
+                          "column": 24
                         },
                         "end": {
                           "line": 2,
                           "column": 25
-                        }
-                      },
-                      "elem": {
-                        "type": "Identifier",
-                        "start": 25,
-                        "end": 26,
-                        "loc": {
-                          "start": {
-                            "line": 2,
-                            "column": 14
-                          },
-                          "end": {
-                            "line": 2,
-                            "column": 15
-                          },
-                          "identifierName": "e"
                         },
-                        "name": "e"
+                        "identifierName": "e"
                       },
-                      "body": {
-                        "type": "ExpressionStatement",
-                        "start": 35,
-                        "end": 36,
-                        "loc": {
-                          "start": {
-                            "line": 2,
-                            "column": 24
-                          },
-                          "end": {
-                            "line": 2,
-                            "column": 25
-                          }
-                        },
-                        "expression": {
-                          "type": "Identifier",
-                          "start": 35,
-                          "end": 36,
-                          "loc": {
-                            "start": {
-                              "line": 2,
-                              "column": 24
-                            },
-                            "end": {
-                              "line": 2,
-                              "column": 25
-                            },
-                            "identifierName": "e"
-                          },
-                          "name": "e"
-                        }
-                      },
-                      "array": {
-                        "type": "Identifier",
-                        "start": 30,
-                        "end": 33,
-                        "loc": {
-                          "start": {
-                            "line": 2,
-                            "column": 19
-                          },
-                          "end": {
-                            "line": 2,
-                            "column": 22
-                          },
-                          "identifierName": "arr"
-                        },
-                        "name": "arr"
-                      }
+                      "name": "e"
                     }
+                  },
+                  "array": {
+                    "type": "Identifier",
+                    "start": 30,
+                    "end": 33,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 19
+                      },
+                      "end": {
+                        "line": 2,
+                        "column": 22
+                      },
+                      "identifierName": "arr"
+                    },
+                    "name": "arr"
                   }
-                ]
+                }
               }
-            }
-          ],
-          "directives": [],
-          "extra": {
-            "curly": false
+            ]
           }
         },
         "alternate": null

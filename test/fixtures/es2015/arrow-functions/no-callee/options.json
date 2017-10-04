@@ -1,3 +1,7 @@
 {
-  "throws": "Unexpected token, expected ; (1:8)"
+  "alternatives": {
+    "noLsc": {
+      "throws": "Unexpected token, expected ; (1:8)"
+    }
+  }
 }

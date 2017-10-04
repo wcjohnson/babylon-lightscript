@@ -78,55 +78,34 @@
           "name": "obj"
         },
         "body": {
-          "type": "BlockStatement",
-          "start": 16,
+          "type": "ExpressionStatement",
+          "start": 18,
           "end": 20,
           "loc": {
             "start": {
               "line": 1,
-              "column": 16
+              "column": 18
             },
             "end": {
               "line": 1,
               "column": 20
             }
           },
-          "body": [
-            {
-              "type": "ExpressionStatement",
-              "start": 18,
-              "end": 20,
-              "loc": {
-                "start": {
-                  "line": 1,
-                  "column": 18
-                },
-                "end": {
-                  "line": 1,
-                  "column": 20
-                }
+          "expression": {
+            "type": "ObjectExpression",
+            "start": 18,
+            "end": 20,
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 18
               },
-              "expression": {
-                "type": "ObjectExpression",
-                "start": 18,
-                "end": 20,
-                "loc": {
-                  "start": {
-                    "line": 1,
-                    "column": 18
-                  },
-                  "end": {
-                    "line": 1,
-                    "column": 20
-                  }
-                },
-                "properties": []
+              "end": {
+                "line": 1,
+                "column": 20
               }
-            }
-          ],
-          "directives": [],
-          "extra": {
-            "curly": false
+            },
+            "properties": []
           }
         }
       }

@@ -58,7 +58,7 @@
           },
           "id": null,
           "generator": false,
-          "expression": false,
+          "expression": true,
           "async": false,
           "params": [
             {
@@ -81,7 +81,7 @@
           ],
           "skinny": false,
           "body": {
-            "type": "BlockStatement",
+            "type": "ObjectExpression",
             "start": 5,
             "end": 18,
             "loc": {
@@ -94,99 +94,63 @@
                 "column": 18
               }
             },
-            "body": [
+            "properties": [
               {
-                "type": "ExpressionStatement",
-                "start": 5,
-                "end": 18,
+                "type": "ObjectProperty",
+                "start": 7,
+                "end": 16,
                 "loc": {
                   "start": {
                     "line": 1,
-                    "column": 5
+                    "column": 7
                   },
                   "end": {
                     "line": 1,
-                    "column": 18
+                    "column": 16
                   }
                 },
-                "expression": {
-                  "type": "ObjectExpression",
-                  "start": 5,
-                  "end": 18,
+                "method": false,
+                "shorthand": false,
+                "computed": false,
+                "key": {
+                  "type": "Identifier",
+                  "start": 7,
+                  "end": 12,
                   "loc": {
                     "start": {
                       "line": 1,
-                      "column": 5
+                      "column": 7
                     },
                     "end": {
                       "line": 1,
-                      "column": 18
+                      "column": 12
+                    },
+                    "identifierName": "label"
+                  },
+                  "name": "label"
+                },
+                "value": {
+                  "type": "NumericLiteral",
+                  "start": 14,
+                  "end": 16,
+                  "loc": {
+                    "start": {
+                      "line": 1,
+                      "column": 14
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 16
                     }
                   },
-                  "properties": [
-                    {
-                      "type": "ObjectProperty",
-                      "start": 7,
-                      "end": 16,
-                      "loc": {
-                        "start": {
-                          "line": 1,
-                          "column": 7
-                        },
-                        "end": {
-                          "line": 1,
-                          "column": 16
-                        }
-                      },
-                      "method": false,
-                      "shorthand": false,
-                      "computed": false,
-                      "key": {
-                        "type": "Identifier",
-                        "start": 7,
-                        "end": 12,
-                        "loc": {
-                          "start": {
-                            "line": 1,
-                            "column": 7
-                          },
-                          "end": {
-                            "line": 1,
-                            "column": 12
-                          },
-                          "identifierName": "label"
-                        },
-                        "name": "label"
-                      },
-                      "value": {
-                        "type": "NumericLiteral",
-                        "start": 14,
-                        "end": 16,
-                        "loc": {
-                          "start": {
-                            "line": 1,
-                            "column": 14
-                          },
-                          "end": {
-                            "line": 1,
-                            "column": 16
-                          }
-                        },
-                        "extra": {
-                          "rawValue": 42,
-                          "raw": "42"
-                        },
-                        "value": 42
-                      }
-                    }
-                  ]
+                  "extra": {
+                    "rawValue": 42,
+                    "raw": "42"
+                  },
+                  "value": 42
                 }
               }
-            ],
-            "directives": [],
-            "extra": {
-              "curly": false
-            }
+            ]
           }
         }
       }

@@ -65,6 +65,8 @@ pp.parseStatement = function (declaration, topLevel) {
 
   const isBlock = this.state.nextBraceIsBlock;
   if (this.state.nextBraceIsBlock !== undefined) delete this.state.nextBraceIsBlock;
+  const allowDirectives = this.state.nextBraceAllowDirectives;
+  if (this.state.nextBraceAllowDirectives !== undefined) delete this.state.nextBraceAllowDirectives;
 
   // Most types of statements are recognized by the keyword they
   // start with. Many are trivial to parse, some require a bit of
@@ -114,7 +116,7 @@ pp.parseStatement = function (declaration, topLevel) {
         }
 
         try {
-          return this.parseBlock();
+          return this.parseBlock(allowDirectives);
         } catch (err) {
           if (objParseError) {
             if (objParseError.pos > err.pos) {
@@ -134,7 +136,7 @@ pp.parseStatement = function (declaration, topLevel) {
         // allow line-starting `{` to be parsed as obj or obj pattern
         break;
       } else {
-        return this.parseBlock();
+        return this.parseBlock(allowDirectives);
       }
     case tt.semi: return this.parseEmptyStatement(node);
     case tt._export:
@@ -618,7 +620,13 @@ pp.parseExpressionStatement = function (node, expr) {
   if (this.hasPlugin("lightscript")) {
     // for array comprehensions.
     // TODO: cleanup / think of a better way of doing this.
-    this.match(tt.bracketR) || this.match(tt.braceR) || this.match(tt.parenR) || this.match(tt._else) || this.match(tt._elif) || this.semicolon();
+    this.match(tt.bracketR) ||
+    this.match(tt.braceR) ||
+    this.match(tt.parenR) ||
+    this.match(tt._else) ||
+    this.match(tt._elif) ||
+    this.match(tt.colon) ||
+    this.semicolon();
   } else {
     this.semicolon();
   }

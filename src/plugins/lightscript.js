@@ -120,8 +120,8 @@ pp.expectParenFreeBlockStart = function (node) {
   }
 };
 
+// XXX: legacy
 // [for ...: stmnt]
-
 pp.parseArrayComprehension = function (node) {
   const loop = this.startNode();
   node.loop = this.parseForStatement(loop);
@@ -129,69 +129,12 @@ pp.parseArrayComprehension = function (node) {
   return this.finishNode(node, "ArrayComprehension");
 };
 
+// XXX: legacy
 pp.parseObjectComprehension = function(node) {
   const loop = this.startNode();
   node.loop = this.parseForStatement(loop);
   this.expect(tt.braceR);
   return this.finishNode(node, "ObjectComprehension");
-};
-
-// Parse a whiteblock body consisting of a single object expr.
-pp.parseObjectWhiteBlock = function(node, blockIndentLevel) {
-  const errorPos = this.state.start;
-  const exprStmt = this.startNode();
-  const obj = this.parseMaybeAssign();
-
-  if (
-    obj.type !== "ObjectExpression" &&
-    obj.type !== "ObjectComprehension" &&
-    // A tilde call can begin with { if an ObjectExpression is the thisArg.
-    (obj.type !== "CallExpression" || !obj.tilde)
-  ) {
-    this.unexpected(errorPos, "Expected an object.");
-  }
-
-  if (this.state.indentLevel > blockIndentLevel) {
-    this.unexpected(errorPos, "Expected an object.");
-  }
-
-  exprStmt.expression = obj;
-  this.finishNode(exprStmt, "ExpressionStatement");
-
-  node.body = [exprStmt];
-  node.directives = [];
-  this.addExtra(node, "curly", false);
-  return this.finishNode(node, "BlockStatement");
-};
-
-pp.tryParseObjectWhiteBlock = function(node, blockIndentLevel) {
-  const state = this.state.clone();
-  try {
-    return [this.parseObjectWhiteBlock(node, blockIndentLevel)];
-  } catch (err) {
-    this.state = state;
-    return [null, err];
-  }
-};
-
-pp.rethrowObjParseError = function(objParseResult, blockParseError) {
-  const objParseError = objParseResult ? objParseResult[1] : null;
-  if (objParseError) {
-    if (objParseError.message === "WRONG_SPECULATIVE_BRANCH") {
-      throw blockParseError;
-    } else {
-      throw objParseError;
-    }
-  } else {
-    throw blockParseError;
-  }
-};
-
-pp.parseNonemptyWhiteBlock = function(node, indentLevel) {
-  this.parseBlockBody(node, false, false, indentLevel);
-  if (!node.body.length) {
-    this.unexpected(node.start, "Expected an Indent or Statement");
-  }
 };
 
 pp.parseInlineWhiteBlock = function(node) {
@@ -206,23 +149,10 @@ pp.parseInlineWhiteBlock = function(node) {
 };
 
 pp.parseMultilineWhiteBlock = function(node, indentLevel) {
-  if (this.match(tt.braceL) && this.hasPlugin("whiteblockOnly")) {
-    return this.parseObjectWhiteBlock(node, indentLevel);
+  this.parseBlockBody(node, false, false, indentLevel);
+  if (!node.body.length) {
+    this.unexpected(node.start, "Expected an Indent or Statement");
   }
-
-  if (this.match(tt.braceL) && this.hasPlugin("whiteblockPreferred")) {
-    const objParseResult = this.tryParseObjectWhiteBlock(node, indentLevel);
-    if (objParseResult[0]) return objParseResult[0];
-
-    try {
-      this.parseNonemptyWhiteBlock(node, indentLevel);
-    } catch (err) {
-      this.rethrowObjParseError(objParseResult, err);
-    }
-  } else {
-    this.parseNonemptyWhiteBlock(node, indentLevel);
-  }
-
   this.addExtra(node, "curly", false);
   return this.finishNode(node, "BlockStatement");
 };
@@ -235,27 +165,6 @@ pp.parseWhiteBlock = function (isExpression?) {
   if (!this.isLineBreak()) {
     if (isExpression) {
       return this.parseInlineWhiteBlock(node);
-    }
-
-    if (this.match(tt.braceL)) {
-      if (this.hasPlugin("whiteblockOnly")) {
-        return this.parseObjectWhiteBlock(node, indentLevel);
-      }
-
-      let objParseResult = null;
-      if (this.hasPlugin("whiteblockPreferred")) {
-        objParseResult = this.tryParseObjectWhiteBlock(node, indentLevel);
-        if (objParseResult[0]) return objParseResult[0];
-
-        try {
-          this.state.nestedBlockLevel++;
-          const stmt = this.parseStatement(false);
-          this.state.nestedBlockLevel--;
-          return stmt;
-        } catch (err) {
-          this.rethrowObjParseError(objParseResult, err);
-        }
-      }
     }
 
     this.state.nestedBlockLevel++;
@@ -323,35 +232,14 @@ pp.parseArrowType = function (node) {
   }
 };
 
-// largely c/p from parseFunctionBody
-
-pp.parseBraceArrowFunctionBody = function(node, indentLevel) {
-  // In whiteblock-only mode, `{` must be introducing an object
-  if (this.hasPlugin("whiteblockOnly")) {
-    return this.parseObjectWhiteBlock(node, indentLevel);
+pp.parseBraceArrowFunctionBody = function() {
+  this.state.nextBraceAllowDirectives = true;
+  const node = this.parseStatement(true);
+  if (node.type === "ExpressionStatement") {
+    return node.expression;
+  } else {
+    return node;
   }
-
-  // In whiteblock-preferred mode, try to parse an object, otherwise fall back on
-  // a braceblock.
-  if (this.hasPlugin("whiteblockPreferred")) {
-    const objParseResult = this.tryParseObjectWhiteBlock(node, indentLevel);
-    if (objParseResult[0]) return objParseResult[0];
-    this.next();
-
-    try {
-      this.parseBlockBody(node, true, false, tt.braceR);
-    } catch (err) {
-      this.rethrowObjParseError(objParseResult, err);
-    }
-
-    this.addExtra(node, "curly", true);
-    return this.finishNode(node, "BlockStatement");
-  }
-
-  this.next();
-  this.parseBlockBody(node, true, false, tt.braceR);
-  this.addExtra(node, "curly", true);
-  return this.finishNode(node, "BlockStatement");
 };
 
 pp.parseArrowFunctionBody = function (node) {
@@ -542,10 +430,11 @@ pp.isAwaitArrowAssign = function (expr) {
 pp.parseAwaitArrow = function (left) {
   const node = this.startNode();
   const arrowType = this.state.value;
+  const arrowPos = this.state.pos;
   this.next();
   if (arrowType === "<!-") {
     if (left.type === "ObjectPattern" || left.type === "ArrayPattern") {
-      this.unexpected(left.start, "Destructuring is not allowed with '<!-'.");
+      this.unexpected(arrowPos - 3, "Destructuring is not allowed with '<!-'.");
     }
     return this.parseSafeAwait(node);
   } else {
