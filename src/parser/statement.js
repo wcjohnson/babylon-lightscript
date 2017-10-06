@@ -663,7 +663,6 @@ pp.parseBlockBody = function (node, allowDirectives, topLevel, end) {
 
   const oldInWhiteBlock = this.state.inWhiteBlock;
   const oldWhiteBlockIndentLevel = this.state.whiteBlockIndentLevel;
-  this.state.nestedBlockLevel++;
 
   let isEnd;
   if (this.hasPlugin("lightscript") && typeof end === "number") {
@@ -701,7 +700,6 @@ pp.parseBlockBody = function (node, allowDirectives, topLevel, end) {
     node.body.push(stmt);
   }
 
-  this.state.nestedBlockLevel--;
   if (this.hasPlugin("lightscript")) {
     this.state.inWhiteBlock = oldInWhiteBlock;
     this.state.whiteBlockIndentLevel = oldWhiteBlockIndentLevel;

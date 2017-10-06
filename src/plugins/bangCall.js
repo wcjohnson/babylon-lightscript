@@ -40,13 +40,15 @@ export default function(parser) {
       this.unexpected(null, "Whitespace required between `!` and first argument.");
     }
 
-    // Read args
-    let first = true;
+    // Collect state
     const oldBangUnwindLevel = this.state.bangUnwindLevel;
-    const oldBangBlockLevel = this.state.bangBlockLevel;
-    this.state.bangBlockLevel = this.state.nestedBlockLevel;
     this.state.bangUnwindLevel = bangIndentLevel + 1;
 
+    const oldBangWhiteBlockLevel = this.state.bangWhiteBlockLevel;
+    this.state.bangWhiteBlockLevel = this.state.whiteBlockIndentLevel;
+
+    // Read args
+    let first = true;
     while (true) {
       // First argument on a different line from the `!` establishes indent level
       if (this.state.curLine !== bangLine && argIndentLevel === null) {
@@ -83,7 +85,7 @@ export default function(parser) {
     }
 
     this.state.bangUnwindLevel = oldBangUnwindLevel;
-    this.state.bangBlockLevel = oldBangBlockLevel;
+    this.state.bangWhiteBlockLevel = oldBangWhiteBlockLevel;
 
     node = this.finishNode(node, nodeType);
 
@@ -97,7 +99,7 @@ export default function(parser) {
   // Subscripts to a bang call must appear at the arg indent level
   pp.shouldUnwindBangSubscript = function() {
     return this.isLineBreak() &&
-      (this.state.bangBlockLevel == this.state.nestedBlockLevel) &&
+      (this.state.bangWhiteBlockLevel === this.state.whiteBlockIndentLevel) &&
       (this.state.indentLevel <= this.state.bangUnwindLevel);
   };
 }

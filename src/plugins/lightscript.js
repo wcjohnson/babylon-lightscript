@@ -140,9 +140,7 @@ pp.parseObjectComprehension = function(node) {
 pp.parseInlineWhiteBlock = function(node) {
   if (this.state.type.startsExpr) return this.parseMaybeAssign();
   // oneline statement case
-  this.state.nestedBlockLevel++;
   node.body = [this.parseStatement(true)];
-  this.state.nestedBlockLevel--;
   node.directives = [];
   this.addExtra(node, "curly", false);
   return this.finishNode(node, "BlockStatement");
@@ -167,9 +165,7 @@ pp.parseWhiteBlock = function (isExpression?) {
       return this.parseInlineWhiteBlock(node);
     }
 
-    this.state.nestedBlockLevel++;
     const stmt = this.parseStatement(false);
-    this.state.nestedBlockLevel--;
     return stmt;
   }
 
