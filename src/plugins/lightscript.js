@@ -177,6 +177,10 @@ pp.parseWhiteBlock = function (isExpression?) {
   return this.parseMultilineWhiteBlock(node, indentLevel);
 };
 
+pp.crossesWhiteBlockBoundary = function() {
+  return (this.state.inWhiteBlock && this.state.indentLevel <= this.state.whiteBlockIndentLevel);
+};
+
 pp.expectCommaOrLineBreak = function (loc = null) {
   // TODO: consider error message like "Missing comma or newline."
   if (!(this.eat(tt.comma) || this.isLineBreak())) this.unexpected(loc, tt.comma);
