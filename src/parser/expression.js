@@ -386,7 +386,9 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
   this.state.noPipeSubscripts = false;
 
   for (;;) {
-    if (this.hasPlugin("bangCall") && this.shouldUnwindBangSubscript()) {
+    if (this.hasPlugin("lightscript") && this.crossesWhiteBlockBoundary()) {
+      return base;
+    } else if (this.hasPlugin("bangCall") && this.shouldUnwindBangSubscript()) {
       return base;
     } else if (!noCalls && this.eat(tt.doubleColon)) {
       const node = this.startNodeAt(startPos, startLoc);
