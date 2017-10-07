@@ -1,0 +1,7 @@
+{
+  "alternatives": {
+    "default": {
+      "throws": "Whitespace is forbidden after `?` in an optional call. (1:5)"
+    }
+  }
+}

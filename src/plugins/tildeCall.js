@@ -16,7 +16,11 @@ export default function(parser) {
     node.callee = this.parseSubscripts(callee, this.state.start, this.state.startLoc, true);
 
     // Allow safe tilde calls (a~b?(c))
-    if (this.hasPlugin("safeCallExpression") && this.eat(tt.question)) {
+    if (
+      this.hasPlugin("safeCallExpression") &&
+      this.state.lastTokEnd === (this.state.pos - 1) &&
+      this.eat(tt.question)
+    ) {
       node.optional = true;
     }
 
@@ -31,6 +35,9 @@ export default function(parser) {
         return false;
       }
     } else {
+      if (node.optional && this.state.lastTokEnd !== (this.state.pos - 1)) {
+        this.unexpected(null, "Whitespace is forbidden after `?` in an optional call.");
+      }
       this.expect(tt.parenL);
       node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
       node.arguments.unshift(firstArg);
