@@ -360,10 +360,6 @@ export default class Tokenizer {
     if (next === code) return this.finishOp(code === 124 ? tt.logicalOR : tt.logicalAND, 2);
     if (next === 61) return this.finishOp(tt.assign, 2);
     if (code === 124 && next === 125 && this.hasPlugin("flow")) return this.finishOp(tt.braceBarR, 2);
-    if (code === 124 && next === 62 && this.hasPlugin("pipeCall")) {
-      this.state.pos += 2;
-      return this.finishToken(tt.pipeCall, "|>");
-    }
     return this.finishOp(code === 124 ? tt.bitwiseOR : tt.bitwiseAND, 1);
   }
 
@@ -454,11 +450,6 @@ export default class Tokenizer {
     if (next === 61) {
       // <= | >=
       size = 2;
-    }
-
-    if (code === 60 && next === 124 && this.hasPlugin("pipeCall")) {
-      this.state.pos += 2;
-      return this.finishToken(tt.pipeCall, "<|");
     }
 
     return this.finishOp(tt.relational, size);
