@@ -43,7 +43,7 @@
           }
         },
         "expression": {
-          "type": "ArrayComprehension",
+          "type": "ArrayExpression",
           "start": 0,
           "end": 85,
           "loc": {
@@ -78,7 +78,7 @@
               "value": 1
             },
             {
-              "type": "CaseComprehension",
+              "type": "SpreadElement",
               "start": 8,
               "end": 18,
               "loc": {
@@ -91,14 +91,14 @@
                   "column": 12
                 }
               },
-              "conditional": {
-                "type": "IfStatement",
-                "start": 8,
+              "argument": {
+                "type": "IfExpression",
+                "start": 11,
                 "end": 18,
                 "loc": {
                   "start": {
                     "line": 3,
-                    "column": 2
+                    "column": 5
                   },
                   "end": {
                     "line": 3,
@@ -126,7 +126,7 @@
                   "value": 2
                 },
                 "consequent": {
-                  "type": "ExpressionStatement",
+                  "type": "NumericLiteral",
                   "start": 17,
                   "end": 18,
                   "loc": {
@@ -139,32 +139,17 @@
                       "column": 12
                     }
                   },
-                  "expression": {
-                    "type": "NumericLiteral",
-                    "start": 17,
-                    "end": 18,
-                    "loc": {
-                      "start": {
-                        "line": 3,
-                        "column": 11
-                      },
-                      "end": {
-                        "line": 3,
-                        "column": 12
-                      }
-                    },
-                    "extra": {
-                      "rawValue": 3,
-                      "raw": "3"
-                    },
-                    "value": 3
-                  }
+                  "extra": {
+                    "rawValue": 3,
+                    "raw": "3"
+                  },
+                  "value": 3
                 },
                 "alternate": null
               }
             },
             {
-              "type": "LoopComprehension",
+              "type": "SpreadElement",
               "start": 21,
               "end": 53,
               "loc": {
@@ -177,8 +162,8 @@
                   "column": 34
                 }
               },
-              "loop": {
-                "type": "ForInArrayStatement",
+              "argument": {
+                "type": "SpreadLoop",
                 "start": 21,
                 "end": 53,
                 "loc": {
@@ -191,39 +176,39 @@
                     "column": 34
                   }
                 },
-                "elem": {
-                  "type": "Identifier",
-                  "start": 33,
-                  "end": 34,
-                  "loc": {
-                    "start": {
-                      "line": 4,
-                      "column": 14
-                    },
-                    "end": {
-                      "line": 4,
-                      "column": 15
-                    },
-                    "identifierName": "i"
-                  },
-                  "name": "i"
-                },
-                "body": {
-                  "type": "ExpressionStatement",
-                  "start": 48,
+                "loop": {
+                  "type": "ForInArrayStatement",
+                  "start": 21,
                   "end": 53,
                   "loc": {
                     "start": {
                       "line": 4,
-                      "column": 29
+                      "column": 2
                     },
                     "end": {
                       "line": 4,
                       "column": 34
                     }
                   },
-                  "expression": {
-                    "type": "ArrayExpression",
+                  "elem": {
+                    "type": "Identifier",
+                    "start": 33,
+                    "end": 34,
+                    "loc": {
+                      "start": {
+                        "line": 4,
+                        "column": 14
+                      },
+                      "end": {
+                        "line": 4,
+                        "column": 15
+                      },
+                      "identifierName": "i"
+                    },
+                    "name": "i"
+                  },
+                  "body": {
+                    "type": "ExpressionStatement",
                     "start": 48,
                     "end": 53,
                     "loc": {
@@ -236,48 +221,48 @@
                         "column": 34
                       }
                     },
-                    "elements": [
-                      {
-                        "type": "NumericLiteral",
-                        "start": 50,
-                        "end": 51,
-                        "loc": {
-                          "start": {
-                            "line": 4,
-                            "column": 31
+                    "expression": {
+                      "type": "ArrayExpression",
+                      "start": 48,
+                      "end": 53,
+                      "loc": {
+                        "start": {
+                          "line": 4,
+                          "column": 29
+                        },
+                        "end": {
+                          "line": 4,
+                          "column": 34
+                        }
+                      },
+                      "elements": [
+                        {
+                          "type": "NumericLiteral",
+                          "start": 50,
+                          "end": 51,
+                          "loc": {
+                            "start": {
+                              "line": 4,
+                              "column": 31
+                            },
+                            "end": {
+                              "line": 4,
+                              "column": 32
+                            }
                           },
-                          "end": {
-                            "line": 4,
-                            "column": 32
-                          }
-                        },
-                        "extra": {
-                          "rawValue": 5,
-                          "raw": "5"
-                        },
-                        "value": 5
-                      }
-                    ]
-                  }
-                },
-                "array": {
-                  "type": "CallExpression",
-                  "start": 38,
-                  "end": 46,
-                  "loc": {
-                    "start": {
-                      "line": 4,
-                      "column": 19
-                    },
-                    "end": {
-                      "line": 4,
-                      "column": 27
+                          "extra": {
+                            "rawValue": 5,
+                            "raw": "5"
+                          },
+                          "value": 5
+                        }
+                      ]
                     }
                   },
-                  "callee": {
-                    "type": "Identifier",
+                  "array": {
+                    "type": "CallExpression",
                     "start": 38,
-                    "end": 43,
+                    "end": 46,
                     "loc": {
                       "start": {
                         "line": 4,
@@ -285,34 +270,49 @@
                       },
                       "end": {
                         "line": 4,
-                        "column": 24
-                      },
-                      "identifierName": "Array"
+                        "column": 27
+                      }
                     },
-                    "name": "Array"
-                  },
-                  "arguments": [
-                    {
-                      "type": "NumericLiteral",
-                      "start": 44,
-                      "end": 45,
+                    "callee": {
+                      "type": "Identifier",
+                      "start": 38,
+                      "end": 43,
                       "loc": {
                         "start": {
                           "line": 4,
-                          "column": 25
+                          "column": 19
                         },
                         "end": {
                           "line": 4,
-                          "column": 26
-                        }
+                          "column": 24
+                        },
+                        "identifierName": "Array"
                       },
-                      "extra": {
-                        "rawValue": 4,
-                        "raw": "4"
-                      },
-                      "value": 4
-                    }
-                  ]
+                      "name": "Array"
+                    },
+                    "arguments": [
+                      {
+                        "type": "NumericLiteral",
+                        "start": 44,
+                        "end": 45,
+                        "loc": {
+                          "start": {
+                            "line": 4,
+                            "column": 25
+                          },
+                          "end": {
+                            "line": 4,
+                            "column": 26
+                          }
+                        },
+                        "extra": {
+                          "rawValue": 4,
+                          "raw": "4"
+                        },
+                        "value": 4
+                      }
+                    ]
+                  }
                 }
               }
             },
@@ -337,7 +337,7 @@
               "value": 6
             },
             {
-              "type": "ArrayComprehension",
+              "type": "ArrayExpression",
               "start": 60,
               "end": 83,
               "loc": {
@@ -372,7 +372,7 @@
                   "value": 7
                 },
                 {
-                  "type": "CaseComprehension",
+                  "type": "SpreadElement",
                   "start": 64,
                   "end": 78,
                   "loc": {
@@ -385,14 +385,14 @@
                       "column": 20
                     }
                   },
-                  "conditional": {
-                    "type": "IfStatement",
-                    "start": 64,
+                  "argument": {
+                    "type": "IfExpression",
+                    "start": 67,
                     "end": 78,
                     "loc": {
                       "start": {
                         "line": 6,
-                        "column": 6
+                        "column": 9
                       },
                       "end": {
                         "line": 6,
@@ -420,7 +420,7 @@
                       "value": 8
                     },
                     "consequent": {
-                      "type": "ExpressionStatement",
+                      "type": "ArrayExpression",
                       "start": 73,
                       "end": 78,
                       "loc": {
@@ -433,43 +433,28 @@
                           "column": 20
                         }
                       },
-                      "expression": {
-                        "type": "ArrayExpression",
-                        "start": 73,
-                        "end": 78,
-                        "loc": {
-                          "start": {
-                            "line": 6,
-                            "column": 15
+                      "elements": [
+                        {
+                          "type": "NumericLiteral",
+                          "start": 75,
+                          "end": 76,
+                          "loc": {
+                            "start": {
+                              "line": 6,
+                              "column": 17
+                            },
+                            "end": {
+                              "line": 6,
+                              "column": 18
+                            }
                           },
-                          "end": {
-                            "line": 6,
-                            "column": 20
-                          }
-                        },
-                        "elements": [
-                          {
-                            "type": "NumericLiteral",
-                            "start": 75,
-                            "end": 76,
-                            "loc": {
-                              "start": {
-                                "line": 6,
-                                "column": 17
-                              },
-                              "end": {
-                                "line": 6,
-                                "column": 18
-                              }
-                            },
-                            "extra": {
-                              "rawValue": 9,
-                              "raw": "9"
-                            },
-                            "value": 9
-                          }
-                        ]
-                      }
+                          "extra": {
+                            "rawValue": 9,
+                            "raw": "9"
+                          },
+                          "value": 9
+                        }
+                      ]
                     },
                     "alternate": null
                   }

@@ -1,12 +1,7 @@
 {
   "alternatives": {
     "all": {
-      "throws": "Unexpected token, expected } (1:28)"
-    },
-    "noSeqExprParens": {
-      "allPlugins": true,
-      "excludePlugins": ["existentialExpression", "safeCallExpression", "splatComprehension", "seqExprRequiresParen", "bangCall"],
-      "throws": "Binding invalid left-hand side in variable declaration (1:6)"
+      "throws": "Spread loops are illegal in patterns. (1:8)"
     }
   }
 }

@@ -729,8 +729,8 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       if (this.state.inMatchAtom) {
         this.unexpected(null, "Illegal expression in match atom.");
       }
-      if (this.hasPlugin("splatComprehension")) {
-        return this.parseComprehensionArray(refShorthandDefaultPos);
+      if (this.hasPlugin("spreadLoop")) {
+        return this.parseArrayWithSpreadLoops(refShorthandDefaultPos);
       }
       node = this.startNode();
       this.next();
@@ -1044,7 +1044,6 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
   let decorators = [];
   const propHash = Object.create(null);
   let first = true;
-  let hasComprehension = false;
   const node = this.startNode();
 
   node.properties = [];
@@ -1064,12 +1063,11 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
       if (this.eat(tt.braceR)) break;
     }
 
-    if (this.hasPlugin("splatComprehension") && this.match(tt.splatComprehension)) {
+    if (this.hasPlugin("spreadLoop") && this.match(tt.spreadLoop)) {
       if (isPattern) {
-        this.unexpected(null, "Comprehensions are illegal in patterns.");
+        this.unexpected(null, "Spread loops are illegal in patterns.");
       }
-      node.properties.push(this.parseSomeComprehension());
-      hasComprehension = true;
+      node.properties.push(this.parseSpreadLoop("SpreadProperty"));
       continue;
     }
 
@@ -1154,7 +1152,7 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
     this.raise(this.state.start, "You have trailing decorators with no property");
   }
 
-  return this.finishNode(node, hasComprehension ? "ObjectComprehension" : (isPattern ? "ObjectPattern" : "ObjectExpression"));
+  return this.finishNode(node, isPattern ? "ObjectPattern" : "ObjectExpression");
 };
 
 pp.isGetterOrSetterMethod = function (prop, isPattern) {

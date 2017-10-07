@@ -43,7 +43,7 @@
           }
         },
         "expression": {
-          "type": "ObjectComprehension",
+          "type": "ObjectExpression",
           "start": 0,
           "end": 39,
           "loc": {
@@ -58,7 +58,7 @@
           },
           "properties": [
             {
-              "type": "LoopComprehension",
+              "type": "SpreadProperty",
               "start": 2,
               "end": 37,
               "loc": {
@@ -71,8 +71,8 @@
                   "column": 37
                 }
               },
-              "loop": {
-                "type": "ForInArrayStatement",
+              "argument": {
+                "type": "SpreadLoop",
                 "start": 2,
                 "end": 37,
                 "loc": {
@@ -85,39 +85,39 @@
                     "column": 37
                   }
                 },
-                "idx": {
-                  "type": "Identifier",
-                  "start": 13,
-                  "end": 14,
-                  "loc": {
-                    "start": {
-                      "line": 1,
-                      "column": 13
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 14
-                    },
-                    "identifierName": "i"
-                  },
-                  "name": "i"
-                },
-                "body": {
-                  "type": "ExpressionStatement",
-                  "start": 29,
+                "loop": {
+                  "type": "ForInArrayStatement",
+                  "start": 2,
                   "end": 37,
                   "loc": {
                     "start": {
                       "line": 1,
-                      "column": 29
+                      "column": 2
                     },
                     "end": {
                       "line": 1,
                       "column": 37
                     }
                   },
-                  "expression": {
-                    "type": "ObjectExpression",
+                  "idx": {
+                    "type": "Identifier",
+                    "start": 13,
+                    "end": 14,
+                    "loc": {
+                      "start": {
+                        "line": 1,
+                        "column": 13
+                      },
+                      "end": {
+                        "line": 1,
+                        "column": 14
+                      },
+                      "identifierName": "i"
+                    },
+                    "name": "i"
+                  },
+                  "body": {
+                    "type": "ExpressionStatement",
                     "start": 29,
                     "end": 37,
                     "loc": {
@@ -130,80 +130,80 @@
                         "column": 37
                       }
                     },
-                    "properties": [
-                      {
-                        "type": "ObjectProperty",
-                        "start": 30,
-                        "end": 36,
-                        "loc": {
-                          "start": {
-                            "line": 1,
-                            "column": 30
-                          },
-                          "end": {
-                            "line": 1,
-                            "column": 36
-                          }
+                    "expression": {
+                      "type": "ObjectExpression",
+                      "start": 29,
+                      "end": 37,
+                      "loc": {
+                        "start": {
+                          "line": 1,
+                          "column": 29
                         },
-                        "method": false,
-                        "shorthand": false,
-                        "computed": true,
-                        "key": {
-                          "type": "Identifier",
-                          "start": 31,
-                          "end": 32,
-                          "loc": {
-                            "start": {
-                              "line": 1,
-                              "column": 31
-                            },
-                            "end": {
-                              "line": 1,
-                              "column": 32
-                            },
-                            "identifierName": "i"
-                          },
-                          "name": "i"
-                        },
-                        "value": {
-                          "type": "Identifier",
-                          "start": 35,
+                        "end": {
+                          "line": 1,
+                          "column": 37
+                        }
+                      },
+                      "properties": [
+                        {
+                          "type": "ObjectProperty",
+                          "start": 30,
                           "end": 36,
                           "loc": {
                             "start": {
                               "line": 1,
-                              "column": 35
+                              "column": 30
                             },
                             "end": {
                               "line": 1,
                               "column": 36
-                            },
-                            "identifierName": "i"
+                            }
                           },
-                          "name": "i"
+                          "method": false,
+                          "shorthand": false,
+                          "computed": true,
+                          "key": {
+                            "type": "Identifier",
+                            "start": 31,
+                            "end": 32,
+                            "loc": {
+                              "start": {
+                                "line": 1,
+                                "column": 31
+                              },
+                              "end": {
+                                "line": 1,
+                                "column": 32
+                              },
+                              "identifierName": "i"
+                            },
+                            "name": "i"
+                          },
+                          "value": {
+                            "type": "Identifier",
+                            "start": 35,
+                            "end": 36,
+                            "loc": {
+                              "start": {
+                                "line": 1,
+                                "column": 35
+                              },
+                              "end": {
+                                "line": 1,
+                                "column": 36
+                              },
+                              "identifierName": "i"
+                            },
+                            "name": "i"
+                          }
                         }
-                      }
-                    ]
-                  }
-                },
-                "array": {
-                  "type": "CallExpression",
-                  "start": 18,
-                  "end": 27,
-                  "loc": {
-                    "start": {
-                      "line": 1,
-                      "column": 18
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 27
+                      ]
                     }
                   },
-                  "callee": {
-                    "type": "Identifier",
+                  "array": {
+                    "type": "CallExpression",
                     "start": 18,
-                    "end": 23,
+                    "end": 27,
                     "loc": {
                       "start": {
                         "line": 1,
@@ -211,34 +211,49 @@
                       },
                       "end": {
                         "line": 1,
-                        "column": 23
-                      },
-                      "identifierName": "Array"
+                        "column": 27
+                      }
                     },
-                    "name": "Array"
-                  },
-                  "arguments": [
-                    {
-                      "type": "NumericLiteral",
-                      "start": 24,
-                      "end": 26,
+                    "callee": {
+                      "type": "Identifier",
+                      "start": 18,
+                      "end": 23,
                       "loc": {
                         "start": {
                           "line": 1,
-                          "column": 24
+                          "column": 18
                         },
                         "end": {
                           "line": 1,
-                          "column": 26
-                        }
+                          "column": 23
+                        },
+                        "identifierName": "Array"
                       },
-                      "extra": {
-                        "rawValue": 10,
-                        "raw": "10"
-                      },
-                      "value": 10
-                    }
-                  ]
+                      "name": "Array"
+                    },
+                    "arguments": [
+                      {
+                        "type": "NumericLiteral",
+                        "start": 24,
+                        "end": 26,
+                        "loc": {
+                          "start": {
+                            "line": 1,
+                            "column": 24
+                          },
+                          "end": {
+                            "line": 1,
+                            "column": 26
+                          }
+                        },
+                        "extra": {
+                          "rawValue": 10,
+                          "raw": "10"
+                        },
+                        "value": 10
+                      }
+                    ]
+                  }
                 }
               }
             }

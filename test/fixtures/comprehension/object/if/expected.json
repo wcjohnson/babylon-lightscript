@@ -43,7 +43,7 @@
           }
         },
         "expression": {
-          "type": "ObjectComprehension",
+          "type": "ObjectExpression",
           "start": 0,
           "end": 24,
           "loc": {
@@ -58,7 +58,7 @@
           },
           "properties": [
             {
-              "type": "CaseComprehension",
+              "type": "SpreadProperty",
               "start": 2,
               "end": 22,
               "loc": {
@@ -71,14 +71,14 @@
                   "column": 22
                 }
               },
-              "conditional": {
-                "type": "IfStatement",
-                "start": 2,
+              "argument": {
+                "type": "IfExpression",
+                "start": 5,
                 "end": 22,
                 "loc": {
                   "start": {
                     "line": 1,
-                    "column": 2
+                    "column": 5
                   },
                   "end": {
                     "line": 1,
@@ -102,7 +102,7 @@
                   "value": true
                 },
                 "consequent": {
-                  "type": "ExpressionStatement",
+                  "type": "ObjectExpression",
                   "start": 14,
                   "end": 22,
                   "loc": {
@@ -115,25 +115,28 @@
                       "column": 22
                     }
                   },
-                  "expression": {
-                    "type": "ObjectExpression",
-                    "start": 14,
-                    "end": 22,
-                    "loc": {
-                      "start": {
-                        "line": 1,
-                        "column": 14
+                  "properties": [
+                    {
+                      "type": "ObjectProperty",
+                      "start": 15,
+                      "end": 21,
+                      "loc": {
+                        "start": {
+                          "line": 1,
+                          "column": 15
+                        },
+                        "end": {
+                          "line": 1,
+                          "column": 21
+                        }
                       },
-                      "end": {
-                        "line": 1,
-                        "column": 22
-                      }
-                    },
-                    "properties": [
-                      {
-                        "type": "ObjectProperty",
+                      "method": false,
+                      "shorthand": false,
+                      "computed": false,
+                      "key": {
+                        "type": "Identifier",
                         "start": 15,
-                        "end": 21,
+                        "end": 16,
                         "loc": {
                           "start": {
                             "line": 1,
@@ -141,52 +144,34 @@
                           },
                           "end": {
                             "line": 1,
+                            "column": 16
+                          },
+                          "identifierName": "k"
+                        },
+                        "name": "k"
+                      },
+                      "value": {
+                        "type": "StringLiteral",
+                        "start": 18,
+                        "end": 21,
+                        "loc": {
+                          "start": {
+                            "line": 1,
+                            "column": 18
+                          },
+                          "end": {
+                            "line": 1,
                             "column": 21
                           }
                         },
-                        "method": false,
-                        "shorthand": false,
-                        "computed": false,
-                        "key": {
-                          "type": "Identifier",
-                          "start": 15,
-                          "end": 16,
-                          "loc": {
-                            "start": {
-                              "line": 1,
-                              "column": 15
-                            },
-                            "end": {
-                              "line": 1,
-                              "column": 16
-                            },
-                            "identifierName": "k"
-                          },
-                          "name": "k"
+                        "extra": {
+                          "rawValue": "v",
+                          "raw": "\"v\""
                         },
-                        "value": {
-                          "type": "StringLiteral",
-                          "start": 18,
-                          "end": 21,
-                          "loc": {
-                            "start": {
-                              "line": 1,
-                              "column": 18
-                            },
-                            "end": {
-                              "line": 1,
-                              "column": 21
-                            }
-                          },
-                          "extra": {
-                            "rawValue": "v",
-                            "raw": "\"v\""
-                          },
-                          "value": "v"
-                        }
+                        "value": "v"
                       }
-                    ]
-                  }
+                    }
+                  ]
                 },
                 "alternate": null
               }

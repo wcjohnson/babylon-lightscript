@@ -6,7 +6,7 @@ import tildeCallPlugin from "./plugins/tildeCall";
 import safeCallExistentialPlugin from "./plugins/safeCallExistential";
 import bangCallPlugin from "./plugins/bangCall";
 import significantWhitespacePlugin from "./plugins/significantWhitespace";
-import splatComprehensionPlugin from "./plugins/splatComprehension";
+import spreadLoopPlugin from "./plugins/spreadLoop";
 import syntacticPlaceholderPlugin from "./plugins/syntacticPlaceholder";
 import { matchCoreSyntax, match } from "./plugins/match";
 
@@ -76,12 +76,7 @@ export default function registerPlugins(plugins, metadata) {
     dependencies: ["lightscript", "matchCoreSyntax"]
   });
 
-  registerPlugin("splatComprehension", splatComprehensionPlugin, {
-    dependencies: [
-      "lightscript", // needed for `parseIf`
-      "seqExprRequiresParen"
-    ]
-  });
+  registerPlugin("spreadLoop", spreadLoopPlugin);
 
   // Parse identifiers beginning with `_` or another user-chosen symbol
   // as PlaceholderExpressions.
