@@ -45,10 +45,11 @@ export default function(parser) {
   };
 
   pp.parseSpreadLoop = function(spreadElementType) {
-    const spreadElement = this.startNode();
+    const spreadElement = spreadElementType == null ? null : this.startNode();
     const spreadLoop = this.startNode();
     const loop = this.startNode();
     spreadLoop.loop = this.parseForStatement(loop);
+    if (spreadElementType == null) return this.finishNode(spreadLoop, "SpreadLoop");
     spreadElement.argument = this.finishNode(spreadLoop, "SpreadLoop");
     return this.finishNode(spreadElement, spreadElementType);
   };
