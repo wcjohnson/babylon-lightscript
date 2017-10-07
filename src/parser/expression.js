@@ -734,9 +734,6 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       }
       node = this.startNode();
       this.next();
-      if (this.hasPlugin("lightscript") && this.match(tt._for)) {
-        return this.parseArrayComprehension(node);
-      }
       node.elements = this.parseExprList(tt.bracketR, true, refShorthandDefaultPos);
       this.toReferencedList(node.elements);
       return this.finishNode(node, "ArrayExpression");
@@ -1052,18 +1049,6 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
 
   node.properties = [];
   this.next();
-
-  // `for` keyword begins an object comprehension.
-  if (
-    this.hasPlugin("lightscript") &&
-    !this.hasPlugin("splatComprehension") &&
-    this.match(tt._for)
-  ) {
-    // ...however, `{ for: x }` is a legal JS object.
-    if (this.lookahead().type !== tt.colon) {
-      return this.parseObjectComprehension(node);
-    }
-  }
 
   let firstRestLocation = null;
 

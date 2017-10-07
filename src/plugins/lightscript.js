@@ -120,23 +120,6 @@ pp.expectParenFreeBlockStart = function (node) {
   }
 };
 
-// XXX: legacy
-// [for ...: stmnt]
-pp.parseArrayComprehension = function (node) {
-  const loop = this.startNode();
-  node.loop = this.parseForStatement(loop);
-  this.expect(tt.bracketR);
-  return this.finishNode(node, "ArrayComprehension");
-};
-
-// XXX: legacy
-pp.parseObjectComprehension = function(node) {
-  const loop = this.startNode();
-  node.loop = this.parseForStatement(loop);
-  this.expect(tt.braceR);
-  return this.finishNode(node, "ObjectComprehension");
-};
-
 pp.parseInlineWhiteBlock = function(node) {
   if (this.state.type.startsExpr) return this.parseMaybeAssign();
   // oneline statement case
