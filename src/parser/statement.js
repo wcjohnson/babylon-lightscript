@@ -336,6 +336,30 @@ pp.parseForStatement = function (node) {
     return this.parseFor(node, null);
   }
 
+  if (this.hasPlugin("lightscript") && (!forAwait)) {
+    // idx, elem, key, or val begins a LS-enhanced loop.
+    if (
+      this.isContextual("idx") ||
+      this.isContextual("elem") ||
+      this.isContextual("key") ||
+      this.isContextual("val")
+    ) {
+      // Disambiguate between:
+      // for idx of e: body
+      // for idx of in e: body
+      // for idx of, elem x in e: body
+      //
+      // If next isn't "of", or next+1 is "in" or ",", then it's a for-in
+      const nextTwo = this.tokenLookahead(2);
+      if (
+        (!(nextTwo[0] === tt.name && nextTwo[1] === "of")) || // next isnt of
+        (nextTwo[2] === tt._in || nextTwo[2] === tt.comma) // next+1 is "in" or ","
+      ) {
+        return this.parseEnhancedForIn(node);
+      }
+    }
+  }
+
   if (this.match(tt._var) || this.match(tt._let) || this.match(tt._const)) {
     const init = this.startNode();
     const varKind = this.state.type;
@@ -354,23 +378,12 @@ pp.parseForStatement = function (node) {
     return this.parseFor(node, init);
   }
 
-  if (this.hasPlugin("lightscript") && (!forAwait)) {
-    // idx, elem, key, or val begins a LS-enhanced loop.
-    if (
-      (this.isContextual("idx") || this.isContextual("elem") || this.isContextual("key") || this.isContextual("val"))
-    ) {
-      return this.parseEnhancedForIn(node);
-    }
-  }
-
   const refShorthandDefaultPos = { start: 0 };
   const init = this.parseExpression(true, refShorthandDefaultPos);
   if (this.match(tt._in) || this.isContextual("of")) {
     if (this.hasPlugin("lightscript") && (!init.isNowAssign)) {
       if (this.match(tt._in)) {
         this.raise(this.state.lastTokStart, "for-in requires a variable qualifier: `now` to reassign an existing variable, or `const`, `let`, `var` to declare a new one. Use `idx` or `elem` to iterate an array. Use `key` or `val` to iterate an object.");
-      } else {
-        this.raise(this.state.lastTokStart, "for-of requires a variable qualifier: `now` to reassign an existing variable, or `const`, `let`, `var` to declare a new one.");
       }
     }
 

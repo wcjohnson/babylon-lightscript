@@ -97,6 +97,24 @@ export default class Tokenizer {
     return curr;
   }
 
+  tokenLookahead(n) {
+    const result = [];
+
+    const old = this.state;
+    this.state = old.clone(true);
+
+    this.isLookahead = true;
+    while (n > 0) {
+      this.next();
+      result.push(this.state.type, this.state.value);
+      n--;
+    }
+    this.isLookahead = false;
+
+    this.state = old;
+    return result;
+  }
+
   // Toggle strict mode. Re-reads the next number or string to please
   // pedantic tests (`"use strict"; 010;` should fail).
 
