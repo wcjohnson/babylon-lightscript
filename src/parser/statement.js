@@ -630,19 +630,7 @@ pp.parseLabeledStatement = function (node, maybeName, expr) {
 
 pp.parseExpressionStatement = function (node, expr) {
   node.expression = expr;
-  if (this.hasPlugin("lightscript")) {
-    // for array comprehensions.
-    // TODO: cleanup / think of a better way of doing this.
-    this.match(tt.bracketR) ||
-    this.match(tt.braceR) ||
-    this.match(tt.parenR) ||
-    this.match(tt._else) ||
-    this.match(tt._elif) ||
-    this.match(tt.colon) ||
-    this.semicolon();
-  } else {
-    this.semicolon();
-  }
+  this.semicolon();
   return this.finishNode(node, "ExpressionStatement");
 };
 
@@ -674,17 +662,7 @@ pp.parseBlockBody = function (node, allowDirectives, topLevel, end) {
   let oldStrict;
   let octalPosition;
 
-  const oldInWhiteBlock = this.state.inWhiteBlock;
-  const oldWhiteBlockIndentLevel = this.state.whiteBlockIndentLevel;
-
-  let isEnd;
-  if (this.hasPlugin("lightscript") && typeof end === "number") {
-    this.state.inWhiteBlock = true;
-    this.state.whiteBlockIndentLevel = end;
-    isEnd = () => this.state.indentLevel <= end || this.match(tt.eof);
-  } else {
-    isEnd = () => this.eat(end);
-  }
+  const isEnd = () => this.eat(end);
 
   while (!isEnd()) {
     if (!parsedNonDirective && this.state.containsOctal && !octalPosition) {
@@ -711,11 +689,6 @@ pp.parseBlockBody = function (node, allowDirectives, topLevel, end) {
 
     parsedNonDirective = true;
     node.body.push(stmt);
-  }
-
-  if (this.hasPlugin("lightscript")) {
-    this.state.inWhiteBlock = oldInWhiteBlock;
-    this.state.whiteBlockIndentLevel = oldWhiteBlockIndentLevel;
   }
 
   if (oldStrict === false) {

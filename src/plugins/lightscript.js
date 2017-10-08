@@ -120,6 +120,70 @@ pp.expectParenFreeBlockStart = function (node) {
   }
 };
 
+pp.matchesWhiteBlockASIToken = function() {
+  return (
+    (this.match(tt.comma) && this.hasPlugin("seqExprRequiresParen")) ||
+    this.match(tt.parenR) ||
+    this.match(tt.bracketR) ||
+    this.match(tt.braceR) ||
+    this.match(tt._else) ||
+    this.match(tt._elif) ||
+    this.match(tt.colon) ||
+    this.match(tt.eof)
+  );
+};
+
+// c/p statement.js parseBlockBody
+pp.parseWhiteBlockBody = function (node, allowDirectives, topLevel, whiteBlockIndentLevel) {
+  node.body = [];
+  node.directives = [];
+
+  let parsedNonDirective = false;
+  let oldStrict;
+  let octalPosition;
+
+  const oldInWhiteBlock = this.state.inWhiteBlock;
+  const oldWhiteBlockIndentLevel = this.state.whiteBlockIndentLevel;
+  this.state.inWhiteBlock = true;
+  this.state.whiteBlockIndentLevel = whiteBlockIndentLevel;
+
+  const isEnd = () => this.state.indentLevel <= whiteBlockIndentLevel || this.matchesWhiteBlockASIToken();
+
+  while (!isEnd()) {
+    if (!parsedNonDirective && this.state.containsOctal && !octalPosition) {
+      octalPosition = this.state.octalPosition;
+    }
+
+    const stmt = this.parseStatement(true, topLevel);
+
+    if (allowDirectives && !parsedNonDirective && this.isValidDirective(stmt)) {
+      const directive = this.stmtToDirective(stmt);
+      node.directives.push(directive);
+
+      if (oldStrict === undefined && directive.value.value === "use strict") {
+        oldStrict = this.state.strict;
+        this.setStrict(true);
+
+        if (octalPosition) {
+          this.raise(octalPosition, "Octal literal in strict mode");
+        }
+      }
+
+      continue;
+    }
+
+    parsedNonDirective = true;
+    node.body.push(stmt);
+  }
+
+  this.state.inWhiteBlock = oldInWhiteBlock;
+  this.state.whiteBlockIndentLevel = oldWhiteBlockIndentLevel;
+
+  if (oldStrict === false) {
+    this.setStrict(false);
+  }
+};
+
 pp.parseInlineWhiteBlock = function(node) {
   if (this.state.type.startsExpr) return this.parseMaybeAssign();
   // oneline statement case
@@ -130,7 +194,7 @@ pp.parseInlineWhiteBlock = function(node) {
 };
 
 pp.parseMultilineWhiteBlock = function(node, indentLevel) {
-  this.parseBlockBody(node, false, false, indentLevel);
+  this.parseWhiteBlockBody(node, false, false, indentLevel);
   if (!node.body.length) {
     this.unexpected(node.start, "Expected an Indent or Statement");
   }
