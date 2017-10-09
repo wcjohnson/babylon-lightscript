@@ -18,6 +18,7 @@ export default function(parser) {
     } else {
       this.expect(tt.parenL);
       node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
+      this.toReferencedList(node.arguments);
       return [this.finishNode(node, "CallExpression"), true];
     }
   };

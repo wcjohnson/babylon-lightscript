@@ -41,6 +41,7 @@ export default function(parser) {
     }
 
     node.elements = elts;
+    this.toReferencedList(node.elements);
     return hasSpreadLoop;
   };
 
