@@ -944,6 +944,10 @@ pp.parseParenAndDistinguishExpression = function (startPos, startLoc, canBeArrow
   if (refShorthandDefaultPos.start) this.unexpected(refShorthandDefaultPos.start);
   if (refNeedsArrowPos.start) this.unexpected(refNeedsArrowPos.start);
 
+  if (this.hasPlugin("flow")) {
+    this.flowExprListToCast(exprList);
+  }
+
   if (exprList.length > 1) {
     val = this.startNodeAt(innerStartPos, innerStartLoc);
     val.expressions = exprList;
@@ -952,7 +956,6 @@ pp.parseParenAndDistinguishExpression = function (startPos, startLoc, canBeArrow
   } else {
     val = exprList[0];
   }
-
 
   this.addExtra(val, "parenthesized", true);
   this.addExtra(val, "parenStart", startPos);

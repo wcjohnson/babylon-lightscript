@@ -862,6 +862,21 @@ pp.flowParseVariance = function() {
   return variance;
 };
 
+pp.flowExprListToCast = function(exprList) {
+  // A flow typecast is a parenthesized expr list of exactly length 1 with
+  // a TypeCastish in the first slot; anything else involving TypeCastish
+  // is illegal.
+  if (exprList.length === 1 && exprList[0].type === "TypeCastish") {
+    exprList[0].type = "TypeCastExpression";
+  } else {
+    exprList.forEach((expr) => {
+      if (expr.type === "TypeCastish") {
+        this.unexpected(expr.typeAnnotation.pos);
+      }
+    });
+  }
+};
+
 export default function (instance) {
   // plain function return types: function name(): string {}
   instance.extend("parseFunctionBody", function (inner) {
@@ -962,7 +977,7 @@ export default function (instance) {
         typeCastNode.expression = node;
         typeCastNode.typeAnnotation = this.flowParseTypeAnnotation();
 
-        return this.finishNode(typeCastNode, "TypeCastExpression");
+        return this.finishNode(typeCastNode, "TypeCastish");
       }
 
       return node;
@@ -1058,7 +1073,7 @@ export default function (instance) {
 
   instance.extend("toAssignable", function (inner) {
     return function (node, isBinding, contextDescription) {
-      if (node.type === "TypeCastExpression") {
+      if (node.type === "TypeCastish") {
         return inner.call(this, this.typeCastToParameter(node), isBinding, contextDescription);
       } else if (this.hasPlugin("existentialExpression") && node.type === "ExistentialExpression") {
         // Existential expression looks like an optional flow parameter
@@ -1074,7 +1089,7 @@ export default function (instance) {
     return function (exprList, isBinding, contextDescription) {
       for (let i = 0; i < exprList.length; i++) {
         const expr = exprList[i];
-        if (expr && expr.type === "TypeCastExpression") {
+        if (expr && expr.type === "TypeCastish") {
           exprList[i] = this.typeCastToParameter(expr);
         } else if (this.hasPlugin("existentialExpression") && expr && expr.type === "ExistentialExpression") {
           // Existential expression looks like an optional flow parameter
@@ -1091,8 +1106,8 @@ export default function (instance) {
     return function (exprList) {
       for (let i = 0; i < exprList.length; i++) {
         const expr = exprList[i];
-        if (expr && expr._exprListItem && expr.type === "TypeCastExpression") {
-          this.raise(expr.start, "Unexpected type cast");
+        if (expr && expr.type === "TypeCastish") {
+          this.raise(expr.typeAnnotation.start, "Unexpected type cast");
         }
       }
 
@@ -1100,26 +1115,9 @@ export default function (instance) {
     };
   });
 
-  // parse an item inside a expression list eg. `(NODE, NODE)` where NODE represents
-  // the position where this function is called
-  instance.extend("parseExprListItem", function (inner) {
-    return function (...args) {
-      const container = this.startNode();
-      const node = inner.call(this, ...args);
-      if (this.match(tt.colon)) {
-        container._exprListItem = true;
-        container.expression = node;
-        container.typeAnnotation = this.flowParseTypeAnnotation();
-        return this.finishNode(container, "TypeCastExpression");
-      } else {
-        return node;
-      }
-    };
-  });
-
   instance.extend("checkLVal", function (inner) {
     return function (node) {
-      if (node.type !== "TypeCastExpression") {
+      if (node.type !== "TypeCastish") {
         return inner.apply(this, arguments);
       }
     };
