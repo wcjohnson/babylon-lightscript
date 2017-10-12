@@ -2,8 +2,7 @@
   "name": "@oigroup/babylon-lightscript",
   "version": "3.0.0-beta.1",
   "description": "A LightScript parser, based on babylon (a JavaScript parser)",
-  "author": "Alex Rattray <rattray.alex@gmail.com>",
-  "homepage": "http://lightscript.org/",
+  "homepage": "http://wcjohnson.github.io/lightscript",
   "license": "MIT",
   "keywords": [
     "babel",
@@ -12,7 +11,7 @@
     "babylon",
     "lightscript"
   ],
-  "repository": "https://github.com/lightscript/babylon-lightscript",
+  "repository": "https://github.com/wcjohnson/babylon-lightscript",
   "main": "lib/index.js",
   "files": [
     "bin",
