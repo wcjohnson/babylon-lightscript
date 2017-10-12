@@ -1,13 +1,10 @@
 {
   "alternatives": {
     "all": {
-      "throws": "Unexpected token, expected , (5:5)"
-    },
-    "whiteblockOnly": {
-      "throws": "Unexpected token, expected , (5:5)"
+      "throws": "if is a reserved word (5:2)"
     },
     "braceblock": {
-      "throws": "Unexpected token, expected , (5:5)"
+      "throws": "if is a reserved word (5:2)"
     }
   }
 }

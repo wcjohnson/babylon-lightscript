@@ -542,7 +542,7 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
     } else if (this.match(tt.backQuote) && !(this.hasPlugin("lightscript") && this.isLineBreak())) {
       const node = this.startNodeAt(startPos, startLoc);
       node.tag = base;
-      node.quasi = this.parseTemplate();
+      node.quasi = this.parseTemplate(true);
       base = this.finishNode(node, "TaggedTemplateExpression");
     } else {
       return base;
@@ -617,7 +617,11 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
 
   switch (this.state.type) {
     case tt._super:
-      if (!this.state.inMethod && !this.options.allowSuperOutsideMethod) {
+      if (
+          !this.state.inMethod &&
+          !this.state.inClassProperty &&
+          !this.options.allowSuperOutsideMethod
+        ) {
         this.raise(this.state.start, "'super' outside of function or class");
       }
 
@@ -771,7 +775,7 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       return this.parseNew();
 
     case tt.backQuote:
-      return this.parseTemplate();
+      return this.parseTemplate(false);
 
     case tt.doubleColon:
       node = this.startNode();
@@ -986,7 +990,13 @@ pp.parseNew = function () {
   const meta = this.parseIdentifier(true);
 
   if (this.eat(tt.dot)) {
-    return this.parseMetaProperty(node, meta, "target");
+    const metaProp = this.parseMetaProperty(node, meta, "target");
+
+    if (!this.state.inFunction) {
+      this.raise(metaProp.property.start, "new.target can only be used in functions");
+    }
+
+    return metaProp;
   }
 
   node.callee = this.parseNoCallExpr();
@@ -1008,8 +1018,15 @@ pp.parseNew = function () {
 
 // Parse template expression.
 
-pp.parseTemplateElement = function () {
+pp.parseTemplateElement = function (isTagged) {
   const elem = this.startNode();
+  if (this.state.value === null) {
+    if (!isTagged || !this.hasPlugin("templateInvalidEscapes")) {
+      this.raise(this.state.invalidTemplateEscapePosition, "Invalid escape sequence in template");
+    } else {
+      this.state.invalidTemplateEscapePosition = null;
+    }
+  }
   elem.value = {
     raw: this.input.slice(this.state.start, this.state.end).replace(/\r\n?/g, "\n"),
     cooked: this.state.value
@@ -1019,20 +1036,20 @@ pp.parseTemplateElement = function () {
   return this.finishNode(elem, "TemplateElement");
 };
 
-pp.parseTemplate = function () {
+pp.parseTemplate = function (isTagged) {
   const wasInMatchAtom = this.state.inMatchAtom;
   this.state.inMatchAtom = false;
 
   const node = this.startNode();
   this.next();
   node.expressions = [];
-  let curElt = this.parseTemplateElement();
+  let curElt = this.parseTemplateElement(isTagged);
   node.quasis = [curElt];
   while (!curElt.tail) {
     this.expect(tt.dollarBraceL);
     node.expressions.push(this.parseExpression());
     this.expect(tt.braceR);
-    node.quasis.push(curElt = this.parseTemplateElement());
+    node.quasis.push(curElt = this.parseTemplateElement(isTagged));
   }
   this.next();
 
@@ -1216,8 +1233,9 @@ pp.parseObjectProperty = function (prop, startPos, startLoc, isPattern, refShort
   }
 
   if (!prop.computed && prop.key.type === "Identifier") {
+    this.checkReservedWord(prop.key.name, prop.key.start, true, true);
+
     if (isPattern) {
-      this.checkReservedWord(prop.key.name, prop.key.start, true, true);
       prop.value = this.parseMaybeDefault(startPos, startLoc, prop.key.__clone());
     } else if (this.match(tt.eq) && refShorthandDefaultPos) {
       if (!refShorthandDefaultPos.start) {

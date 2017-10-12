@@ -713,7 +713,7 @@ export default class Tokenizer {
 
   readNumber(startsWithDot) {
     const start = this.state.pos;
-    const octal = this.input.charCodeAt(this.state.pos) === 48;
+    let octal = this.input.charCodeAt(start) === 48; // '0'
     let isFloat = false;
 
     // for numeric array access (eg; arr.0), don't read floats (numbers with a decimal).
@@ -722,14 +722,17 @@ export default class Tokenizer {
       this.state.tokens[this.state.tokens.length - 1].type === tt.dot;
 
     if (!startsWithDot && this.readInt(10) === null) this.raise(start, "Invalid number");
+    if (octal && this.state.pos == start + 1) octal = false; // number === 0
+
     let next = this.input.charCodeAt(this.state.pos);
-    if (next === 46 && !noFloatsAllowed) { // '.'
+    if (next === 46 && !octal) { // '.'
       ++this.state.pos;
       this.readInt(10);
       isFloat = true;
       next = this.input.charCodeAt(this.state.pos);
     }
-    if (next === 69 || next === 101) { // 'eE'
+
+    if ((next === 69 || next === 101) && !octal) { // 'eE'
       next = this.input.charCodeAt(++this.state.pos);
       if (next === 43 || next === 45) ++this.state.pos; // '+-'
       if (this.readInt(10) === null) this.raise(start, "Invalid number");
@@ -747,8 +750,10 @@ export default class Tokenizer {
       val = parseFloat(str);
     } else if (!octal || str.length === 1) {
       val = parseInt(str, 10);
-    } else if (/[89]/.test(str) || this.state.strict) {
+    } else if (this.state.strict) {
       this.raise(start, "Invalid number");
+    } else if (/[89]/.test(str)) {
+      val = parseInt(str, 10);
     } else {
       val = parseInt(str, 8);
     }
@@ -757,17 +762,26 @@ export default class Tokenizer {
 
   // Read a string value, interpreting backslash-escapes.
 
-  readCodePoint() {
+  readCodePoint(throwOnInvalid) {
     const ch = this.input.charCodeAt(this.state.pos);
     let code;
 
-    if (ch === 123) {
+    if (ch === 123) { // '{'
       const codePos = ++this.state.pos;
-      code = this.readHexChar(this.input.indexOf("}", this.state.pos) - this.state.pos);
+      code = this.readHexChar(this.input.indexOf("}", this.state.pos) - this.state.pos, throwOnInvalid);
       ++this.state.pos;
-      if (code > 0x10FFFF) this.raise(codePos, "Code point out of bounds");
+      if (code === null) {
+        --this.state.invalidTemplateEscapePosition; // to point to the '\'' instead of the 'u'
+      } else if (code > 0x10FFFF) {
+        if (throwOnInvalid) {
+          this.raise(codePos, "Code point out of bounds");
+        } else {
+          this.state.invalidTemplateEscapePosition = codePos - 2;
+          return null;
+        }
+      }
     } else {
-      code = this.readHexChar(4);
+      code = this.readHexChar(4, throwOnInvalid);
     }
     return code;
   }
@@ -794,7 +808,7 @@ export default class Tokenizer {
   // Reads template string tokens.
 
   readTmplToken() {
-    let out = "", chunkStart = this.state.pos;
+    let out = "", chunkStart = this.state.pos, containsInvalid = false;
     for (;;) {
       if (this.state.pos >= this.input.length) this.raise(this.state.start, "Unterminated template");
       const ch = this.input.charCodeAt(this.state.pos);
@@ -809,11 +823,16 @@ export default class Tokenizer {
           }
         }
         out += this.input.slice(chunkStart, this.state.pos);
-        return this.finishToken(tt.template, out);
+        return this.finishToken(tt.template, containsInvalid ? null : out);
       }
       if (ch === 92) { // '\'
         out += this.input.slice(chunkStart, this.state.pos);
-        out += this.readEscapedChar(true);
+        const escaped = this.readEscapedChar(true);
+        if (escaped === null) {
+          containsInvalid = true;
+        } else {
+          out += escaped;
+        }
         chunkStart = this.state.pos;
       } else if (isNewLine(ch)) {
         out += this.input.slice(chunkStart, this.state.pos);
@@ -840,13 +859,20 @@ export default class Tokenizer {
   // Used to read escaped characters
 
   readEscapedChar(inTemplate) {
+    const throwOnInvalid = !inTemplate;
     const ch = this.input.charCodeAt(++this.state.pos);
     ++this.state.pos;
     switch (ch) {
       case 110: return "\n"; // 'n' -> '\n'
       case 114: return "\r"; // 'r' -> '\r'
-      case 120: return String.fromCharCode(this.readHexChar(2)); // 'x'
-      case 117: return codePointToString(this.readCodePoint()); // 'u'
+      case 120: { // 'x'
+        const code = this.readHexChar(2, throwOnInvalid);
+        return code === null ? null : String.fromCharCode(code);
+      }
+      case 117: { // 'u'
+        const code = this.readCodePoint(throwOnInvalid);
+        return code === null ? null : codePointToString(code);
+      }
       case 116: return "\t"; // 't' -> '\t'
       case 98: return "\b"; // 'b' -> '\b'
       case 118: return "\u000b"; // 'v' -> '\u000b'
@@ -858,6 +884,7 @@ export default class Tokenizer {
         return "";
       default:
         if (ch >= 48 && ch <= 55) {
+          const codePos = this.state.pos - 1;
           let octalStr = this.input.substr(this.state.pos - 1, 3).match(/^[0-7]+/)[0];
           let octal = parseInt(octalStr, 8);
           if (octal > 255) {
@@ -865,12 +892,16 @@ export default class Tokenizer {
             octal = parseInt(octalStr, 8);
           }
           if (octal > 0) {
-            if (!this.state.containsOctal) {
+            if (inTemplate) {
+              this.state.invalidTemplateEscapePosition = codePos;
+              return null;
+            } else if (this.state.strict) {
+              this.raise(codePos, "Octal literal in strict mode");
+            } else if (!this.state.containsOctal) {
+              // These properties are only used to throw an error for an octal which occurs
+              // in a directive which occurs prior to a "use strict" directive.
               this.state.containsOctal = true;
-              this.state.octalPosition = this.state.pos - 2;
-            }
-            if (this.state.strict || inTemplate) {
-              this.raise(this.state.pos - 2, "Octal literal in strict mode");
+              this.state.octalPosition = codePos;
             }
           }
           this.state.pos += octalStr.length - 1;
@@ -880,12 +911,19 @@ export default class Tokenizer {
     }
   }
 
-  // Used to read character escape sequences ('\x', '\u', '\U').
+  // Used to read character escape sequences ('\x', '\u').
 
-  readHexChar(len) {
+  readHexChar(len, throwOnInvalid) {
     const codePos = this.state.pos;
     const n = this.readInt(16, len);
-    if (n === null) this.raise(codePos, "Bad character escape sequence");
+    if (n === null) {
+      if (throwOnInvalid) {
+        this.raise(codePos, "Bad character escape sequence");
+      } else {
+        this.state.pos = codePos - 1;
+        this.state.invalidTemplateEscapePosition = codePos - 1;
+      }
+    }
     return n;
   }
 
@@ -913,7 +951,7 @@ export default class Tokenizer {
         }
 
         ++this.state.pos;
-        const esc = this.readCodePoint();
+        const esc = this.readCodePoint(true);
         if (!(first ? isIdentifierStart : isIdentifierChar)(esc, true)) {
           this.raise(escStart, "Invalid Unicode escape");
         }

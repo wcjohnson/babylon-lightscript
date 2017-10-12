@@ -78,6 +78,7 @@ These are the core Babylon AST node types.
   - [CallExpression](#callexpression)
   - [NewExpression](#newexpression)
   - [SequenceExpression](#sequenceexpression)
+  - [DoExpression](#doexpression)
 - [Template Literals](#template-literals)
   - [TemplateLiteral](#templateliteral)
   - [TaggedTemplateExpression](#taggedtemplateexpression)
@@ -920,6 +921,15 @@ interface SequenceExpression <: Expression {
 
 A sequence expression, i.e., a comma-separated sequence of expressions.
 
+## DoExpression
+
+```js
+interface DoExpression <: Expression {
+  type: "DoExpression";
+  body: BlockStatement
+}
+```
+
 # Template Literals
 
 ## TemplateLiteral
@@ -949,7 +959,7 @@ interface TemplateElement <: Node {
   type: "TemplateElement";
   tail: boolean;
   value: {
-    cooked: string;
+    cooked: string | null;
     raw: string;
   };
 }
