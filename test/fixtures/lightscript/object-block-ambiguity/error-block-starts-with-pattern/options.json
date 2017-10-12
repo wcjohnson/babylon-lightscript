@@ -3,9 +3,6 @@
     "all": {
       "throws": "Unexpected token (3:3)"
     },
-    "whiteblockOnly": {
-      "throws": "Unexpected token (3:3)"
-    },
     "braceblock": {
       "throws": "Unexpected token (3:3)"
     }

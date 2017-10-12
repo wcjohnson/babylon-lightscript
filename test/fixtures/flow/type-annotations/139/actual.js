@@ -1,4 +1,4 @@
 class A {}
 type C = {
-  -...A
+ -...A
 };

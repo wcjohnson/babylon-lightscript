@@ -725,7 +725,7 @@ export default class Tokenizer {
     if (octal && this.state.pos == start + 1) octal = false; // number === 0
 
     let next = this.input.charCodeAt(this.state.pos);
-    if (next === 46 && !octal) { // '.'
+    if (next === 46 && !octal && !noFloatsAllowed) { // '.'
       ++this.state.pos;
       this.readInt(10);
       isFloat = true;
