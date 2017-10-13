@@ -1218,7 +1218,11 @@ pp.parseExportSpecifiers = function () {
     if (first) {
       first = false;
     } else {
-      this.expect(tt.comma);
+      if (this.hasPlugin("lightscript")) {
+        this.expectCommaOrLineBreak();
+      } else {
+        this.expect(tt.comma);
+      }
       if (this.eat(tt.braceR)) break;
     }
 
@@ -1295,7 +1299,11 @@ pp.parseImportSpecifiers = function (node) {
         this.unexpected(null, "ES2015 named imports do not destructure. Use another statement for destructuring after the import.");
       }
 
-      this.expect(tt.comma);
+      if (this.hasPlugin("lightscript")) {
+        this.expectCommaOrLineBreak();
+      } else {
+        this.expect(tt.comma);
+      }
       if (this.eat(tt.braceR)) break;
     }
 
