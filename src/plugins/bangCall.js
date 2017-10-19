@@ -18,6 +18,17 @@ export default function(parser) {
     );
   };
 
+  pp.couldBeginSubscript = function() {
+    return (
+      this.match(tt.bracketL) ||
+      this.match(tt.parenL) ||
+      this.match(tt.dot) ||
+      this.match(tt.tilde) ||
+      this.match(tt.elvis) ||
+      this.isBang()
+    );
+  };
+
   // c/p parseExprListItem
   pp.parseBangArg = function () {
     let elt;
@@ -47,8 +58,18 @@ export default function(parser) {
       return this.finishNode(node, nodeType);
     }
 
+    // Disambiguate no-whitespace-after-! situations.
     if (this.state.lastTokEnd === this.state.start) {
-      this.unexpected(null, "Whitespace required between `!` and first argument.");
+      // If next token could initiate a subscript, treat as no-arg bang call with
+      // subscript.
+      if (this.couldBeginSubscript()) {
+        return this.finishNode(node, nodeType);
+      }
+
+      // Otherwise parse error.
+      if (this.state.type.startsExpr) {
+        this.unexpected(null, "Whitespace required between `!` and first argument.");
+      }
     }
 
     // Collect state
