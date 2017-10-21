@@ -462,7 +462,9 @@ pp.parseIfExpression = function (node) {
 // c/p parseAwait
 
 pp.parseSafeAwait = function (node) {
-  if (!this.state.inAsync) this.unexpected();
+  if (!this.state.inAsync) {
+    this.unexpected(this.state.lastTokStart, "Safe await is illegal outside of an async function.");
+  }
   node.argument = this.parseMaybeUnary();
   return this.finishNode(node, "SafeAwaitExpression");
 };

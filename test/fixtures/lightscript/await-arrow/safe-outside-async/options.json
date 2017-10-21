@@ -1,0 +1,3 @@
+{
+  "throws": "Safe await is illegal outside of an async function. (1:0)"
+}
