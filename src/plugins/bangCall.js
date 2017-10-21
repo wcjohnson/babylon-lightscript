@@ -18,10 +18,9 @@ export default function(parser) {
     );
   };
 
-  pp.couldBeginSubscript = function() {
+  pp.couldBeginAdjacentBangSubscript = function() {
     return (
       this.match(tt.bracketL) ||
-      this.match(tt.parenL) ||
       this.match(tt.dot) ||
       this.match(tt.tilde) ||
       this.match(tt.elvis) ||
@@ -62,7 +61,7 @@ export default function(parser) {
     if (this.state.lastTokEnd === this.state.start) {
       // If next token could initiate a subscript, treat as no-arg bang call with
       // subscript.
-      if (this.couldBeginSubscript()) {
+      if (this.couldBeginAdjacentBangSubscript()) {
         return this.finishNode(node, nodeType);
       }
 
