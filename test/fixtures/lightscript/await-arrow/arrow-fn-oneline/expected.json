@@ -60,76 +60,40 @@
           "name": "f"
         },
         "generator": false,
-        "expression": false,
+        "expression": true,
         "async": true,
         "params": [],
         "skinny": true,
         "body": {
-          "type": "BlockStatement",
-          "start": 4,
+          "type": "AwaitExpression",
+          "start": 8,
           "end": 12,
           "loc": {
             "start": {
               "line": 1,
-              "column": 4
+              "column": 8
             },
             "end": {
               "line": 1,
               "column": 12
             }
           },
-          "body": [
-            {
-              "type": "ExpressionStatement",
-              "start": 8,
-              "end": 12,
-              "loc": {
-                "start": {
-                  "line": 1,
-                  "column": 8
-                },
-                "end": {
-                  "line": 1,
-                  "column": 12
-                }
+          "argument": {
+            "type": "Identifier",
+            "start": 11,
+            "end": 12,
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 11
               },
-              "expression": {
-                "type": "AwaitExpression",
-                "start": 8,
-                "end": 12,
-                "loc": {
-                  "start": {
-                    "line": 1,
-                    "column": 8
-                  },
-                  "end": {
-                    "line": 1,
-                    "column": 12
-                  }
-                },
-                "argument": {
-                  "type": "Identifier",
-                  "start": 11,
-                  "end": 12,
-                  "loc": {
-                    "start": {
-                      "line": 1,
-                      "column": 11
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 12
-                    },
-                    "identifierName": "x"
-                  },
-                  "name": "x"
-                }
-              }
-            }
-          ],
-          "directives": [],
-          "extra": {
-            "curly": false
+              "end": {
+                "line": 1,
+                "column": 12
+              },
+              "identifierName": "x"
+            },
+            "name": "x"
           }
         }
       }

@@ -56,7 +56,7 @@ export class BinopTokenType extends TokenType {
 export const types = {
   // LightScript
   tilde: new TokenType("~"),
-  awaitArrow: new TokenType("<-", { beforeExpr, isAssign }),
+  awaitArrow: new TokenType("<-", { startsExpr, beforeExpr, isAssign }),
   elvis: new TokenType("?."),
 
   num: new TokenType("num", { startsExpr }),
