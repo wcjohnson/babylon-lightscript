@@ -65,7 +65,9 @@ export default function(parser) {
     if (this.hasPlugin("existentialExpression")) {
       return this.parseExistential(lhs, startPos, startLoc);
     } else {
-      this.unexpected(questionPos);
+      // Possibly a flow type assertion; unwind
+      this.state = state;
+      return [null, false];
     }
   };
 
