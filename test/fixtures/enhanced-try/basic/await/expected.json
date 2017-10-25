@@ -8,8 +8,8 @@
       "column": 0
     },
     "end": {
-      "line": 3,
-      "column": 18
+      "line": 2,
+      "column": 30
     }
   },
   "program": {
@@ -22,8 +22,8 @@
         "column": 0
       },
       "end": {
-        "line": 3,
-        "column": 18
+        "line": 2,
+        "column": 30
       }
     },
     "sourceType": "script",
@@ -38,8 +38,8 @@
             "column": 0
           },
           "end": {
-            "line": 3,
-            "column": 18
+            "line": 2,
+            "column": 30
           }
         },
         "id": {
@@ -74,13 +74,13 @@
               "column": 4
             },
             "end": {
-              "line": 3,
-              "column": 18
+              "line": 2,
+              "column": 30
             }
           },
           "body": [
             {
-              "type": "ExpressionStatement",
+              "type": "TryStatement",
               "start": 10,
               "end": 38,
               "loc": {
@@ -89,84 +89,36 @@
                   "column": 2
                 },
                 "end": {
-                  "line": 3,
-                  "column": 18
+                  "line": 2,
+                  "column": 30
                 }
               },
-              "expression": {
-                "type": "CatchExpression",
-                "start": 10,
+              "handler": {
+                "type": "CatchClause",
+                "start": 24,
                 "end": 38,
                 "loc": {
                   "start": {
                     "line": 2,
-                    "column": 2
+                    "column": 16
                   },
                   "end": {
-                    "line": 3,
-                    "column": 18
+                    "line": 2,
+                    "column": 30
                   }
                 },
-                "expression": {
-                  "type": "AwaitExpression",
-                  "start": 10,
-                  "end": 19,
-                  "loc": {
-                    "start": {
-                      "line": 2,
-                      "column": 2
-                    },
-                    "end": {
-                      "line": 2,
-                      "column": 11
-                    }
-                  },
-                  "argument": {
-                    "type": "CallExpression",
-                    "start": 16,
-                    "end": 19,
-                    "loc": {
-                      "start": {
-                        "line": 2,
-                        "column": 8
-                      },
-                      "end": {
-                        "line": 2,
-                        "column": 11
-                      }
-                    },
-                    "callee": {
-                      "type": "Identifier",
-                      "start": 16,
-                      "end": 17,
-                      "loc": {
-                        "start": {
-                          "line": 2,
-                          "column": 8
-                        },
-                        "end": {
-                          "line": 2,
-                          "column": 9
-                        },
-                        "identifierName": "g"
-                      },
-                      "name": "g"
-                    },
-                    "arguments": []
-                  }
-                },
-                "binding": {
+                "param": {
                   "type": "Identifier",
                   "start": 30,
                   "end": 33,
                   "loc": {
                     "start": {
-                      "line": 3,
-                      "column": 10
+                      "line": 2,
+                      "column": 22
                     },
                     "end": {
-                      "line": 3,
-                      "column": 13
+                      "line": 2,
+                      "column": 25
                     },
                     "identifierName": "err"
                   },
@@ -178,12 +130,12 @@
                   "end": 38,
                   "loc": {
                     "start": {
-                      "line": 3,
-                      "column": 15
+                      "line": 2,
+                      "column": 27
                     },
                     "end": {
-                      "line": 3,
-                      "column": 18
+                      "line": 2,
+                      "column": 30
                     }
                   },
                   "expression": {
@@ -192,19 +144,69 @@
                     "end": 38,
                     "loc": {
                       "start": {
-                        "line": 3,
-                        "column": 15
+                        "line": 2,
+                        "column": 27
                       },
                       "end": {
-                        "line": 3,
-                        "column": 18
+                        "line": 2,
+                        "column": 30
                       },
                       "identifierName": "err"
                     },
                     "name": "err"
                   }
                 }
-              }
+              },
+              "guardedHandlers": [],
+              "block": {
+                "type": "AwaitExpression",
+                "start": 14,
+                "end": 23,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 6
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 15
+                  }
+                },
+                "argument": {
+                  "type": "CallExpression",
+                  "start": 20,
+                  "end": 23,
+                  "loc": {
+                    "start": {
+                      "line": 2,
+                      "column": 12
+                    },
+                    "end": {
+                      "line": 2,
+                      "column": 15
+                    }
+                  },
+                  "callee": {
+                    "type": "Identifier",
+                    "start": 20,
+                    "end": 21,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 12
+                      },
+                      "end": {
+                        "line": 2,
+                        "column": 13
+                      },
+                      "identifierName": "g"
+                    },
+                    "name": "g"
+                  },
+                  "arguments": []
+                }
+              },
+              "finalizer": null
             }
           ],
           "directives": [],
