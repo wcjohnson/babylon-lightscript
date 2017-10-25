@@ -107,6 +107,7 @@ export default class Tokenizer {
     while (n > 0) {
       this.next();
       result.push(this.state.type, this.state.value);
+      if (this.state.type === tt.eof) break;
       n--;
     }
     this.isLookahead = false;
