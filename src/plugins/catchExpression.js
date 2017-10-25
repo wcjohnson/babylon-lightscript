@@ -7,7 +7,7 @@ export default function(parser) {
   parser.__catchExpressionPluginInstalled = true;
 
   pp.parseCatchExpression = function(expr) {
-    const node = this.startNodeAt(expr.start);
+    const node = this.startNodeAt(expr.start, expr.loc.start);
     node.expression = expr;
     const catchIndentLevel = this.state.indentLevel;
     const isEnd = () =>
