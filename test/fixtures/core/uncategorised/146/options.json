@@ -8,10 +8,7 @@
     },
     "noTildeCalls": {
       "allPlugins": true,
-      "excludePlugins": [
-        "lightscript", "match", "enhancedComprehension",
-        "objectBlockAmbiguity_preferObject", "tildeCallExpression"
-      ],
+      "excludePlugins": [ "tildeCallExpression" ],
       "expected": "expected.json"
     }
   }

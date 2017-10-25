@@ -9,8 +9,8 @@
     "noTildeCalls": {
       "allPlugins": true,
       "excludePlugins": [
-        "lightscript", "match", "enhancedComprehension",
-        "objectBlockAmbiguity_preferObject", "tildeCallExpression"
+        "lightscript", "match", "splatComprehension",
+        "whiteblockOnly", "tildeCallExpression", "whiteblockPreferred"
       ],
       "expected": "expected.json"
     }

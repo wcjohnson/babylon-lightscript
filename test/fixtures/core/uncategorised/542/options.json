@@ -1,7 +1,10 @@
 {
   "alternatives": {
+    "all": {
+      "throws": "Indentation required. (2:0)"
+    },
     "noLsc": {
-      "excludePlugins": ["bangCall", "enforceSubscriptIndentation", "significantWhitespace", "enhancedComprehension", "objectBlockAmbiguity_preferObject"]
+      "excludePlugins": ["enforceSubscriptIndentation"]
     }
   }
 }

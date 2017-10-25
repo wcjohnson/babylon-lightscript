@@ -1,0 +1,10 @@
+{
+  "alternatives": {
+    "all": {
+      "throws": "Unexpected token (3:3)"
+    },
+    "braceblock": {
+      "throws": "Unexpected token (3:3)"
+    }
+  }
+}

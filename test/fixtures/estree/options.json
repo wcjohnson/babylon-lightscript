@@ -3,6 +3,7 @@
     "all": {
       "allPlugins": true,
       "includePlugins": ["estree"],
+      "excludePlugins": ["whiteblockOnly", "whiteblockPreferred"],
       "optionsOverride": "options.lightscript.json",
       "expected": "expected.lightscript.json"
     }

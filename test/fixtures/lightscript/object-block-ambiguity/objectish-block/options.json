@@ -1,0 +1,10 @@
+{
+  "alternatives": {
+    "all": {
+      "throws": "if is a reserved word (5:2)"
+    },
+    "braceblock": {
+      "throws": "if is a reserved word (5:2)"
+    }
+  }
+}

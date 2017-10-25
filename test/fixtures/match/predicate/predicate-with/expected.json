@@ -76,7 +76,7 @@
             },
             "atoms": [
               {
-                "type": "TildeCallExpression",
+                "type": "CallExpression",
                 "start": 13,
                 "end": 17,
                 "loc": {
@@ -89,22 +89,7 @@
                     "column": 8
                   }
                 },
-                "left": {
-                  "type": "MatchPlaceholderExpression",
-                  "start": 12,
-                  "end": 13,
-                  "loc": {
-                    "start": {
-                      "line": 2,
-                      "column": 3
-                    },
-                    "end": {
-                      "line": 2,
-                      "column": 4
-                    }
-                  }
-                },
-                "right": {
+                "callee": {
                   "type": "Identifier",
                   "start": 14,
                   "end": 15,
@@ -121,7 +106,24 @@
                   },
                   "name": "p"
                 },
-                "arguments": []
+                "arguments": [
+                  {
+                    "type": "MatchPlaceholderExpression",
+                    "start": 12,
+                    "end": 13,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 3
+                      },
+                      "end": {
+                        "line": 2,
+                        "column": 4
+                      }
+                    }
+                  }
+                ],
+                "tilde": true
               }
             ],
             "binding": {

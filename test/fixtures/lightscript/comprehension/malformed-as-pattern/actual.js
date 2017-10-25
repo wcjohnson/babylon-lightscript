@@ -1,1 +1,1 @@
-const { for elem x in arr: x, x } = {}
+const { ...for elem x in arr: x, x } = {}

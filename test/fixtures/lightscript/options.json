@@ -3,7 +3,7 @@
   "alternatives": {
     "all": {
       "allPlugins": true,
-      "excludePlugins": ["existentialExpression", "safeCallExpression", "enhancedComprehension", "bangCall", "flippedImports"]
+      "excludePlugins": ["existentialExpression", "flippedImports", "whiteblockOnly"]
     }
   }
 }

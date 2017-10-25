@@ -63,21 +63,12 @@ pp.isLineBreak = function () {
 // Test whether a semicolon can be inserted at the current position.
 
 pp.canInsertSemicolon = function () {
-  return this.match(tt.eof) ||
-    this.match(tt.braceR) ||
-    this.isLineBreak() ||
-    (this.hasPlugin("lightscript") && (
-      // LSC oneline statement ASI cases
-      // Allow if x: throw y else: throw z
-      this.match(tt._else) ||
-      this.match(tt._elif) ||
-      // Allow (-> throw new Error)()
-      this.match(tt.parenR) ||
-      // Technically it is legal to insert a ; after a ;.
-      // Allows -> throw new Error; f()
-      this.state.tokens[this.state.tokens.length - 1].type === tt.semi
-    )) ||
-    (this.hasPlugin("seqExprRequiresParen") && this.match(tt.comma));
+  return this.match(tt.eof)
+    || this.match(tt.braceR)
+    || this.isLineBreak()
+    || this.state.tokens[this.state.tokens.length - 1].type === tt.semi
+    || (this.match(tt.comma) && this.hasPlugin("seqExprRequiresParen"))
+    || (this.hasPlugin("lightscript") && this.matchesWhiteBlockASIToken());
 };
 
 // TODO

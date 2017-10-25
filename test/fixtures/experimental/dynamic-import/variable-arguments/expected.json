@@ -231,54 +231,22 @@
               "skinny": false,
               "body": {
                 "type": "BlockStatement",
-                "start": 59,
+                "start": 62,
                 "end": 64,
                 "loc": {
                   "start": {
                     "line": 2,
-                    "column": 28
+                    "column": 31
                   },
                   "end": {
                     "line": 2,
                     "column": 33
                   }
                 },
-                "body": [
-                  {
-                    "type": "ExpressionStatement",
-                    "start": 62,
-                    "end": 64,
-                    "loc": {
-                      "start": {
-                        "line": 2,
-                        "column": 31
-                      },
-                      "end": {
-                        "line": 2,
-                        "column": 33
-                      }
-                    },
-                    "expression": {
-                      "type": "ObjectExpression",
-                      "start": 62,
-                      "end": 64,
-                      "loc": {
-                        "start": {
-                          "line": 2,
-                          "column": 31
-                        },
-                        "end": {
-                          "line": 2,
-                          "column": 33
-                        }
-                      },
-                      "properties": []
-                    }
-                  }
-                ],
+                "body": [],
                 "directives": [],
                 "extra": {
-                  "curly": false
+                  "curly": true
                 }
               }
             }

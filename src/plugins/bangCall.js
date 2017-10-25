@@ -18,6 +18,27 @@ export default function(parser) {
     );
   };
 
+  pp.couldBeginAdjacentBangSubscript = function() {
+    return (
+      this.match(tt.bracketL) ||
+      this.match(tt.dot) ||
+      this.match(tt.tilde) ||
+      this.match(tt.elvis) ||
+      this.isBang()
+    );
+  };
+
+  // c/p parseExprListItem
+  pp.parseBangArg = function () {
+    let elt;
+    if (this.match(tt.ellipsis)) {
+      elt = this.parseSpread();
+    } else {
+      elt = this.parseMaybeAssign(false);
+    }
+    return elt;
+  };
+
   // Parse `!` followed by an arg list. Returns truthy if further subscripting
   // is legal.
   pp.parseBangCall = function(node, nodeType) {
@@ -36,8 +57,18 @@ export default function(parser) {
       return this.finishNode(node, nodeType);
     }
 
+    // Disambiguate no-whitespace-after-! situations.
     if (this.state.lastTokEnd === this.state.start) {
-      this.unexpected(null, "Whitespace required between `!` and first argument.");
+      // If next token could initiate a subscript, treat as no-arg bang call with
+      // subscript.
+      if (this.couldBeginAdjacentBangSubscript()) {
+        return this.finishNode(node, nodeType);
+      }
+
+      // Otherwise parse error.
+      if (this.state.type.startsExpr) {
+        this.unexpected(null, "Whitespace required between `!` and first argument.");
+      }
     }
 
     // Collect state
@@ -57,7 +88,7 @@ export default function(parser) {
 
       // Comma-separated arg and first arg skip ASI/whitespace checks
       if (first || this.eat(tt.comma)) {
-        node.arguments.push(this.parseExprListItem(false));
+        node.arguments.push(this.parseBangArg());
         first = false;
       } else {
         // ASI: unwind if not at proper indent level
@@ -70,7 +101,7 @@ export default function(parser) {
           }
         }
 
-        node.arguments.push(this.parseExprListItem(false));
+        node.arguments.push(this.parseBangArg());
       }
 
       if (this.isLineBreak()) {
@@ -87,6 +118,7 @@ export default function(parser) {
     this.state.bangUnwindLevel = oldBangUnwindLevel;
     this.state.bangWhiteBlockLevel = oldBangWhiteBlockLevel;
 
+    this.toReferencedList(node.arguments);
     node = this.finishNode(node, nodeType);
 
     // Subscript only on new line.

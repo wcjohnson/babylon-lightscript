@@ -73,6 +73,7 @@
             },
             "name": "f"
           },
+          "optional": true,
           "arguments": [
             {
               "type": "Identifier",
@@ -91,8 +92,7 @@
               },
               "name": "x"
             }
-          ],
-          "safe": true
+          ]
         }
       }
     ],

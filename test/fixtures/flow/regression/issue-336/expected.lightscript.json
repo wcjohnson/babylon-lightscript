@@ -46,7 +46,7 @@
           {
             "type": "VariableDeclarator",
             "start": 6,
-            "end": 47,
+            "end": 48,
             "loc": {
               "start": {
                 "line": 1,
@@ -54,7 +54,7 @@
               },
               "end": {
                 "line": 1,
-                "column": 47
+                "column": 48
               }
             },
             "id": {
@@ -77,7 +77,7 @@
             "init": {
               "type": "ArrowFunctionExpression",
               "start": 11,
-              "end": 47,
+              "end": 48,
               "loc": {
                 "start": {
                   "line": 1,
@@ -85,7 +85,7 @@
                 },
                 "end": {
                   "line": 1,
-                  "column": 47
+                  "column": 48
                 }
               },
               "returnType": {
@@ -169,7 +169,7 @@
               },
               "id": null,
               "generator": false,
-              "expression": false,
+              "expression": true,
               "async": true,
               "params": [
                 {
@@ -223,56 +223,20 @@
               ],
               "skinny": false,
               "body": {
-                "type": "BlockStatement",
-                "start": 42,
+                "type": "ObjectExpression",
+                "start": 45,
                 "end": 47,
                 "loc": {
                   "start": {
                     "line": 1,
-                    "column": 42
+                    "column": 45
                   },
                   "end": {
                     "line": 1,
                     "column": 47
                   }
                 },
-                "body": [
-                  {
-                    "type": "ExpressionStatement",
-                    "start": 45,
-                    "end": 47,
-                    "loc": {
-                      "start": {
-                        "line": 1,
-                        "column": 45
-                      },
-                      "end": {
-                        "line": 1,
-                        "column": 47
-                      }
-                    },
-                    "expression": {
-                      "type": "ObjectExpression",
-                      "start": 45,
-                      "end": 47,
-                      "loc": {
-                        "start": {
-                          "line": 1,
-                          "column": 45
-                        },
-                        "end": {
-                          "line": 1,
-                          "column": 47
-                        }
-                      },
-                      "properties": []
-                    }
-                  }
-                ],
-                "directives": [],
-                "extra": {
-                  "curly": false
-                }
+                "properties": []
               }
             }
           }

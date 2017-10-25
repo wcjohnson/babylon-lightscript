@@ -73,7 +73,7 @@
             },
             "name": "a"
           },
-          "safe": true,
+          "optional": true,
           "arguments": [
             {
               "type": "Identifier",

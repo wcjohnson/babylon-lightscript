@@ -132,6 +132,19 @@ export default function (instance) {
     };
   });
 
+  instance.extend("stmtToDirective", function (inner) {
+    return function (stmt) {
+      const directive = inner.call(this, stmt);
+      const value = stmt.expression.value;
+
+      // Reset value to the actual value as in estree mode we want
+      // the stmt to have the real value and not the raw value
+      directive.value.value = value;
+
+      return directive;
+    };
+  });
+
   instance.extend("parseBlockBody", function (inner) {
     return function (node, ...args) {
       inner.call(this, node, ...args);
@@ -143,12 +156,14 @@ export default function (instance) {
     };
   });
 
-  instance.extend("parseClassMethod", function (inner) {
-    return function (classBody, ...args) {
-      inner.call(this, classBody, ...args);
-
-      const body = classBody.body;
-      body[body.length - 1].type = "MethodDefinition";
+  instance.extend("parseClassMethod", function () {
+    return function (classBody, method, isGenerator, isAsync) {
+      this.parseMethod(method, isGenerator, isAsync);
+      if (method.typeParameters) {
+        method.value.typeParameters = method.typeParameters;
+        delete method.typeParameters;
+      }
+      classBody.body.push(this.finishNode(method, "MethodDefinition"));
     };
   });
 

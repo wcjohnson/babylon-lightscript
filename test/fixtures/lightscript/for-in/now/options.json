@@ -1,8 +1,9 @@
 {
   "alternatives": {
-    "objectBlockAmbiguity": {
-      "excludePlugins": ["objectBlockAmbiguity_preferObject"],
-      "expected": "expected.objectBlockAmbiguity.json"
+    "braceblock": {
+      "allPlugins": true,
+      "excludePlugins": ["whiteblockOnly", "whiteblockPreferred"],
+      "expected": "expected.braceblock.json"
     }
   }
 }

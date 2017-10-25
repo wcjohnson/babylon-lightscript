@@ -251,6 +251,14 @@ exports.Test = class Test {
 
   excludePlugins(plugins, list) {
     if (!list) return plugins;
+
+    // Exclude all plugins that depend on the excluded plugin
+    const md = this.testRun.parser.getPluginMetadata();
+    for (let i = 0; i < list.length; i++) {
+      const rd = md._reverseDeps[list[i]];
+      if (rd) rd.forEach( (x) => list.push(x) );
+    }
+
     return plugins.filter((entry) => {
       return list.indexOf(entry) < 0;
     });
@@ -323,7 +331,11 @@ exports.Test = class Test {
     } else {
       diff = misMatch(JSON.parse(this.expectedCode), ast);
       if (diff) {
-        //save(test, ast);
+        // If expectedFile doesn't exist, we're diffing against a base expected.json
+        // create the new expectation instead of throwing an error.
+        if (this.expectedFile && !resolve(this.expectedFile)) {
+          return this.save(ast, this.expectedFile);
+        }
         throw new Error(diff + "\n\nOptions:\n" + JSON.stringify(opts, null, 2));
       }
     }

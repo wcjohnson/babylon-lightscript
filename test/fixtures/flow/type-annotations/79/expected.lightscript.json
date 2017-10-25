@@ -152,7 +152,7 @@
                 },
                 "id": null,
                 "generator": false,
-                "expression": false,
+                "expression": true,
                 "async": false,
                 "params": [
                   {
@@ -175,56 +175,20 @@
                 ],
                 "skinny": false,
                 "body": {
-                  "type": "BlockStatement",
-                  "start": 31,
+                  "type": "ObjectExpression",
+                  "start": 34,
                   "end": 36,
                   "loc": {
                     "start": {
                       "line": 1,
-                      "column": 31
+                      "column": 34
                     },
                     "end": {
                       "line": 1,
                       "column": 36
                     }
                   },
-                  "body": [
-                    {
-                      "type": "ExpressionStatement",
-                      "start": 34,
-                      "end": 36,
-                      "loc": {
-                        "start": {
-                          "line": 1,
-                          "column": 34
-                        },
-                        "end": {
-                          "line": 1,
-                          "column": 36
-                        }
-                      },
-                      "expression": {
-                        "type": "ObjectExpression",
-                        "start": 34,
-                        "end": 36,
-                        "loc": {
-                          "start": {
-                            "line": 1,
-                            "column": 34
-                          },
-                          "end": {
-                            "line": 1,
-                            "column": 36
-                          }
-                        },
-                        "properties": []
-                      }
-                    }
-                  ],
-                  "directives": [],
-                  "extra": {
-                    "curly": false
-                  }
+                  "properties": []
                 }
               },
               "alternate": {

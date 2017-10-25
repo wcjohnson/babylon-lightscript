@@ -1,0 +1,7 @@
+{
+  "alternatives": {
+    "default": {
+      "throws": "Unexpected token, expected ( (1:4)"
+    }
+  }
+}

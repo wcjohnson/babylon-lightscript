@@ -8,27 +8,41 @@ export default function(parser) {
 
   // Parse `a~b(...)` or `a~>b(...)` subscript. Returns truthy iff
   // the call is further subscriptable.
-  pp.parseTildeCall = function(node, left) {
+  pp.parseTildeCall = function(node, firstArg) {
     this.next();
-    node.left = left;
 
     // allow `this`, Identifier or MemberExpression, but not calls
-    const right = this.match(tt._this) ? this.parseExprAtom() : this.parseIdentifierOrPlaceholder();
-    node.right = this.parseSubscripts(right, this.state.start, this.state.startLoc, true);
+    const callee = this.match(tt._this) ? this.parseExprAtom() : this.parseIdentifierOrPlaceholder();
+    node.callee = this.parseSubscripts(callee, this.state.start, this.state.startLoc, true);
 
     // Allow safe tilde calls (a~b?(c))
-    if (this.hasPlugin("safeCallExpression") && this.eat(tt.question)) {
-      node.safe = true;
+    if (
+      this.hasPlugin("safeCallExpression") &&
+      this.state.lastTokEnd === (this.state.pos - 1) &&
+      this.eat(tt.question)
+    ) {
+      node.optional = true;
     }
 
     // Allow bang tilde calls
     if (this.hasPlugin("bangCall") && this.isAdjacentBang()) {
-      const next = this.parseBangCall(node, "TildeCallExpression");
-      if (next) return next; else return false;
+      const next = this.parseBangCall(node, "CallExpression");
+      node.arguments.unshift(firstArg);
+      node.tilde = true;
+      if (next) {
+        return next;
+      } else {
+        return false;
+      }
     } else {
+      if (node.optional && this.state.lastTokEnd !== (this.state.pos - 1)) {
+        this.unexpected(null, "Whitespace is forbidden after `?` in an optional call.");
+      }
       this.expect(tt.parenL);
       node.arguments = this.parseCallExpressionArguments(tt.parenR, false);
-      return this.finishNode(node, "TildeCallExpression");
+      node.arguments.unshift(firstArg);
+      node.tilde = true;
+      return this.finishNode(node, "CallExpression");
     }
   };
 }

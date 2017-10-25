@@ -302,6 +302,8 @@ pp.jsxParseExpressionContainer = function() {
   this.next();
   if (this.match(tt.braceR)) {
     node.expression = this.jsxParseEmptyExpression();
+  } else if (this.hasPlugin("spreadLoop") && this.match(tt.spreadLoop)) {
+    node.expression = this.parseSpreadLoop();
   } else {
     node.expression = this.parseExpression();
   }

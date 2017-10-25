@@ -45,7 +45,7 @@
         "declaration": {
           "type": "ArrowFunctionExpression",
           "start": 15,
-          "end": 50,
+          "end": 51,
           "loc": {
             "start": {
               "line": 1,
@@ -53,7 +53,7 @@
             },
             "end": {
               "line": 1,
-              "column": 50
+              "column": 51
             }
           },
           "returnType": {
@@ -138,7 +138,7 @@
           },
           "id": null,
           "generator": false,
-          "expression": false,
+          "expression": true,
           "async": false,
           "params": [
             {
@@ -176,56 +176,20 @@
           ],
           "skinny": false,
           "body": {
-            "type": "BlockStatement",
-            "start": 45,
+            "type": "ObjectExpression",
+            "start": 48,
             "end": 50,
             "loc": {
               "start": {
                 "line": 1,
-                "column": 45
+                "column": 48
               },
               "end": {
                 "line": 1,
                 "column": 50
               }
             },
-            "body": [
-              {
-                "type": "ExpressionStatement",
-                "start": 48,
-                "end": 50,
-                "loc": {
-                  "start": {
-                    "line": 1,
-                    "column": 48
-                  },
-                  "end": {
-                    "line": 1,
-                    "column": 50
-                  }
-                },
-                "expression": {
-                  "type": "ObjectExpression",
-                  "start": 48,
-                  "end": 50,
-                  "loc": {
-                    "start": {
-                      "line": 1,
-                      "column": 48
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 50
-                    }
-                  },
-                  "properties": []
-                }
-              }
-            ],
-            "directives": [],
-            "extra": {
-              "curly": false
-            }
+            "properties": []
           }
         }
       }

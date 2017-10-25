@@ -1,2 +1,2 @@
 match x:
-  | if guard: Atom: 1
+  | if guard: Atom: while(true) {}

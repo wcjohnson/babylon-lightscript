@@ -18,6 +18,7 @@ export default class State {
       this.inAsync =
       this.inPropertyName =
       this.inType =
+      this.inClassProperty =
       this.noAnonFunctionType =
         false;
 
@@ -56,6 +57,8 @@ export default class State {
     this.containsEsc = this.containsOctal = false;
     this.octalPosition = null;
 
+    this.invalidTemplateEscapePosition = null;
+
     this.exportedIdentifiers = [];
 
     return this;
@@ -77,6 +80,7 @@ export default class State {
   inAsync: boolean;
   inType: boolean;
   inPropertyName: boolean;
+  inClassProperty: boolean;
 
   // Labels in scope.
   labels: Array<Object>;

@@ -3,7 +3,7 @@
     "all": {
       "throws": "Expected an Indent or Statement (7:6)"
     },
-    "objectBlockAmbiguity": {
+    "braceblock": {
       "throws": "Leading decorators must be attached to a class declaration (7:2)"
     }
   }

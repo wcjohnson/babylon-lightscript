@@ -124,7 +124,7 @@
                       }
                     },
                     "expression": {
-                      "type": "TildeCallExpression",
+                      "type": "CallExpression",
                       "start": 8,
                       "end": 16,
                       "loc": {
@@ -137,24 +137,7 @@
                           "column": 6
                         }
                       },
-                      "left": {
-                        "type": "Identifier",
-                        "start": 8,
-                        "end": 9,
-                        "loc": {
-                          "start": {
-                            "line": 2,
-                            "column": 2
-                          },
-                          "end": {
-                            "line": 2,
-                            "column": 3
-                          },
-                          "identifierName": "b"
-                        },
-                        "name": "b"
-                      },
-                      "right": {
+                      "callee": {
                         "type": "Identifier",
                         "start": 13,
                         "end": 14,
@@ -171,7 +154,26 @@
                         },
                         "name": "c"
                       },
-                      "arguments": []
+                      "arguments": [
+                        {
+                          "type": "Identifier",
+                          "start": 8,
+                          "end": 9,
+                          "loc": {
+                            "start": {
+                              "line": 2,
+                              "column": 2
+                            },
+                            "end": {
+                              "line": 2,
+                              "column": 3
+                            },
+                            "identifierName": "b"
+                          },
+                          "name": "b"
+                        }
+                      ],
+                      "tilde": true
                     }
                   }
                 ],

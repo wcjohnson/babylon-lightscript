@@ -60,6 +60,13 @@ pp.parseStatement = function (declaration, topLevel) {
 
   const starttype = this.state.type;
   const node = this.startNode();
+  let expr = null;
+  let objParseError = null;
+
+  const isBlock = this.state.nextBraceIsBlock;
+  if (this.state.nextBraceIsBlock !== undefined) delete this.state.nextBraceIsBlock;
+  const allowDirectives = this.state.nextBraceAllowDirectives;
+  if (this.state.nextBraceAllowDirectives !== undefined) delete this.state.nextBraceAllowDirectives;
 
   // Most types of statements are recognized by the keyword they
   // start with. Many are trivial to parse, some require a bit of
@@ -94,11 +101,42 @@ pp.parseStatement = function (declaration, topLevel) {
     case tt._while: return this.parseWhileStatement(node);
     case tt._with: return this.parseWithStatement(node);
     case tt.braceL:
-      // in lightscript, allow line-starting `{` to be parsed as obj or obj pattern
-      if (this.hasPlugin("lightscript") && this.isLineBreak()) {
+      if (this.hasPlugin("whiteblockOnly")) {
+        // whiteblockOnly = what follows must be an ObjectExpression/Pattern
+        break;
+      } else if (this.hasPlugin("whiteblockPreferred") && !isBlock) {
+        // whiteblockPreferred = try to parse as obj, otherwise rewind and parse as block
+        const state = this.state.clone();
+        try {
+          expr = this.parseExpression();
+          break;
+        } catch (err) {
+          this.state = state;
+          objParseError = err;
+        }
+
+        try {
+          return this.parseBlock(allowDirectives);
+        } catch (err) {
+          if (objParseError) {
+            if (objParseError.pos > err.pos) {
+              throw objParseError;
+            } else if (objParseError.pos < err.pos) {
+              throw err;
+            } else {
+              objParseError.message = "Cannot parse brace-delimited construct as an object or as a block. When parsed as an object, the error is: " + objParseError.message;
+              throw objParseError;
+            }
+          } else {
+            throw err;
+          }
+        }
+      } else if (this.hasPlugin("lightscript") && this.isLineBreak() && !isBlock) {
+        // legacy lsc behavior
+        // allow line-starting `{` to be parsed as obj or obj pattern
         break;
       } else {
-        return this.parseBlock();
+        return this.parseBlock(allowDirectives);
       }
     case tt.semi: return this.parseEmptyStatement(node);
     case tt._export:
@@ -111,7 +149,7 @@ pp.parseStatement = function (declaration, topLevel) {
         }
 
         if (!this.inModule) {
-          this.raise(this.state.start, "'import' and 'export' may appear only with 'sourceType: module'");
+          this.raise(this.state.start, "'import' and 'export' may appear only with 'sourceType: \"module\"'");
         }
       }
       return starttype === tt._import ? this.parseImport(node) : this.parseExport(node);
@@ -139,7 +177,7 @@ pp.parseStatement = function (declaration, topLevel) {
   // next token is a colon and the expression was a simple
   // Identifier node, we switch to interpreting it as a label.
   const maybeName = this.state.value;
-  const expr = this.parseExpression();
+  if (!expr) expr = this.parseExpression();
 
   // rewrite `x = val` and `x: type = val`
   if (this.hasPlugin("lightscript") && this.isColonConstAssign(expr)) {
@@ -236,6 +274,8 @@ pp.parseDoStatement = function (node) {
     isWhiteBlock = true;
     indentLevel = this.state.indentLevel;
   }
+
+  this.state.nextBraceIsBlock = true;
   node.body = this.parseStatement(false);
   this.state.labels.pop();
   if (this.hasPlugin("lightscript") && isWhiteBlock && this.state.indentLevel !== indentLevel) {
@@ -296,6 +336,30 @@ pp.parseForStatement = function (node) {
     return this.parseFor(node, null);
   }
 
+  if (this.hasPlugin("lightscript") && (!forAwait)) {
+    // idx, elem, key, or val begins a LS-enhanced loop.
+    if (
+      this.isContextual("idx") ||
+      this.isContextual("elem") ||
+      this.isContextual("key") ||
+      this.isContextual("val")
+    ) {
+      // Disambiguate between:
+      // for idx of e: body
+      // for idx of in e: body
+      // for idx of, elem x in e: body
+      //
+      // If next isn't "of", or next+1 is "in" or ",", then it's a for-in
+      const nextTwo = this.tokenLookahead(2);
+      if (
+        (!(nextTwo[0] === tt.name && nextTwo[1] === "of")) || // next isnt of
+        (nextTwo[2] === tt._in || nextTwo[2] === tt.comma) // next+1 is "in" or ","
+      ) {
+        return this.parseEnhancedForIn(node);
+      }
+    }
+  }
+
   if (this.match(tt._var) || this.match(tt._let) || this.match(tt._const)) {
     const init = this.startNode();
     const varKind = this.state.type;
@@ -314,23 +378,12 @@ pp.parseForStatement = function (node) {
     return this.parseFor(node, init);
   }
 
-  if (this.hasPlugin("lightscript") && (!forAwait)) {
-    // idx, elem, key, or val begins a LS-enhanced loop.
-    if (
-      (this.isContextual("idx") || this.isContextual("elem") || this.isContextual("key") || this.isContextual("val"))
-    ) {
-      return this.parseEnhancedForIn(node);
-    }
-  }
-
   const refShorthandDefaultPos = { start: 0 };
   const init = this.parseExpression(true, refShorthandDefaultPos);
   if (this.match(tt._in) || this.isContextual("of")) {
     if (this.hasPlugin("lightscript") && (!init.isNowAssign)) {
       if (this.match(tt._in)) {
         this.raise(this.state.lastTokStart, "for-in requires a variable qualifier: `now` to reassign an existing variable, or `const`, `let`, `var` to declare a new one. Use `idx` or `elem` to iterate an array. Use `key` or `val` to iterate an object.");
-      } else {
-        this.raise(this.state.lastTokStart, "for-of requires a variable qualifier: `now` to reassign an existing variable, or `const`, `let`, `var` to declare a new one.");
       }
     }
 
@@ -528,6 +581,7 @@ pp.parseWhileStatement = function (node) {
   this.next();
   node.test = this.parseParenExpression();
   this.state.labels.push(loopLabel);
+  this.state.nextBraceIsBlock = true;
   node.body = this.parseStatement(false);
   this.state.labels.pop();
   return this.finishNode(node, "WhileStatement");
@@ -567,19 +621,16 @@ pp.parseLabeledStatement = function (node, maybeName, expr) {
   this.state.labels.push({ name: maybeName, kind: kind, statementStart: this.state.start });
   node.body = this.parseStatement(true);
   this.state.labels.pop();
+  if (node.body.type === "ExpressionStatement" && this.hasPlugin("noLabeledExpressionStatements")) {
+    this.raise(expr.start, "Labeled expressions are illegal.");
+  }
   node.label = expr;
   return this.finishNode(node, "LabeledStatement");
 };
 
 pp.parseExpressionStatement = function (node, expr) {
   node.expression = expr;
-  if (this.hasPlugin("lightscript")) {
-    // for array comprehensions.
-    // TODO: cleanup / think of a better way of doing this.
-    this.match(tt.bracketR) || this.match(tt.braceR) || this.match(tt.parenR) || this.match(tt._else) || this.match(tt._elif) || this.semicolon();
-  } else {
-    this.semicolon();
-  }
+  this.semicolon();
   return this.finishNode(node, "ExpressionStatement");
 };
 
@@ -588,6 +639,9 @@ pp.parseExpressionStatement = function (node, expr) {
 // function bodies).
 
 pp.parseBlock = function (allowDirectives?) {
+  if (this.hasPlugin("whiteblockOnly")) {
+    this.unexpected(null, "Brace-delimited blocks are illegal in whiteblock-only mode.");
+  }
   const node = this.startNode();
   this.expect(tt.braceL);
   this.parseBlockBody(node, allowDirectives, false, tt.braceR);
@@ -608,17 +662,7 @@ pp.parseBlockBody = function (node, allowDirectives, topLevel, end) {
   let oldStrict;
   let octalPosition;
 
-  const oldInWhiteBlock = this.state.inWhiteBlock;
-  const oldWhiteBlockIndentLevel = this.state.whiteBlockIndentLevel;
-
-  let isEnd;
-  if (this.hasPlugin("lightscript") && typeof end === "number") {
-    this.state.inWhiteBlock = true;
-    this.state.whiteBlockIndentLevel = end;
-    isEnd = () => this.state.indentLevel <= end || this.match(tt.eof);
-  } else {
-    isEnd = () => this.eat(end);
-  }
+  const isEnd = () => this.eat(end);
 
   while (!isEnd()) {
     if (!parsedNonDirective && this.state.containsOctal && !octalPosition) {
@@ -647,11 +691,6 @@ pp.parseBlockBody = function (node, allowDirectives, topLevel, end) {
     node.body.push(stmt);
   }
 
-  if (this.hasPlugin("lightscript")) {
-    this.state.inWhiteBlock = oldInWhiteBlock;
-    this.state.whiteBlockIndentLevel = oldWhiteBlockIndentLevel;
-  }
-
   if (oldStrict === false) {
     this.setStrict(false);
   }
@@ -674,6 +713,7 @@ pp.parseFor = function (node, init) {
     this.expect(tt.parenR);
   }
 
+  this.state.nextBraceIsBlock = true;
   node.body = this.parseStatement(false);
   this.state.labels.pop();
   return this.finishNode(node, "ForStatement");
@@ -700,6 +740,7 @@ pp.parseForIn = function (node, init, forAwait) {
     this.expect(tt.parenR);
   }
 
+  this.state.nextBraceIsBlock = true;
   node.body = this.parseStatement(false);
   this.state.labels.pop();
   return this.finishNode(node, type);
@@ -787,11 +828,18 @@ pp.parseClass = function (node, isStatement, optionalId) {
 };
 
 pp.isClassProperty = function () {
-  return this.match(tt.eq) || this.isLineTerminator();
+  return this.match(tt.eq) || this.match(tt.semi) || this.match(tt.braceR);
 };
 
-pp.isClassMutatorStarter = function () {
-  return false;
+pp.isClassMethod = function () {
+  return this.match(tt.parenL);
+};
+
+pp.isNonstaticConstructor = function (method) {
+  return !method.computed && !method.static && (
+    (method.key.name === "constructor") || // Identifier
+    (method.key.value === "constructor")   // Literal
+  );
 };
 
 pp.parseClassBody = function (node) {
@@ -812,6 +860,9 @@ pp.parseClassBody = function (node) {
     this.next();
     isEnd = () => this.state.indentLevel <= indentLevel || this.match(tt.eof);
   } else {
+    if (this.hasPlugin("whiteblockOnly")) {
+      this.unexpected(null, "Brace-delimited blocks are illegal in whiteblock-only mode.");
+    }
     this.expect(tt.braceL);
     isEnd = () => this.eat(tt.braceR);
   }
@@ -837,92 +888,102 @@ pp.parseClassBody = function (node) {
       decorators = [];
     }
 
-    let isConstructorCall = false;
-    const isMaybeStatic = this.match(tt.name) && this.state.value === "static";
-    let isGenerator = this.eat(tt.star);
-    let isGetSet = false;
-    let isAsync = false;
-
-    this.parsePropertyName(method);
-
-    method.static = isMaybeStatic && !this.match(tt.parenL);
-    if (method.static) {
-      isGenerator = this.eat(tt.star);
-      this.parsePropertyName(method);
-    }
-
-    if (!isGenerator) {
-      if (this.isClassProperty()) {
+    method.static = false;
+    if (this.match(tt.name) && this.state.value === "static") {
+      const key = this.parseIdentifier(true); // eats 'static'
+      if (this.isClassMethod()) {
+        // a method named 'static'
+        method.kind = "method";
+        method.computed = false;
+        method.key = key;
+        this.parseClassMethod(classBody, method, false, false);
+        continue;
+      } else if (this.isClassProperty()) {
+        // a property named 'static'
+        method.computed = false;
+        method.key = key;
         classBody.body.push(this.parseClassProperty(method));
         continue;
       }
-
-      if (method.key.type === "Identifier" && !method.computed && this.hasPlugin("classConstructorCall") && method.key.name === "call" && this.match(tt.name) && this.state.value === "constructor") {
-        isConstructorCall = true;
-        this.parsePropertyName(method);
-      }
+      // otherwise something static
+      method.static = true;
     }
 
-    const isAsyncMethod = !this.match(tt.parenL) && !method.computed && method.key.type === "Identifier" && method.key.name === "async";
-    if (isAsyncMethod) {
-      if (this.hasPlugin("asyncGenerators") && this.eat(tt.star)) isGenerator = true;
-      isAsync = true;
+    if (this.eat(tt.star)) {
+      // a generator
+      method.kind = "method";
       this.parsePropertyName(method);
-    }
-
-    method.kind = "method";
-
-    if (!method.computed) {
-      let { key } = method;
-
-      // handle get/set methods
-      // eg. class Foo { get bar() {} set bar() {} }
-      if (!isAsync && !isGenerator && !this.isClassMutatorStarter() && key.type === "Identifier" && !this.match(tt.parenL) && (key.name === "get" || key.name === "set")) {
-        isGetSet = true;
+      if (this.isNonstaticConstructor(method)) {
+        this.raise(method.key.start, "Constructor can't be a generator");
+      }
+      if (!method.computed && method.static && (method.key.name === "prototype" || method.key.value === "prototype")) {
+        this.raise(method.key.start, "Classes may not have static property named prototype");
+      }
+      this.parseClassMethod(classBody, method, true, false);
+    } else {
+      const isSimple = this.match(tt.name);
+      const key = this.parsePropertyName(method);
+      if (!method.computed && method.static && (method.key.name === "prototype" || method.key.value === "prototype")) {
+        this.raise(method.key.start, "Classes may not have static property named prototype");
+      }
+      if (this.isClassMethod()) {
+        // a normal method
+        if (this.isNonstaticConstructor(method)) {
+          if (hadConstructor) {
+            this.raise(key.start, "Duplicate constructor in the same class");
+          } else if (method.decorators) {
+            this.raise(method.start, "You can't attach decorators to a class constructor");
+          }
+          hadConstructor = true;
+          method.kind = "constructor";
+        } else {
+          method.kind = "method";
+        }
+        this.parseClassMethod(classBody, method, false, false);
+      } else if (this.isClassProperty()) {
+        // a normal property
+        if (this.isNonstaticConstructor(method)) {
+          this.raise(method.key.start, "Classes may not have a non-static field named 'constructor'");
+        }
+        classBody.body.push(this.parseClassProperty(method));
+      } else if (isSimple && key.name === "async" && !this.isLineTerminator()) {
+        // an async method
+        const isGenerator = this.hasPlugin("asyncGenerators") && this.eat(tt.star);
+        method.kind = "method";
+        this.parsePropertyName(method);
+        if (this.isNonstaticConstructor(method)) {
+          this.raise(method.key.start, "Constructor can't be an async function");
+        }
+        this.parseClassMethod(classBody, method, isGenerator, true);
+      } else if (isSimple && (key.name === "get" || key.name === "set") && !(this.isLineTerminator() && this.match(tt.star))) { // `get\n*` is an uninitialized property named 'get' followed by a generator.
+        // a getter or setter
         method.kind = key.name;
-        key = this.parsePropertyName(method);
+        this.parsePropertyName(method);
+        if (this.isNonstaticConstructor(method)) {
+          this.raise(method.key.start, "Constructor can't have get/set modifier");
+        }
+        this.parseClassMethod(classBody, method, false, false);
+        this.checkGetterSetterParamCount(method);
+      } else if (this.hasPlugin("classConstructorCall") && isSimple && key.name === "call" && this.match(tt.name) && this.state.value === "constructor") {
+        // a (deprecated) call constructor
+        if (hadConstructorCall) {
+          this.raise(method.start, "Duplicate constructor call in the same class");
+        } else if (method.decorators) {
+          this.raise(method.start, "You can't attach decorators to a class constructor");
+        }
+        hadConstructorCall = true;
+        method.kind = "constructorCall";
+        this.parsePropertyName(method); // consume "constructor" and make it the method's name
+        this.parseClassMethod(classBody, method, false, false);
+      } else if (this.isLineTerminator()) {
+        // an uninitialized class property (due to ASI, since we don't otherwise recognize the next token)
+        if (this.isNonstaticConstructor(method)) {
+          this.raise(method.key.start, "Classes may not have a non-static field named 'constructor'");
+        }
+        classBody.body.push(this.parseClassProperty(method));
+      } else {
+        this.unexpected();
       }
-
-      // disallow invalid constructors
-      const isConstructor = !isConstructorCall && !method.static && (
-        (key.name === "constructor") || // Identifier
-        (key.value === "constructor")   // Literal
-      );
-      if (isConstructor) {
-        if (hadConstructor) this.raise(key.start, "Duplicate constructor in the same class");
-        if (isGetSet) this.raise(key.start, "Constructor can't have get/set modifier");
-        if (isGenerator) this.raise(key.start, "Constructor can't be a generator");
-        if (isAsync) this.raise(key.start, "Constructor can't be an async function");
-        method.kind = "constructor";
-        hadConstructor = true;
-      }
-
-      // disallow static prototype method
-      const isStaticPrototype = method.static && (
-        (key.name === "prototype") || // Identifier
-        (key.value === "prototype")   // Literal
-      );
-      if (isStaticPrototype) {
-        this.raise(key.start, "Classes may not have static property named prototype");
-      }
-    }
-
-    // convert constructor to a constructor call
-    if (isConstructorCall) {
-      if (hadConstructorCall) this.raise(method.start, "Duplicate constructor call in the same class");
-      method.kind = "constructorCall";
-      hadConstructorCall = true;
-    }
-
-      // disallow decorators on class constructors
-    if ((method.kind === "constructor" || method.kind === "constructorCall") && method.decorators) {
-      this.raise(method.start, "You can't attach decorators to a class constructor");
-    }
-
-    this.parseClassMethod(classBody, method, isGenerator, isAsync);
-
-    if (isGetSet) {
-      this.checkGetterSetterParamCount(method);
     }
   }
 
@@ -936,6 +997,7 @@ pp.parseClassBody = function (node) {
 };
 
 pp.parseClassProperty = function (node) {
+  this.state.inClassProperty = true;
   if (this.match(tt.eq)) {
     if (!this.hasPlugin("classProperties")) this.unexpected();
     this.next();
@@ -944,6 +1006,7 @@ pp.parseClassProperty = function (node) {
     node.value = null;
   }
   this.semicolon();
+  this.state.inClassProperty = false;
   return this.finishNode(node, "ClassProperty");
 };
 
@@ -1034,9 +1097,7 @@ pp.parseExportDeclaration = function () {
 
 pp.isExportDefaultSpecifier = function () {
   if (this.match(tt.name)) {
-    return this.state.value !== "type"
-        && this.state.value !== "async"
-        && this.state.value !== "interface";
+    return this.state.value !== "async";
   }
 
   if (!this.match(tt._default)) {
@@ -1157,7 +1218,11 @@ pp.parseExportSpecifiers = function () {
     if (first) {
       first = false;
     } else {
-      this.expect(tt.comma);
+      if (this.hasPlugin("lightscript")) {
+        this.expectCommaOrLineBreak();
+      } else {
+        this.expect(tt.comma);
+      }
       if (this.eat(tt.braceR)) break;
     }
 
@@ -1234,7 +1299,11 @@ pp.parseImportSpecifiers = function (node) {
         this.unexpected(null, "ES2015 named imports do not destructure. Use another statement for destructuring after the import.");
       }
 
-      this.expect(tt.comma);
+      if (this.hasPlugin("lightscript")) {
+        this.expectCommaOrLineBreak();
+      } else {
+        this.expect(tt.comma);
+      }
       if (this.eat(tt.braceR)) break;
     }
 

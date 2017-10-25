@@ -37,4 +37,8 @@ export function getAvailablePlugins() {
   return result;
 }
 
+export function getPluginMetadata() {
+  return pluginMetadata;
+}
+
 export { tokTypes };

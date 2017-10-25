@@ -1,9 +1,8 @@
 {
   "name": "@oigroup/babylon-lightscript",
-  "version": "2.3.2",
+  "version": "3.0.0-beta.9",
   "description": "A LightScript parser, based on babylon (a JavaScript parser)",
-  "author": "Alex Rattray <rattray.alex@gmail.com>",
-  "homepage": "http://lightscript.org/",
+  "homepage": "http://wcjohnson.github.io/lightscript",
   "license": "MIT",
   "keywords": [
     "babel",
@@ -12,7 +11,7 @@
     "babylon",
     "lightscript"
   ],
-  "repository": "https://github.com/lightscript/babylon-lightscript",
+  "repository": "https://github.com/wcjohnson/babylon-lightscript",
   "main": "lib/index.js",
   "files": [
     "bin",
@@ -33,13 +32,14 @@
     "eslint": "^3.19.0",
     "eslint-config-babel": "^6.0.0",
     "eslint-plugin-flowtype": "^2.20.0",
-    "flow-bin": "^0.40.0",
+    "flow-bin": "^0.42.0",
     "lodash": "^4.0.0",
     "nyc": "^10.2.0",
     "rimraf": "^2.6.1",
     "rollup": "^0.41.0",
     "rollup-plugin-babel": "^2.6.1",
     "rollup-plugin-node-resolve": "^2.0.0",
+    "rollup-watch": "^3.2.2",
     "try-resolve": "^1.0.1",
     "unicode-9.0.0": "~0.7.0"
   },
@@ -58,7 +58,7 @@
     "test-only": "ava",
     "test-ci": "nyc npm run test-only",
     "changelog": "git log `git describe --tags --abbrev=0`..HEAD --pretty=format:' * %s (%an)' | grep -v 'Merge pull request'",
-    "watch": "npm run clean && cross-env BABEL_ENV=watch babel src --out-dir lib --watch",
+    "watch": "npm run clean && rollup -c --watch",
     "debug-parse": "node --inspect --debug-brk bin/babylon-lightscript.js"
   },
   "nyc": {

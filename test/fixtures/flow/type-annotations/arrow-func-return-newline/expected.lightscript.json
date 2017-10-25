@@ -121,7 +121,7 @@
               },
               "id": null,
               "generator": false,
-              "expression": false,
+              "expression": true,
               "async": false,
               "params": [
                 {
@@ -174,56 +174,20 @@
               ],
               "skinny": false,
               "body": {
-                "type": "BlockStatement",
-                "start": 33,
+                "type": "ObjectExpression",
+                "start": 36,
                 "end": 38,
                 "loc": {
                   "start": {
                     "line": 2,
-                    "column": 9
+                    "column": 12
                   },
                   "end": {
                     "line": 2,
                     "column": 14
                   }
                 },
-                "body": [
-                  {
-                    "type": "ExpressionStatement",
-                    "start": 36,
-                    "end": 38,
-                    "loc": {
-                      "start": {
-                        "line": 2,
-                        "column": 12
-                      },
-                      "end": {
-                        "line": 2,
-                        "column": 14
-                      }
-                    },
-                    "expression": {
-                      "type": "ObjectExpression",
-                      "start": 36,
-                      "end": 38,
-                      "loc": {
-                        "start": {
-                          "line": 2,
-                          "column": 12
-                        },
-                        "end": {
-                          "line": 2,
-                          "column": 14
-                        }
-                      },
-                      "properties": []
-                    }
-                  }
-                ],
-                "directives": [],
-                "extra": {
-                  "curly": false
-                }
+                "properties": []
               }
             }
           }

@@ -1,7 +1,6 @@
 /* eslint max-len: 0 */
 
 import { types as tt } from "../tokenizer/types";
-import { types as ct } from "../tokenizer/context";
 import Parser from "../parser";
 
 const primitiveTypes = [
@@ -120,11 +119,29 @@ pp.flowParseDeclare = function (node) {
     }
   } else if (this.isContextual("type")) {
     return this.flowParseDeclareTypeAlias(node);
+  } else if (this.isContextual("opaque")) {
+    return this.flowParseDeclareOpaqueType(node);
   } else if (this.isContextual("interface")) {
     return this.flowParseDeclareInterface(node);
+  } else if (this.match(tt._export)) {
+    return this.flowParseDeclareExportDeclaration(node);
   } else {
     this.unexpected();
   }
+};
+
+pp.flowParseDeclareExportDeclaration = function (node) {
+  this.expect(tt._export);
+  if (
+    this.isContextual("opaque") // declare export opaque ...
+  ) {
+    node.declaration = this.flowParseDeclare(this.startNode());
+    node.default = false;
+
+    return this.finishNode(node, "DeclareExportDeclaration");
+  }
+
+  throw this.unexpected();
 };
 
 pp.flowParseDeclareVariable = function (node) {
@@ -186,6 +203,13 @@ pp.flowParseDeclareTypeAlias = function (node) {
   return this.finishNode(node, "DeclareTypeAlias");
 };
 
+pp.flowParseDeclareOpaqueType = function (node) {
+  this.next();
+  this.flowParseOpaqueType(node, true);
+  return this.finishNode(node, "DeclareOpaqueType");
+};
+
+
 pp.flowParseDeclareInterface = function (node) {
   this.next();
   this.flowParseInterfaceish(node);
@@ -194,7 +218,7 @@ pp.flowParseDeclareInterface = function (node) {
 
 // Interfaces
 
-pp.flowParseInterfaceish = function (node, allowStatic) {
+pp.flowParseInterfaceish = function (node) {
   node.id = this.parseIdentifier();
 
   if (this.isRelational("<")) {
@@ -219,7 +243,7 @@ pp.flowParseInterfaceish = function (node, allowStatic) {
     } while (this.eat(tt.comma));
   }
 
-  node.body = this.flowParseObjectType(allowStatic);
+  node.body = this.flowParseObjectType(true, false, false);
 };
 
 pp.flowParseInterfaceExtends = function () {
@@ -263,6 +287,33 @@ pp.flowParseTypeAlias = function (node) {
   this.semicolon();
 
   return this.finishNode(node, "TypeAlias");
+};
+
+// Opaque type aliases
+
+pp.flowParseOpaqueType = function (node, declare) {
+  this.expectContextual("type");
+  node.id = this.flowParseRestrictedIdentifier();
+
+  if (this.isRelational("<")) {
+    node.typeParameters = this.flowParseTypeParameterDeclaration();
+  } else {
+    node.typeParameters = null;
+  }
+
+  // Parse the supertype
+  node.supertype = null;
+  if (this.match(tt.colon)) {
+    node.supertype = this.flowParseTypeInitialiser(tt.colon);
+  }
+
+  node.impltype = null;
+  if (!declare) {
+    node.impltype = this.flowParseTypeInitialiser(tt.eq);
+  }
+  this.semicolon();
+
+  return this.finishNode(node, "OpaqueType");
 };
 
 // Type annotations
@@ -366,7 +417,7 @@ pp.flowParseObjectTypeMethodish = function (node) {
   }
 
   this.expect(tt.parenL);
-  while (this.match(tt.name)) {
+  while (!this.match(tt.parenR) && !this.match(tt.ellipsis)) {
     node.params.push(this.flowParseFunctionTypeParam());
     if (!this.match(tt.parenR)) {
       this.expect(tt.comma);
@@ -400,7 +451,7 @@ pp.flowParseObjectTypeCallProperty = function (node, isStatic) {
   return this.finishNode(node, "ObjectTypeCallProperty");
 };
 
-pp.flowParseObjectType = function (allowStatic, allowExact) {
+pp.flowParseObjectType = function (allowStatic, allowExact, allowSpread) {
   const oldInType = this.state.inType;
   this.state.inType = true;
 
@@ -448,24 +499,40 @@ pp.flowParseObjectType = function (allowStatic, allowExact) {
       }
       nodeStart.callProperties.push(this.flowParseObjectTypeCallProperty(node, isStatic));
     } else {
-      propertyKey = this.flowParseObjectPropertyKey();
-      if (this.isRelational("<") || this.match(tt.parenL)) {
-        // This is a method property
+      if (this.match(tt.ellipsis)) {
+        if (!allowSpread) {
+          this.unexpected(
+            null,
+            "Spread operator cannot appear in class or interface definitions"
+          );
+        }
         if (variance) {
-          this.unexpected(variancePos);
+          this.unexpected(variance.start, "Spread properties cannot have variance");
         }
-        nodeStart.properties.push(this.flowParseObjectTypeMethod(startPos, startLoc, isStatic, propertyKey));
-      } else {
-        if (this.eat(tt.question)) {
-          optional = true;
-        }
-        node.key = propertyKey;
-        node.value = this.flowParseTypeInitialiser();
-        node.optional = optional;
-        node.static = isStatic;
-        node.variance = variance;
+        this.expect(tt.ellipsis);
+        node.argument = this.flowParseType();
         this.flowObjectTypeSemicolon();
-        nodeStart.properties.push(this.finishNode(node, "ObjectTypeProperty"));
+        nodeStart.properties.push(this.finishNode(node, "ObjectTypeSpreadProperty"));
+      } else {
+        propertyKey = this.flowParseObjectPropertyKey();
+        if (this.isRelational("<") || this.match(tt.parenL)) {
+          // This is a method property
+          if (variance) {
+            this.unexpected(variance.start);
+          }
+          nodeStart.properties.push(this.flowParseObjectTypeMethod(startPos, startLoc, isStatic, propertyKey));
+        } else {
+          if (this.eat(tt.question)) {
+            optional = true;
+          }
+          node.key = propertyKey;
+          node.value = this.flowParseTypeInitialiser();
+          node.optional = optional;
+          node.static = isStatic;
+          node.variance = variance;
+          this.flowObjectTypeSemicolon();
+          nodeStart.properties.push(this.finishNode(node, "ObjectTypeProperty"));
+        }
       }
     }
 
@@ -560,7 +627,7 @@ pp.flowParseFunctionTypeParam = function () {
 };
 
 pp.reinterpretTypeAsFunctionTypeParam = function (type) {
-  const node = this.startNodeAt(type.start, type.loc);
+  const node = this.startNodeAt(type.start, type.loc.start);
   node.name = null;
   node.optional = false;
   node.typeAnnotation = type;
@@ -627,10 +694,10 @@ pp.flowParsePrimaryType = function () {
       return this.flowIdentToTypeAnnotation(startPos, startLoc, node, this.parseIdentifier());
 
     case tt.braceL:
-      return this.flowParseObjectType(false, false);
+      return this.flowParseObjectType(false, false, true);
 
     case tt.braceBarL:
-      return this.flowParseObjectType(false, true);
+      return this.flowParseObjectType(false, true, true);
 
     case tt.bracketL:
       return this.flowParseTupleType();
@@ -772,7 +839,7 @@ pp.flowParsePrefixType = function () {
 pp.flowParseAnonFunctionWithoutParens = function () {
   const param = this.flowParsePrefixType();
   if (!this.state.noAnonFunctionType && this.eat(tt.arrow)) {
-    const node  = this.startNodeAt(param.start, param.loc);
+    const node  = this.startNodeAt(param.start, param.loc.start);
     node.params = [this.reinterpretTypeAsFunctionTypeParam(param)];
     node.rest = null;
     node.returnType = this.flowParseType();
@@ -862,6 +929,21 @@ pp.flowParseVariance = function() {
   return variance;
 };
 
+pp.flowExprListToCast = function(exprList) {
+  // A flow typecast is a parenthesized expr list of exactly length 1 with
+  // a TypeCastish in the first slot; anything else involving TypeCastish
+  // is illegal.
+  if (exprList.length === 1 && exprList[0].type === "TypeCastish") {
+    exprList[0].type = "TypeCastExpression";
+  } else {
+    exprList.forEach((expr) => {
+      if (expr.type === "TypeCastish") {
+        this.unexpected(expr.typeAnnotation.pos);
+      }
+    });
+  }
+};
+
 export default function (instance) {
   // plain function return types: function name(): string {}
   instance.extend("parseFunctionBody", function (inner) {
@@ -895,7 +977,12 @@ export default function (instance) {
     return function (node, expr) {
       if (expr.type === "Identifier") {
         if (expr.name === "declare") {
-          if (this.match(tt._class) || this.match(tt.name) || this.match(tt._function) || this.match(tt._var)) {
+          if (this.match(tt._class)
+            || this.match(tt.name)
+            || this.match(tt._function)
+            || this.match(tt._var)
+            || this.match(tt._export)
+          ) {
             return this.flowParseDeclare(node);
           }
         } else if (this.match(tt.name)) {
@@ -903,6 +990,8 @@ export default function (instance) {
             return this.flowParseInterface(node);
           } else if (expr.name === "type") {
             return this.flowParseTypeAlias(node);
+          } else if (expr.name === "opaque") {
+            return this.flowParseOpaqueType(node, false);
           }
         }
       }
@@ -916,7 +1005,23 @@ export default function (instance) {
     return function () {
       return this.isContextual("type")
           || this.isContextual("interface")
+          || this.isContextual("opaque")
           || inner.call(this);
+    };
+  });
+
+  instance.extend("isExportDefaultSpecifier", function (inner) {
+    return function () {
+      if (
+        this.match(tt.name) &&
+        (this.state.value === "type"
+        || this.state.value === "interface"
+        || this.state.value === "opaque")
+      ) {
+        return false;
+      }
+
+      return inner.call(this);
     };
   });
 
@@ -962,7 +1067,7 @@ export default function (instance) {
         typeCastNode.expression = node;
         typeCastNode.typeAnnotation = this.flowParseTypeAnnotation();
 
-        return this.finishNode(typeCastNode, "TypeCastExpression");
+        return this.finishNode(typeCastNode, "TypeCastish");
       }
 
       return node;
@@ -996,6 +1101,13 @@ export default function (instance) {
           // export type Foo = Bar;
           return this.flowParseTypeAlias(declarationNode);
         }
+      } else if (this.isContextual("opaque")) {
+        node.exportKind = "type";
+
+        const declarationNode = this.startNode();
+        this.next();
+        // export opaque type Foo = Bar;
+        return this.flowParseOpaqueType(declarationNode, false);
       } else if (this.isContextual("interface")) {
         node.exportKind = "type";
         const declarationNode = this.startNode();
@@ -1058,7 +1170,7 @@ export default function (instance) {
 
   instance.extend("toAssignable", function (inner) {
     return function (node, isBinding, contextDescription) {
-      if (node.type === "TypeCastExpression") {
+      if (node.type === "TypeCastish") {
         return inner.call(this, this.typeCastToParameter(node), isBinding, contextDescription);
       } else if (this.hasPlugin("existentialExpression") && node.type === "ExistentialExpression") {
         // Existential expression looks like an optional flow parameter
@@ -1074,7 +1186,7 @@ export default function (instance) {
     return function (exprList, isBinding, contextDescription) {
       for (let i = 0; i < exprList.length; i++) {
         const expr = exprList[i];
-        if (expr && expr.type === "TypeCastExpression") {
+        if (expr && expr.type === "TypeCastish") {
           exprList[i] = this.typeCastToParameter(expr);
         } else if (this.hasPlugin("existentialExpression") && expr && expr.type === "ExistentialExpression") {
           // Existential expression looks like an optional flow parameter
@@ -1091,8 +1203,8 @@ export default function (instance) {
     return function (exprList) {
       for (let i = 0; i < exprList.length; i++) {
         const expr = exprList[i];
-        if (expr && expr._exprListItem && expr.type === "TypeCastExpression") {
-          this.raise(expr.start, "Unexpected type cast");
+        if (expr && expr.type === "TypeCastish") {
+          this.raise(expr.typeAnnotation.start, "Unexpected type cast");
         }
       }
 
@@ -1100,26 +1212,9 @@ export default function (instance) {
     };
   });
 
-  // parse an item inside a expression list eg. `(NODE, NODE)` where NODE represents
-  // the position where this function is called
-  instance.extend("parseExprListItem", function (inner) {
-    return function (...args) {
-      const container = this.startNode();
-      const node = inner.call(this, ...args);
-      if (this.match(tt.colon)) {
-        container._exprListItem = true;
-        container.expression = node;
-        container.typeAnnotation = this.flowParseTypeAnnotation();
-        return this.finishNode(container, "TypeCastExpression");
-      } else {
-        return node;
-      }
-    };
-  });
-
   instance.extend("checkLVal", function (inner) {
     return function (node) {
-      if (node.type !== "TypeCastExpression") {
+      if (node.type !== "TypeCastish") {
         return inner.apply(this, arguments);
       }
     };
@@ -1136,10 +1231,23 @@ export default function (instance) {
     };
   });
 
+  // determine whether or not we're currently in the position where a class method would appear
+  instance.extend("isClassMethod", function (inner) {
+    return function () {
+      return this.isRelational("<") || inner.call(this);
+    };
+  });
+
   // determine whether or not we're currently in the position where a class property would appear
   instance.extend("isClassProperty", function (inner) {
     return function () {
       return this.match(tt.colon) || inner.call(this);
+    };
+  });
+
+  instance.extend("isNonstaticConstructor", function(inner) {
+    return function (method) {
+      return !this.match(tt.colon) && inner.call(this, method);
     };
   });
 
@@ -1390,6 +1498,12 @@ export default function (instance) {
         } catch (err) {
           if (err instanceof SyntaxError) {
             this.state = state;
+
+            // Remove `tc.j_expr` and `tc.j_oTag` from context added
+            // by parsing `jsxTagStart` to stop the JSX plugin from
+            // messing with the tokens
+            this.state.context.length -= 2;
+
             jsxError = err;
           } else {
             // istanbul ignore next: no such error is expected
@@ -1398,9 +1512,6 @@ export default function (instance) {
         }
       }
 
-      // Need to push something onto the context to stop
-      // the JSX plugin from messing with the tokens
-      this.state.context.push(ct.parenExpression);
       if (jsxError != null || this.isRelational("<")) {
         let arrowExpression;
         let typeParameters;
@@ -1426,7 +1537,6 @@ export default function (instance) {
           );
         }
       }
-      this.state.context.pop();
 
       return inner.apply(this, args);
     };
@@ -1464,16 +1574,6 @@ export default function (instance) {
   instance.extend("shouldParseArrow", function (inner) {
     return function () {
       return this.match(tt.colon) || inner.call(this);
-    };
-  });
-
-  instance.extend("isClassMutatorStarter", function (inner) {
-    return function () {
-      if (this.isRelational("<")) {
-        return true;
-      } else {
-        return inner.call(this);
-      }
     };
   });
 }

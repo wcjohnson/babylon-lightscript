@@ -1,3 +1,3 @@
 if true: {
-  for elem e in arr: e
+  ...for elem e in arr: e
 }

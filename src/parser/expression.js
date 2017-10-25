@@ -178,7 +178,11 @@ pp.parseMaybeAssign = function (noIn, refShorthandDefaultPos, afterLeftParse, re
       node.isNowAssign = isNowAssign;
     }
 
-    return this.finishNode(node, "AssignmentExpression");
+    if (this.hasPlugin("catchExpression")) {
+      return this.parseMaybeCatchAssignment(this.finishNode(node, "AssignmentExpression"));
+    } else {
+      return this.finishNode(node, "AssignmentExpression");
+    }
   } else if (failOnShorthandAssign && refShorthandDefaultPos.start) {
     this.unexpected(refShorthandDefaultPos.start);
   }
@@ -191,7 +195,11 @@ pp.parseMaybeAssign = function (noIn, refShorthandDefaultPos, afterLeftParse, re
     }
   }
 
-  return left;
+  if (this.hasPlugin("catchExpression")) {
+    return this.parseMaybeCatchExpression(left);
+  } else {
+    return left;
+  }
 };
 
 // Parse a ternary conditional (`?:`) operator.
@@ -343,7 +351,7 @@ pp.parseMaybeUnary = function (refShorthandDefaultPos) {
   let expr = this.parseExprSubscripts(refShorthandDefaultPos);
   if (refShorthandDefaultPos && refShorthandDefaultPos.start) return expr;
 
-  if (this.state.inMatchAtom && this.state.type.postfix) {
+  if (this.state.inMatchAtom && (this.state.type.postfix || this.match(tt._catch))) {
     this.unexpected(null, "Illegal operator in match atom.");
   }
 
@@ -356,6 +364,12 @@ pp.parseMaybeUnary = function (refShorthandDefaultPos) {
     this.next();
     expr = this.finishNode(node, "UpdateExpression");
   }
+
+  // Same-line catch expr
+  if (this.match(tt._catch) && !this.isLineBreak() && this.hasPlugin("catchExpression")) {
+    return this.parseCatchExpression(expr);
+  }
+
   return expr;
 };
 
@@ -379,12 +393,6 @@ pp.parseExprSubscripts = function (refShorthandDefaultPos) {
 };
 
 pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
-
-  // pipeCall plugin hack: pass noPipes via state to avoid changing args
-  // to core parser function.
-  const noPipes = this.state.noPipeSubscripts;
-  this.state.noPipeSubscripts = false;
-
   for (;;) {
     if (this.hasPlugin("lightscript") && this.crossesWhiteBlockBoundary()) {
       return base;
@@ -428,14 +436,17 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       if (this.hasPlugin("enforceSubscriptIndentation") && this.isNonIndentedBreakFrom(startPos)) {
         this.unexpected(null, "Indentation required.");
       }
-      // `x?.y`
-      const node = this.startNodeAt(startPos, startLoc);
+
       const op = this.state.value;
       this.next();
+
+      // `x?.y` `x?[y]`
+      const node = this.startNodeAt(startPos, startLoc);
       node.object = base;
+
       if (op === "?.") {
-        // arr?.0 -> arr?[0]
         if (this.match(tt.num)) {
+          // arr?.0 -> arr?[0]
           node.property = this.parseLiteral(this.state.value, "NumericLiteral");
           node.computed = true;
         } else {
@@ -447,9 +458,12 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
         node.computed = true;
         this.expect(tt.bracketR);
       } else {
-        this.unexpected();
+        node.property = this.parseIdentifierOrPlaceholder(true);
+        node.computed = false;
       }
-      base = this.finishNode(node, "SafeMemberExpression");
+
+      node.optional = true;
+      base = this.finishNode(node, "MemberExpression");
     } else if (
       (this.hasPlugin("safeCallExpression") || this.hasPlugin("existentialExpression")) &&
       this.match(tt.question) &&
@@ -476,14 +490,6 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
       node.callee = base;
       const next = this.parseBangCall(node, "CallExpression");
       if (next) base = next; else return node;
-    } else if (
-      !noCalls &&
-      !noPipes &&
-      this.hasPlugin("pipeCall") &&
-      this.match(tt.pipeCall)
-    ) {
-      const node = this.startNodeAt(startPos, startLoc);
-      base = this.parsePipeCall(node, base);
     } else if (!(this.hasPlugin("lightscript") && this.isNonIndentedBreakFrom(startPos)) && this.eat(tt.bracketL)) {
       const node = this.startNodeAt(startPos, startLoc);
       node.object = base;
@@ -550,7 +556,7 @@ pp.parseSubscripts = function (base, startPos, startLoc, noCalls) {
     } else if (this.match(tt.backQuote) && !(this.hasPlugin("lightscript") && this.isLineBreak())) {
       const node = this.startNodeAt(startPos, startLoc);
       node.tag = base;
-      node.quasi = this.parseTemplate();
+      node.quasi = this.parseTemplate(true);
       base = this.finishNode(node, "TaggedTemplateExpression");
     } else {
       return base;
@@ -625,7 +631,11 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
 
   switch (this.state.type) {
     case tt._super:
-      if (!this.state.inMethod && !this.options.allowSuperOutsideMethod) {
+      if (
+          !this.state.inMethod &&
+          !this.state.inClassProperty &&
+          !this.options.allowSuperOutsideMethod
+        ) {
         this.raise(this.state.start, "'super' outside of function or class");
       }
 
@@ -737,14 +747,11 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       if (this.state.inMatchAtom) {
         this.unexpected(null, "Illegal expression in match atom.");
       }
-      if (this.hasPlugin("enhancedComprehension")) {
-        return this.parseComprehensionArray(refShorthandDefaultPos);
+      if (this.hasPlugin("spreadLoop")) {
+        return this.parseArrayWithSpreadLoops(refShorthandDefaultPos);
       }
       node = this.startNode();
       this.next();
-      if (this.hasPlugin("lightscript") && this.match(tt._for)) {
-        return this.parseArrayComprehension(node);
-      }
       node.elements = this.parseExprList(tt.bracketR, true, refShorthandDefaultPos);
       this.toReferencedList(node.elements);
       return this.finishNode(node, "ArrayExpression");
@@ -782,7 +789,7 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
       return this.parseNew();
 
     case tt.backQuote:
-      return this.parseTemplate();
+      return this.parseTemplate(false);
 
     case tt.doubleColon:
       node = this.startNode();
@@ -955,6 +962,10 @@ pp.parseParenAndDistinguishExpression = function (startPos, startLoc, canBeArrow
   if (refShorthandDefaultPos.start) this.unexpected(refShorthandDefaultPos.start);
   if (refNeedsArrowPos.start) this.unexpected(refNeedsArrowPos.start);
 
+  if (this.hasPlugin("flow")) {
+    this.flowExprListToCast(exprList);
+  }
+
   if (exprList.length > 1) {
     val = this.startNodeAt(innerStartPos, innerStartLoc);
     val.expressions = exprList;
@@ -963,7 +974,6 @@ pp.parseParenAndDistinguishExpression = function (startPos, startLoc, canBeArrow
   } else {
     val = exprList[0];
   }
-
 
   this.addExtra(val, "parenthesized", true);
   this.addExtra(val, "parenStart", startPos);
@@ -994,7 +1004,13 @@ pp.parseNew = function () {
   const meta = this.parseIdentifier(true);
 
   if (this.eat(tt.dot)) {
-    return this.parseMetaProperty(node, meta, "target");
+    const metaProp = this.parseMetaProperty(node, meta, "target");
+
+    if (!this.state.inFunction) {
+      this.raise(metaProp.property.start, "new.target can only be used in functions");
+    }
+
+    return metaProp;
   }
 
   node.callee = this.parseNoCallExpr();
@@ -1016,8 +1032,15 @@ pp.parseNew = function () {
 
 // Parse template expression.
 
-pp.parseTemplateElement = function () {
+pp.parseTemplateElement = function (isTagged) {
   const elem = this.startNode();
+  if (this.state.value === null) {
+    if (!isTagged || !this.hasPlugin("templateInvalidEscapes")) {
+      this.raise(this.state.invalidTemplateEscapePosition, "Invalid escape sequence in template");
+    } else {
+      this.state.invalidTemplateEscapePosition = null;
+    }
+  }
   elem.value = {
     raw: this.input.slice(this.state.start, this.state.end).replace(/\r\n?/g, "\n"),
     cooked: this.state.value
@@ -1027,20 +1050,20 @@ pp.parseTemplateElement = function () {
   return this.finishNode(elem, "TemplateElement");
 };
 
-pp.parseTemplate = function () {
+pp.parseTemplate = function (isTagged) {
   const wasInMatchAtom = this.state.inMatchAtom;
   this.state.inMatchAtom = false;
 
   const node = this.startNode();
   this.next();
   node.expressions = [];
-  let curElt = this.parseTemplateElement();
+  let curElt = this.parseTemplateElement(isTagged);
   node.quasis = [curElt];
   while (!curElt.tail) {
     this.expect(tt.dollarBraceL);
     node.expressions.push(this.parseExpression());
     this.expect(tt.braceR);
-    node.quasis.push(curElt = this.parseTemplateElement());
+    node.quasis.push(curElt = this.parseTemplateElement(isTagged));
   }
   this.next();
 
@@ -1055,23 +1078,10 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
   let decorators = [];
   const propHash = Object.create(null);
   let first = true;
-  let hasComprehension = false;
   const node = this.startNode();
 
   node.properties = [];
   this.next();
-
-  // `for` keyword begins an object comprehension.
-  if (
-    this.hasPlugin("lightscript") &&
-    !this.hasPlugin("enhancedComprehension") &&
-    this.match(tt._for)
-  ) {
-    // ...however, `{ for: x }` is a legal JS object.
-    if (this.lookahead().type !== tt.colon) {
-      return this.parseObjectComprehension(node);
-    }
-  }
 
   let firstRestLocation = null;
 
@@ -1087,18 +1097,12 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
       if (this.eat(tt.braceR)) break;
     }
 
-    if (
-      this.hasPlugin("enhancedComprehension") &&
-      (this.match(tt._for) || this.match(tt._case))
-    ) {
-      if (this.lookahead().type !== tt.colon) {
-        if (isPattern) {
-          this.unexpected(null, "Comprehensions are illegal in patterns.");
-        }
-        node.properties.push(this.parseSomeComprehension());
-        hasComprehension = true;
-        continue;
+    if (this.hasPlugin("spreadLoop") && this.match(tt.spreadLoop)) {
+      if (isPattern) {
+        this.unexpected(null, "Spread loops are illegal in patterns.");
       }
+      node.properties.push(this.parseSpreadLoop("SpreadProperty"));
+      continue;
     }
 
     while (this.match(tt.at)) {
@@ -1182,7 +1186,7 @@ pp.parseObj = function (isPattern, refShorthandDefaultPos) {
     this.raise(this.state.start, "You have trailing decorators with no property");
   }
 
-  return this.finishNode(node, hasComprehension ? "ObjectComprehension" : (isPattern ? "ObjectPattern" : "ObjectExpression"));
+  return this.finishNode(node, isPattern ? "ObjectPattern" : "ObjectExpression");
 };
 
 pp.isGetterOrSetterMethod = function (prop, isPattern) {
@@ -1243,8 +1247,9 @@ pp.parseObjectProperty = function (prop, startPos, startLoc, isPattern, refShort
   }
 
   if (!prop.computed && prop.key.type === "Identifier") {
+    this.checkReservedWord(prop.key.name, prop.key.start, true, true);
+
     if (isPattern) {
-      this.checkReservedWord(prop.key.name, prop.key.start, true, true);
       prop.value = this.parseMaybeDefault(startPos, startLoc, prop.key.__clone());
     } else if (this.match(tt.eq) && refShorthandDefaultPos) {
       if (!refShorthandDefaultPos.start) {
