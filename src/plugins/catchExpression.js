@@ -47,7 +47,7 @@ export default function(parser) {
     this.state.inMatchCaseTest = true;
 
     this.parseCatchCaseAtoms(node);
-    if (this.isContextual("as")) {
+    if (this.eatContextual("as")) {
       this.parseCatchCaseBinding(node);
     }
 
