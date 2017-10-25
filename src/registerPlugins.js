@@ -9,6 +9,7 @@ import significantWhitespacePlugin from "./plugins/significantWhitespace";
 import spreadLoopPlugin from "./plugins/spreadLoop";
 import syntacticPlaceholderPlugin from "./plugins/syntacticPlaceholder";
 import { matchCoreSyntax, match } from "./plugins/match";
+import catchExpressionPlugin from "./plugins/catchExpression";
 
 function noncePlugin() {}
 
@@ -91,4 +92,8 @@ export default function registerPlugins(plugins, metadata) {
   });
 
   registerPlugin("noLabeledExpressionStatements", noncePlugin);
+
+  registerPlugin("catchExpression", catchExpressionPlugin, {
+    dependencies: ["significantWhitespace"]
+  });
 }

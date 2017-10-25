@@ -178,7 +178,11 @@ pp.parseMaybeAssign = function (noIn, refShorthandDefaultPos, afterLeftParse, re
       node.isNowAssign = isNowAssign;
     }
 
-    return this.finishNode(node, "AssignmentExpression");
+    if (this.hasPlugin("catchExpression")) {
+      return this.parseMaybeCatchAssignment(this.finishNode(node, "AssignmentExpression"));
+    } else {
+      return this.finishNode(node, "AssignmentExpression");
+    }
   } else if (failOnShorthandAssign && refShorthandDefaultPos.start) {
     this.unexpected(refShorthandDefaultPos.start);
   }
@@ -191,7 +195,11 @@ pp.parseMaybeAssign = function (noIn, refShorthandDefaultPos, afterLeftParse, re
     }
   }
 
-  return left;
+  if (this.hasPlugin("catchExpression")) {
+    return this.parseMaybeCatchExpression(left);
+  } else {
+    return left;
+  }
 };
 
 // Parse a ternary conditional (`?:`) operator.
@@ -343,7 +351,7 @@ pp.parseMaybeUnary = function (refShorthandDefaultPos) {
   let expr = this.parseExprSubscripts(refShorthandDefaultPos);
   if (refShorthandDefaultPos && refShorthandDefaultPos.start) return expr;
 
-  if (this.state.inMatchAtom && this.state.type.postfix) {
+  if (this.state.inMatchAtom && (this.state.type.postfix || this.match(tt._catch))) {
     this.unexpected(null, "Illegal operator in match atom.");
   }
 
@@ -356,6 +364,12 @@ pp.parseMaybeUnary = function (refShorthandDefaultPos) {
     this.next();
     expr = this.finishNode(node, "UpdateExpression");
   }
+
+  // Same-line catch expr
+  if (this.match(tt._catch) && !this.isLineBreak() && this.hasPlugin("catchExpression")) {
+    return this.parseCatchExpression(expr);
+  }
+
   return expr;
 };
 
