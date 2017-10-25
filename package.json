@@ -1,6 +1,6 @@
 {
   "name": "@oigroup/babylon-lightscript",
-  "version": "3.0.0-beta.8",
+  "version": "3.0.0-beta.9",
   "description": "A LightScript parser, based on babylon (a JavaScript parser)",
   "homepage": "http://wcjohnson.github.io/lightscript",
   "license": "MIT",
