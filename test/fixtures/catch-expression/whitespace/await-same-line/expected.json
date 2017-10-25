@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 38,
+  "end": 36,
   "loc": {
     "start": {
       "line": 1,
@@ -9,13 +9,13 @@
     },
     "end": {
       "line": 2,
-      "column": 30
+      "column": 28
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 38,
+    "end": 36,
     "loc": {
       "start": {
         "line": 1,
@@ -23,7 +23,7 @@
       },
       "end": {
         "line": 2,
-        "column": 30
+        "column": 28
       }
     },
     "sourceType": "script",
@@ -31,7 +31,7 @@
       {
         "type": "NamedArrowDeclaration",
         "start": 0,
-        "end": 38,
+        "end": 36,
         "loc": {
           "start": {
             "line": 1,
@@ -39,7 +39,7 @@
           },
           "end": {
             "line": 2,
-            "column": 30
+            "column": 28
           }
         },
         "id": {
@@ -67,7 +67,7 @@
         "body": {
           "type": "BlockStatement",
           "start": 4,
-          "end": 38,
+          "end": 36,
           "loc": {
             "start": {
               "line": 1,
@@ -75,14 +75,14 @@
             },
             "end": {
               "line": 2,
-              "column": 30
+              "column": 28
             }
           },
           "body": [
             {
               "type": "ExpressionStatement",
               "start": 10,
-              "end": 38,
+              "end": 36,
               "loc": {
                 "start": {
                   "line": 2,
@@ -90,13 +90,13 @@
                 },
                 "end": {
                   "line": 2,
-                  "column": 30
+                  "column": 28
                 }
               },
               "expression": {
                 "type": "AwaitExpression",
                 "start": 10,
-                "end": 38,
+                "end": 36,
                 "loc": {
                   "start": {
                     "line": 2,
@@ -104,17 +104,21 @@
                   },
                   "end": {
                     "line": 2,
-                    "column": 30
+                    "column": 28
                   }
                 },
                 "argument": {
                   "type": "CatchExpression",
                   "start": 16,
-                  "end": 38,
+                  "end": 36,
                   "loc": {
+                    "start": {
+                      "line": 2,
+                      "column": 8
+                    },
                     "end": {
                       "line": 2,
-                      "column": 30
+                      "column": 28
                     }
                   },
                   "expression": {
@@ -150,73 +154,54 @@
                     },
                     "arguments": []
                   },
-                  "cases": [
-                    {
-                      "type": "CatchCase",
-                      "start": 20,
-                      "end": 38,
+                  "binding": {
+                    "type": "Identifier",
+                    "start": 26,
+                    "end": 29,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 18
+                      },
+                      "end": {
+                        "line": 2,
+                        "column": 21
+                      },
+                      "identifierName": "err"
+                    },
+                    "name": "err"
+                  },
+                  "body": {
+                    "type": "ExpressionStatement",
+                    "start": 31,
+                    "end": 36,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 23
+                      },
+                      "end": {
+                        "line": 2,
+                        "column": 28
+                      }
+                    },
+                    "expression": {
+                      "type": "BooleanLiteral",
+                      "start": 31,
+                      "end": 36,
                       "loc": {
                         "start": {
                           "line": 2,
-                          "column": 12
+                          "column": 23
                         },
                         "end": {
                           "line": 2,
-                          "column": 30
+                          "column": 28
                         }
                       },
-                      "atoms": [
-                        {
-                          "type": "Identifier",
-                          "start": 26,
-                          "end": 31,
-                          "loc": {
-                            "start": {
-                              "line": 2,
-                              "column": 18
-                            },
-                            "end": {
-                              "line": 2,
-                              "column": 23
-                            },
-                            "identifierName": "Error"
-                          },
-                          "name": "Error"
-                        }
-                      ],
-                      "consequent": {
-                        "type": "ExpressionStatement",
-                        "start": 33,
-                        "end": 38,
-                        "loc": {
-                          "start": {
-                            "line": 2,
-                            "column": 25
-                          },
-                          "end": {
-                            "line": 2,
-                            "column": 30
-                          }
-                        },
-                        "expression": {
-                          "type": "BooleanLiteral",
-                          "start": 33,
-                          "end": 38,
-                          "loc": {
-                            "start": {
-                              "line": 2,
-                              "column": 25
-                            },
-                            "end": {
-                              "line": 2,
-                              "column": 30
-                            }
-                          },
-                          "value": false
-                        }
-                      }
+                      "value": false
                     }
-                  ]
+                  }
                 }
               }
             }

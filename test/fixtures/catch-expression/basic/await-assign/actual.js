@@ -1,3 +1,3 @@
 f() -/>
   x = await g()
-    catch Error: false
+    catch err: err

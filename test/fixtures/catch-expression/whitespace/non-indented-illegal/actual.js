@@ -1,2 +1,2 @@
 a
-catch Error: stuff
+catch err: false

@@ -2,6 +2,10 @@ import Parser from "../parser";
 import { types as tt } from "../tokenizer/types";
 const pp = Parser.prototype;
 
+// Catch-expr syntax
+// NoMatchCatchExpression = Expr `\n`? `catch` Identifier `:` Block
+// MatchCatchExpression = Expr `\n`? `catch` Identifier `:` [`\n` MatchCase]...
+
 export default function(parser) {
   if (parser.__catchExpressionPluginInstalled) return;
   parser.__catchExpressionPluginInstalled = true;
@@ -9,64 +13,25 @@ export default function(parser) {
   pp.parseCatchExpression = function(expr) {
     const node = this.startNodeAt(expr.start, expr.loc.start);
     node.expression = expr;
-    const catchIndentLevel = this.state.indentLevel;
-    const isEnd = () =>
-      !this.match(tt._catch) || this.state.indentLevel !== catchIndentLevel || this.match(tt.eof);
-
-    node.cases = [];
-    while (!isEnd()) {
-      node.cases.push(this.parseCatchCase());
+    this.eat(tt._catch);
+    node.binding = this.parseIdentifier();
+    // Detect block vs cases
+    const next2 = this.tokenLookahead(2);
+    if (next2[0] === tt.bitwiseOR || next2[2] === tt.bitwiseOR) {
+      return this.parseCatchAndMatchExpression(node);
+    } else {
+      return this.parseCatchNoMatchExpression(node);
     }
+  };
 
+  pp.parseCatchNoMatchExpression = function(node) {
+    node.body = this.parseBlock(false);
     return this.finishNode(node, "CatchExpression");
   };
 
-  pp.parseCatchCase = function() {
-    const node = this.startNode();
-    this.eat(tt._catch);
-    this.parseCatchCaseTest(node);
-    this.parseCatchCaseConsequent(node);
-    return this.finishNode(node, "CatchCase");
-  };
-
-  pp.parseCatchCaseConsequent = function(node) {
-    // disallow return/continue/break, etc. c/p doExpression
-    const oldInFunction = this.state.inFunction;
-    const oldLabels = this.state.labels;
-    this.state.labels = [];
-    this.state.inFunction = false;
-
-    node.consequent = this.parseBlock(false);
-
-    this.state.inFunction = oldInFunction;
-    this.state.labels = oldLabels;
-  };
-
-  pp.parseCatchCaseTest = function(node) {
-    // can't be nested so no need to read/restore old value
-    this.state.inMatchCaseTest = true;
-
-    this.parseCatchCaseAtoms(node);
-    if (this.eatContextual("as")) {
-      this.parseCatchCaseBinding(node);
-    }
-
-    this.state.inMatchCaseTest = false;
-  };
-
-  pp.parseCatchCaseAtoms = function(node) {
-    const atoms = [];
-    this.state.inMatchAtom = true;
-    while (true) {
-      atoms.push(this.parseExprOps());
-      if (!this.eat(tt.comma)) break;
-    }
-    this.state.inMatchAtom = false;
-    node.atoms = atoms;
-  };
-
-  pp.parseCatchCaseBinding = function(node) {
-    node.binding = this.parseBindingAtom();
+  pp.parseCatchAndMatchExpression = function(node) {
+    this.parseMatchCases(node, true, true);
+    return this.finishNode(node, "CatchExpression");
   };
 
   pp.isIndentedCatch = function() {

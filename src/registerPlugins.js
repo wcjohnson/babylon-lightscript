@@ -94,6 +94,6 @@ export default function registerPlugins(plugins, metadata) {
   registerPlugin("noLabeledExpressionStatements", noncePlugin);
 
   registerPlugin("catchExpression", catchExpressionPlugin, {
-    dependencies: ["significantWhitespace"]
+    dependencies: ["significantWhitespace", "match"]
   });
 }

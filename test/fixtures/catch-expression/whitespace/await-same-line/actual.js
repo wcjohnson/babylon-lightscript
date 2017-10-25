@@ -1,2 +1,2 @@
 f() -/>
-  await g() catch Error: false
+  await g() catch err: false

@@ -1,3 +1,3 @@
 f() -/>
   x <- g()
-    catch Error: false
+    catch err: err

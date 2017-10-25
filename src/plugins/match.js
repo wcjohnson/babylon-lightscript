@@ -44,7 +44,12 @@ export function match(parser) {
     this.expect(tt._match);
 
     node.discriminant = this.parseParenExpression();
+    this.parseMatchCases(node, isExpression, false);
 
+    return this.finishNode(node, isExpression ? "MatchExpression" : "MatchStatement");
+  };
+
+  pp.parseMatchCases = function(node, isExpression, isCatch) {
     const isColon = this.match(tt.colon);
     let isEnd;
     if (isColon) {
@@ -67,7 +72,7 @@ export function match(parser) {
         this.unexpected(null, "Mismatched indent.");
       }
 
-      const matchCase = this.parseMatchCase(isExpression);
+      const matchCase = this.parseMatchCase(isExpression, isCatch);
       if (matchCase.outerGuard && matchCase.outerGuard.type === "MatchElse") {
         hasUsedElse = true;
       }
@@ -77,17 +82,15 @@ export function match(parser) {
     if (!node.cases.length) {
       this.unexpected(null, tt.bitwiseOR);
     }
-
-    return this.finishNode(node, isExpression ? "MatchExpression" : "MatchStatement");
   };
 
-  pp.parseMatchCase = function (isExpression) {
+  pp.parseMatchCase = function (isExpression, isCatch) {
     const node = this.startNode();
 
     this.expect(tt.bitwiseOR);
     if (this.isLineBreak()) this.unexpected(this.state.lastTokEnd, "Illegal newline.");
 
-    this.parseMatchCaseTest(node);
+    this.parseMatchCaseTest(node, isCatch);
     this.parseMatchCaseConsequent(node, isExpression);
 
     return this.finishNode(node, "MatchCase");

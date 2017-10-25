@@ -1,1 +1,1 @@
-a catch Error: panic!
+a catch err: panic!

@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 21,
+  "end": 19,
   "loc": {
     "start": {
       "line": 1,
@@ -9,13 +9,13 @@
     },
     "end": {
       "line": 1,
-      "column": 21
+      "column": 19
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 21,
+    "end": 19,
     "loc": {
       "start": {
         "line": 1,
@@ -23,7 +23,7 @@
       },
       "end": {
         "line": 1,
-        "column": 21
+        "column": 19
       }
     },
     "sourceType": "script",
@@ -31,7 +31,7 @@
       {
         "type": "ExpressionStatement",
         "start": 0,
-        "end": 21,
+        "end": 19,
         "loc": {
           "start": {
             "line": 1,
@@ -39,17 +39,21 @@
           },
           "end": {
             "line": 1,
-            "column": 21
+            "column": 19
           }
         },
         "expression": {
           "type": "CatchExpression",
           "start": 0,
-          "end": 21,
+          "end": 19,
           "loc": {
+            "start": {
+              "line": 1,
+              "column": 0
+            },
             "end": {
               "line": 1,
-              "column": 21
+              "column": 19
             }
           },
           "expression": {
@@ -69,93 +73,74 @@
             },
             "name": "a"
           },
-          "cases": [
-            {
-              "type": "CatchCase",
-              "start": 2,
-              "end": 21,
+          "binding": {
+            "type": "Identifier",
+            "start": 8,
+            "end": 11,
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 8
+              },
+              "end": {
+                "line": 1,
+                "column": 11
+              },
+              "identifierName": "err"
+            },
+            "name": "err"
+          },
+          "body": {
+            "type": "ExpressionStatement",
+            "start": 13,
+            "end": 19,
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 13
+              },
+              "end": {
+                "line": 1,
+                "column": 19
+              }
+            },
+            "expression": {
+              "type": "CallExpression",
+              "start": 13,
+              "end": 19,
               "loc": {
                 "start": {
                   "line": 1,
-                  "column": 2
+                  "column": 13
                 },
                 "end": {
                   "line": 1,
-                  "column": 21
+                  "column": 19
                 }
               },
-              "atoms": [
-                {
-                  "type": "Identifier",
-                  "start": 8,
-                  "end": 13,
-                  "loc": {
-                    "start": {
-                      "line": 1,
-                      "column": 8
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 13
-                    },
-                    "identifierName": "Error"
-                  },
-                  "name": "Error"
-                }
-              ],
-              "consequent": {
-                "type": "ExpressionStatement",
-                "start": 15,
-                "end": 21,
+              "callee": {
+                "type": "Identifier",
+                "start": 13,
+                "end": 18,
                 "loc": {
                   "start": {
                     "line": 1,
-                    "column": 15
+                    "column": 13
                   },
                   "end": {
                     "line": 1,
-                    "column": 21
-                  }
+                    "column": 18
+                  },
+                  "identifierName": "panic"
                 },
-                "expression": {
-                  "type": "CallExpression",
-                  "start": 15,
-                  "end": 21,
-                  "loc": {
-                    "start": {
-                      "line": 1,
-                      "column": 15
-                    },
-                    "end": {
-                      "line": 1,
-                      "column": 21
-                    }
-                  },
-                  "callee": {
-                    "type": "Identifier",
-                    "start": 15,
-                    "end": 20,
-                    "loc": {
-                      "start": {
-                        "line": 1,
-                        "column": 15
-                      },
-                      "end": {
-                        "line": 1,
-                        "column": 20
-                      },
-                      "identifierName": "panic"
-                    },
-                    "name": "panic"
-                  },
-                  "arguments": [],
-                  "extra": {
-                    "bang": true
-                  }
-                }
+                "name": "panic"
+              },
+              "arguments": [],
+              "extra": {
+                "bang": true
               }
             }
-          ]
+          }
         }
       }
     ],

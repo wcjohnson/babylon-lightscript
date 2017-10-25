@@ -1,2 +1,2 @@
 a = b!
-  catch Error: c
+  catch err: false

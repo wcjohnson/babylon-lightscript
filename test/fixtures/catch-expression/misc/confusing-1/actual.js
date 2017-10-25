@@ -1,1 +1,1 @@
-if a: b else: c catch Error: false
+if a: b else: c catch err: false
