@@ -493,6 +493,10 @@ pp.parseThrowStatement = function (node) {
 const empty = [];
 
 pp.parseTryStatement = function (node) {
+  if (this.hasPlugin("enhancedTry")) {
+    return this.parseTry(node, false);
+  }
+
   this.next();
 
   let indentLevel, isColon;

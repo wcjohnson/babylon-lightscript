@@ -1,2 +1,0 @@
-a
-catch err: false

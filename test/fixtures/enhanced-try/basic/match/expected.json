@@ -1,0 +1,253 @@
+{
+  "type": "File",
+  "start": 0,
+  "end": 76,
+  "loc": {
+    "start": {
+      "line": 1,
+      "column": 0
+    },
+    "end": {
+      "line": 3,
+      "column": 24
+    }
+  },
+  "program": {
+    "type": "Program",
+    "start": 0,
+    "end": 76,
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 0
+      },
+      "end": {
+        "line": 3,
+        "column": 24
+      }
+    },
+    "sourceType": "script",
+    "body": [
+      {
+        "type": "TryStatement",
+        "start": 0,
+        "end": 76,
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 3,
+            "column": 24
+          }
+        },
+        "handler": {
+          "type": "CatchClause",
+          "start": 7,
+          "end": 76,
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 7
+            },
+            "end": {
+              "line": 3,
+              "column": 24
+            }
+          },
+          "param": {
+            "type": "Identifier",
+            "start": 13,
+            "end": 16,
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 13
+              },
+              "end": {
+                "line": 1,
+                "column": 16
+              },
+              "identifierName": "err"
+            },
+            "name": "err"
+          },
+          "cases": [
+            {
+              "type": "MatchCase",
+              "start": 20,
+              "end": 51,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 2
+                },
+                "end": {
+                  "line": 2,
+                  "column": 33
+                }
+              },
+              "atoms": [
+                {
+                  "type": "Identifier",
+                  "start": 22,
+                  "end": 35,
+                  "loc": {
+                    "start": {
+                      "line": 2,
+                      "column": 4
+                    },
+                    "end": {
+                      "line": 2,
+                      "column": 17
+                    },
+                    "identifierName": "SpecificError"
+                  },
+                  "name": "SpecificError"
+                }
+              ],
+              "consequent": {
+                "type": "ExpressionStatement",
+                "start": 37,
+                "end": 51,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 19
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 33
+                  }
+                },
+                "expression": {
+                  "type": "Identifier",
+                  "start": 37,
+                  "end": 51,
+                  "loc": {
+                    "start": {
+                      "line": 2,
+                      "column": 19
+                    },
+                    "end": {
+                      "line": 2,
+                      "column": 33
+                    },
+                    "identifierName": "specificAnswer"
+                  },
+                  "name": "specificAnswer"
+                }
+              }
+            },
+            {
+              "type": "MatchCase",
+              "start": 54,
+              "end": 76,
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 2
+                },
+                "end": {
+                  "line": 3,
+                  "column": 24
+                }
+              },
+              "atoms": [
+                {
+                  "type": "Identifier",
+                  "start": 56,
+                  "end": 61,
+                  "loc": {
+                    "start": {
+                      "line": 3,
+                      "column": 4
+                    },
+                    "end": {
+                      "line": 3,
+                      "column": 9
+                    },
+                    "identifierName": "Error"
+                  },
+                  "name": "Error"
+                }
+              ],
+              "consequent": {
+                "type": "ExpressionStatement",
+                "start": 63,
+                "end": 76,
+                "loc": {
+                  "start": {
+                    "line": 3,
+                    "column": 11
+                  },
+                  "end": {
+                    "line": 3,
+                    "column": 24
+                  }
+                },
+                "expression": {
+                  "type": "Identifier",
+                  "start": 63,
+                  "end": 76,
+                  "loc": {
+                    "start": {
+                      "line": 3,
+                      "column": 11
+                    },
+                    "end": {
+                      "line": 3,
+                      "column": 24
+                    },
+                    "identifierName": "generalAnswer"
+                  },
+                  "name": "generalAnswer"
+                }
+              }
+            }
+          ]
+        },
+        "guardedHandlers": [],
+        "block": {
+          "type": "CallExpression",
+          "start": 4,
+          "end": 6,
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 4
+            },
+            "end": {
+              "line": 1,
+              "column": 6
+            }
+          },
+          "callee": {
+            "type": "Identifier",
+            "start": 4,
+            "end": 5,
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 4
+              },
+              "end": {
+                "line": 1,
+                "column": 5
+              },
+              "identifierName": "a"
+            },
+            "name": "a"
+          },
+          "arguments": [],
+          "extra": {
+            "bang": true
+          }
+        },
+        "finalizer": null
+      }
+    ],
+    "directives": []
+  }
+}

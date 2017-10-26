@@ -178,11 +178,7 @@ pp.parseMaybeAssign = function (noIn, refShorthandDefaultPos, afterLeftParse, re
       node.isNowAssign = isNowAssign;
     }
 
-    if (this.hasPlugin("catchExpression")) {
-      return this.parseMaybeCatchAssignment(this.finishNode(node, "AssignmentExpression"));
-    } else {
-      return this.finishNode(node, "AssignmentExpression");
-    }
+    return this.finishNode(node, "AssignmentExpression");
   } else if (failOnShorthandAssign && refShorthandDefaultPos.start) {
     this.unexpected(refShorthandDefaultPos.start);
   }
@@ -195,11 +191,7 @@ pp.parseMaybeAssign = function (noIn, refShorthandDefaultPos, afterLeftParse, re
     }
   }
 
-  if (this.hasPlugin("catchExpression")) {
-    return this.parseMaybeCatchExpression(left);
-  } else {
-    return left;
-  }
+  return left;
 };
 
 // Parse a ternary conditional (`?:`) operator.
@@ -363,11 +355,6 @@ pp.parseMaybeUnary = function (refShorthandDefaultPos) {
     this.checkLVal(expr, undefined, undefined, "postfix operation");
     this.next();
     expr = this.finishNode(node, "UpdateExpression");
-  }
-
-  // Same-line catch expr
-  if (this.match(tt._catch) && !this.isLineBreak() && this.hasPlugin("catchExpression")) {
-    return this.parseCatchExpression(expr);
   }
 
   return expr;
@@ -809,6 +796,15 @@ pp.parseExprAtom = function (refShorthandDefaultPos) {
         }
         node = this.startNode();
         return this.parseIfExpression(node);
+      }
+
+    case tt._try:
+      if (this.hasPlugin("enhancedTry")) {
+        if (this.state.inMatchAtom) {
+          this.unexpected(null, "Illegal expression in match atom.");
+        }
+        node = this.startNode();
+        return this.parseTry(node, true);
       }
 
     case tt._match:
