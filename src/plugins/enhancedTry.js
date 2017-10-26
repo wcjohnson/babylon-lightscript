@@ -10,20 +10,20 @@ export default function(parser) {
   pp.parseTry = function(node, isExpression) {
     this.next();
 
-    let indentLevel, isColon;
+    let indentLevel, isBrace;
     if (this.hasPlugin("lightscript")) {
       indentLevel = this.state.indentLevel;
-      isColon = this.match(tt.colon);
-      if (isColon) this.pushBlockState("try", indentLevel);
+      isBrace = this.match(tt.braceL);
+      if (!isBrace) this.pushBlockState("try", indentLevel);
     }
 
     node.handler = null;
     node.guardedHandlers = [];
 
-    this.parseTryBlock(node, isColon);
-    this.parseCatchBlock(node, indentLevel, isColon);
+    this.parseTryBlock(node, isBrace);
+    this.parseCatchBlock(node, indentLevel, isBrace);
     if (!isExpression) {
-      this.parseFinallyBlock(node, indentLevel, isColon);
+      this.parseFinallyBlock(node, indentLevel, isBrace);
     } else {
       if (this.match(tt._finally)) {
         this.unexpected(null, "Finalizers are illegal with `try` expressions." +
@@ -35,13 +35,13 @@ export default function(parser) {
       this.raise(node.start, "Missing catch or finally clause");
     }
 
-    if (this.hasPlugin("lightscript") && isColon) this.popBlockState();
+    if (this.hasPlugin("lightscript") && !isBrace) this.popBlockState();
 
     return this.finishNode(node, isExpression ? "TryExpression" : "TryStatement");
   };
 
-  pp.parseTryBlock = function(node, isColon) {
-    if (!isColon && !this.match(tt.braceL)) {
+  pp.parseTryBlock = function(node, isBrace) {
+    if (!isBrace && !this.match(tt.colon)) {
       // Allow try expr
       node.block = this.parseExpression();
     } else {
@@ -49,11 +49,11 @@ export default function(parser) {
     }
   };
 
-  pp.parseCatchBlock = function(node, tryIndentLevel, isColon) {
+  pp.parseCatchBlock = function(node, tryIndentLevel, isBrace) {
     const shouldParseCatch = this.match(tt._catch) && (
       !this.hasPlugin("lightscript") ||
       tryIndentLevel === this.state.indentLevel ||
-      (!isColon && !this.matchBlockState("try", this.state.indentLevel))
+      (isBrace && !this.matchBlockState("try", this.state.indentLevel))
     );
 
     if (shouldParseCatch) {
@@ -90,18 +90,16 @@ export default function(parser) {
     }
   };
 
-  pp.parseFinallyBlock = function(node, tryIndentLevel, isColon) {
+  pp.parseFinallyBlock = function(node, tryIndentLevel, isBrace) {
     if (this.hasPlugin("lightscript")) {
       const shouldParseFinally = this.match(tt._finally) && (
         tryIndentLevel === this.state.indentLevel ||
-        (!isColon && !this.matchBlockState("try", this.state.indentLevel))
+        (isBrace && !this.matchBlockState("try", this.state.indentLevel))
       );
       if (shouldParseFinally) {
         this.next();
-        if (isColon) {
-          this.check(tt.colon);
-        } else {
-          this.check(tt.braceL);
+        if (!this.match(tt.colon) && !this.match(tt.braceL)) {
+          this.unexpected(null, "Expected a block.");
         }
         node.finalizer = this.parseBlock();
       } else {
