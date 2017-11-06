@@ -136,7 +136,7 @@ export function match(parser) {
   pp.parseMatchCaseBinding = function (node, isElse, isCatch) {
     if (node.binding) this.unexpected(this.state.lastTokStart, "Cannot destructure twice.");
     if (this.eatContextual("as")) {
-      node.binding = this.parseMatchBindingAtom();
+      node.binding = this.parseMatchBindingAtom(true);
       node.assertive = false;
     } else if (!isCatch && !isElse && this.eat(tt._with)) {
       node.binding = this.parseMatchBindingAtom();
@@ -144,8 +144,8 @@ export function match(parser) {
     }
   };
 
-  pp.parseMatchBindingAtom = function() {
-    if (!(this.match(tt.braceL) || this.match(tt.bracketL))) {
+  pp.parseMatchBindingAtom = function(allowNonPattern) {
+    if (!allowNonPattern && !this.match(tt.braceL) && !this.match(tt.bracketL)) {
       this.unexpected(null, "Expected an array or object destructuring pattern.");
     }
     return this.parseBindingAtom();
