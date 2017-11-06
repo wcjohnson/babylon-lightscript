@@ -20,18 +20,25 @@ export default function(parser) {
     node.handler = null;
     node.guardedHandlers = [];
 
-    this.parseTryBlock(node, isBrace);
-    this.parseCatchBlock(node, indentLevel, isBrace);
-    if (!isExpression) {
-      this.parseFinallyBlock(node, indentLevel, isBrace);
+    this.parseTryBlock(node, isBrace, isExpression);
+    // coalescing `try` can't have catch or finally
+    if (node.coalesce) {
+      if (this.match(tt._catch) || this.match(tt._finally)) {
+        this.unexpected(null, "Cannot use `catch` or `finally` with error-coalescing `try`");
+      }
     } else {
-      if (this.match(tt._finally)) {
-        this.unexpected(null, "Finalizers are illegal with `try` expressions." +
-        " Use a `try` statement instead.");
+      this.parseCatchBlock(node, indentLevel, isBrace);
+      if (!isExpression) {
+        this.parseFinallyBlock(node, indentLevel, isBrace);
+      } else {
+        if (this.match(tt._finally)) {
+          this.unexpected(null, "Finalizers are illegal with `try` expressions." +
+          " Use a `try` statement instead.");
+        }
       }
     }
 
-    if (isBrace && !node.handler && !node.finalizer) {
+    if (!node.coalesce && !node.handler && !node.finalizer) {
       this.raise(node.start, "Missing catch or finally clause");
     }
 
@@ -42,8 +49,9 @@ export default function(parser) {
 
   pp.parseTryBlock = function(node, isBrace) {
     if (!isBrace && !this.match(tt.colon)) {
-      // Allow try expr
+      // Allow `try (Expr)` for error coalescence
       node.block = this.parseExpression();
+      node.coalesce = true;
     } else {
       node.block = this.parseBlock();
     }
@@ -71,13 +79,8 @@ export default function(parser) {
           this.unexpected(null, "Expected a block.");
         }
       }
-      // Detect block vs cases
-      const next2 = this.tokenLookahead(2);
-      if (next2[0] === tt.bitwiseOR || next2[2] === tt.bitwiseOR) {
-        this.parseMatchCases(clause, true, true);
-      } else {
-        clause.body = this.parseBlock();
-      }
+
+      clause.body = this.parseBlock();
 
       node.handler = this.finishNode(clause, "CatchClause");
     }

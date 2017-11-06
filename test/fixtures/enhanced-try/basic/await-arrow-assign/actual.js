@@ -1,2 +1,2 @@
 f() -/>
-  x = try <- g() catch err: err
+  x = try: <- g() catch err: err

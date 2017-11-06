@@ -77,7 +77,7 @@
           },
           "arguments": []
         },
-        "finalizer": null
+        "coalesce": true
       }
     ],
     "directives": []
