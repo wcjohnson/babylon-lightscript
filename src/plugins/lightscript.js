@@ -131,6 +131,7 @@ pp.matchesWhiteBlockASIToken = function() {
     this.match(tt._elif) ||
     this.match(tt._catch) ||
     this.match(tt._finally) ||
+    this.match(tt._while) ||
     this.match(tt.eof)
   );
 };
