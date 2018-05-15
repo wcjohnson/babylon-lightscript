@@ -44,7 +44,12 @@ export function match(parser) {
     this.expect(tt._match);
 
     node.discriminant = this.parseParenExpression();
+    this.parseMatchCases(node, isExpression, false);
 
+    return this.finishNode(node, isExpression ? "MatchExpression" : "MatchStatement");
+  };
+
+  pp.parseMatchCases = function(node, isExpression, isCatch) {
     const isColon = this.match(tt.colon);
     let isEnd;
     if (isColon) {
@@ -67,7 +72,7 @@ export function match(parser) {
         this.unexpected(null, "Mismatched indent.");
       }
 
-      const matchCase = this.parseMatchCase(isExpression);
+      const matchCase = this.parseMatchCase(isExpression, isCatch);
       if (matchCase.outerGuard && matchCase.outerGuard.type === "MatchElse") {
         hasUsedElse = true;
       }
@@ -77,17 +82,15 @@ export function match(parser) {
     if (!node.cases.length) {
       this.unexpected(null, tt.bitwiseOR);
     }
-
-    return this.finishNode(node, isExpression ? "MatchExpression" : "MatchStatement");
   };
 
-  pp.parseMatchCase = function (isExpression) {
+  pp.parseMatchCase = function (isExpression, isCatch) {
     const node = this.startNode();
 
     this.expect(tt.bitwiseOR);
     if (this.isLineBreak()) this.unexpected(this.state.lastTokEnd, "Illegal newline.");
 
-    this.parseMatchCaseTest(node);
+    this.parseMatchCaseTest(node, isCatch);
     this.parseMatchCaseConsequent(node, isExpression);
 
     return this.finishNode(node, "MatchCase");
@@ -110,7 +113,7 @@ export function match(parser) {
     }
   };
 
-  pp.parseMatchCaseTest = function (node) {
+  pp.parseMatchCaseTest = function (node, isCatch) {
     // can't be nested so no need to read/restore old value
     this.state.inMatchCaseTest = true;
 
@@ -118,38 +121,38 @@ export function match(parser) {
       const elseNode = this.startNode();
       this.next();
       node.outerGuard = this.finishNode(elseNode, "MatchElse");
-      this.parseMatchCaseBinding(node, true);
+      this.parseMatchCaseBinding(node, true, isCatch);
     } else {
-      if (this.parseMatchCaseOuterGuard(node)) {
-        this.parseMatchCaseAtoms(node);
-        this.parseMatchCaseBinding(node);
-        this.parseMatchCaseInnerGuard(node);
+      if (this.parseMatchCaseOuterGuard(node, isCatch)) {
+        this.parseMatchCaseAtoms(node, isCatch);
+        this.parseMatchCaseBinding(node, false, isCatch);
+        if (!isCatch) this.parseMatchCaseInnerGuard(node);
       }
     }
 
     this.state.inMatchCaseTest = false;
   };
 
-  pp.parseMatchCaseBinding = function (node, isElse) {
+  pp.parseMatchCaseBinding = function (node, isElse, isCatch) {
     if (node.binding) this.unexpected(this.state.lastTokStart, "Cannot destructure twice.");
     if (this.eatContextual("as")) {
-      node.binding = this.parseMatchBindingAtom();
+      node.binding = this.parseMatchBindingAtom(true);
       node.assertive = false;
-    } else if (!isElse && this.eat(tt._with)) {
+    } else if (!isCatch && !isElse && this.eat(tt._with)) {
       node.binding = this.parseMatchBindingAtom();
       node.assertive = true;
     }
   };
 
-  pp.parseMatchBindingAtom = function() {
-    if (!(this.match(tt.braceL) || this.match(tt.bracketL))) {
+  pp.parseMatchBindingAtom = function(allowNonPattern) {
+    if (!allowNonPattern && !this.match(tt.braceL) && !this.match(tt.bracketL)) {
       this.unexpected(null, "Expected an array or object destructuring pattern.");
     }
     return this.parseBindingAtom();
   };
 
-  pp.parseMatchCaseOuterGuard = function(node) {
-    if (!this.eat(tt._if)) return true;
+  pp.parseMatchCaseOuterGuard = function(node, isCatch) {
+    if (isCatch || !this.eat(tt._if)) return true;
     node.outerGuard = this.parseExpression();
     if (this.match(tt.colon)) {
       return false;
@@ -166,8 +169,13 @@ export function match(parser) {
     node.innerGuard = this.parseParenExpression();
   };
 
-  pp.parseMatchCaseAtoms = function(node) {
-    if (this.match(tt._if) || this.match(tt._with) || this.isContextual("as")) return;
+  pp.parseMatchCaseAtoms = function(node, isCatch) {
+    if (this.match(tt._if) || this.match(tt._with) || this.isContextual("as")) {
+      if (isCatch) {
+        this.unexpected(null, "Expected at least one match atom.");
+      }
+      return;
+    }
 
     const atoms = [];
     this.state.inMatchAtom = true;
@@ -176,6 +184,10 @@ export function match(parser) {
       if (!this.eat(tt.comma)) break;
     }
     this.state.inMatchAtom = false;
+
+    if (isCatch && atoms.length === 0) {
+      this.unexpected(null, "Expected at least one match atom.");
+    }
 
     node.atoms = atoms;
   };

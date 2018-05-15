@@ -381,11 +381,11 @@ pp.parseForStatement = function (node) {
   const refShorthandDefaultPos = { start: 0 };
   const init = this.parseExpression(true, refShorthandDefaultPos);
   if (this.match(tt._in) || this.isContextual("of")) {
-    if (this.hasPlugin("lightscript") && (!init.isNowAssign)) {
-      if (this.match(tt._in)) {
-        this.raise(this.state.lastTokStart, "for-in requires a variable qualifier: `now` to reassign an existing variable, or `const`, `let`, `var` to declare a new one. Use `idx` or `elem` to iterate an array. Use `key` or `val` to iterate an object.");
-      }
-    }
+    // if (this.hasPlugin("lightscript") && (!init.isNowAssign)) {
+    //   if (this.match(tt._in)) {
+    //     this.raise(this.state.lastTokStart, "for-in requires a variable qualifier: `now` to reassign an existing variable, or `const`, `let`, `var` to declare a new one. Use `idx` or `elem` to iterate an array. Use `key` or `val` to iterate an object.");
+    //   }
+    // }
 
     const description = this.isContextual("of") ? "for-of statement" : "for-in statement";
     this.toAssignable(init, undefined, description);
@@ -493,6 +493,10 @@ pp.parseThrowStatement = function (node) {
 const empty = [];
 
 pp.parseTryStatement = function (node) {
+  if (this.hasPlugin("enhancedTry")) {
+    return this.parseTry(node, false);
+  }
+
   this.next();
 
   let indentLevel, isColon;

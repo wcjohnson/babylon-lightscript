@@ -126,9 +126,12 @@ pp.matchesWhiteBlockASIToken = function() {
     this.match(tt.parenR) ||
     this.match(tt.bracketR) ||
     this.match(tt.braceR) ||
+    this.match(tt.colon) ||
     this.match(tt._else) ||
     this.match(tt._elif) ||
-    this.match(tt.colon) ||
+    this.match(tt._catch) ||
+    this.match(tt._finally) ||
+    this.match(tt._while) ||
     this.match(tt.eof)
   );
 };

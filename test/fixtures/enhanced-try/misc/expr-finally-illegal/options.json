@@ -1,0 +1,3 @@
+{
+  "throws": "Finalizers are illegal with `try` expressions. Use a `try` statement instead. (1:13)"
+}
