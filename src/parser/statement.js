@@ -276,8 +276,18 @@ pp.parseDoStatement = function (node) {
   }
 
   this.state.nextBraceIsBlock = true;
+  // LightScript: Allow `while` to terminate the whiteblock initiated by `do`.
+  let oldExtraWhiteblockTerminator;
+  if (this.hasPlugin("lightscript")) {
+    oldExtraWhiteblockTerminator = this.state.extraWhiteblockTerminator;
+    this.state.extraWhiteblockTerminator = tt._while;
+  }
   node.body = this.parseStatement(false);
   this.state.labels.pop();
+  if (this.hasPlugin("lightscript")) {
+    this.state.extraWhiteblockTerminator = oldExtraWhiteblockTerminator;
+  }
+
   if (this.hasPlugin("lightscript") && isWhiteBlock && this.state.indentLevel !== indentLevel) {
     this.unexpected(null, "Mismatched indent.");
   }
